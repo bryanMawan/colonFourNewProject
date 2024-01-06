@@ -1,3 +1,4 @@
 /connect_to_vercel.sh
 /db.sqlite3
 /runserver.sh
+.env
