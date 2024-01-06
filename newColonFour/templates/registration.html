@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+
+<div class="container">
+    <h2>Register</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Email Field -->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Email</span>
+            <input type="email" name="email" id="id_email" class="form-control" required value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+        {% if form.email.errors %}
+            <div class="alert alert-danger">{{ form.email.errors }}</div>
+        {% endif %}
+
+        <!-- Name Field -->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Name</span>
+            <input type="text" name="name" id="id_name" class="form-control" required value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+        {% if form.name.errors %}
+            <div class="alert alert-danger">{{ form.name.errors }}</div>
+        {% endif %}
+
+        <!-- Password Fields -->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Password</span>
+            <input type="password" name="password1" id="id_password1" class="form-control" required>
+        </div>
+        {% if form.password1.errors %}
+            <div class="alert alert-danger">{{ form.password1.errors }}</div>
+        {% endif %}
+        
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Confirm Password</span>
+            <input type="password" name="password2" id="id_password2" class="form-control" required>
+        </div>
+        {% if form.password2.errors %}
+            <div class="alert alert-danger">{{ form.password2.errors }}</div>
+        {% endif %}
+
+        <!-- GDPR Consent Checkbox -->
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="id_gdpr_consented" name="gdpr_consented" required>
+            <label class="form-check-label" for="id_gdpr_consented">{{ form.gdpr_consented.label }}</label>
+        </div>
+        {% if form.gdpr_consented.errors %}
+            <div class="alert alert-danger">{{ form.gdpr_consented.errors }}</div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-outline-primary">Register</button>
+    </form>
+</div>
+{% endblock %}

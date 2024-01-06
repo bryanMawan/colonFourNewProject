@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}User Verification - Colon Four{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+
+<h1>User Verification</h1>
+  <div class="video-background">
+    <!-- Replace 'your_video.mp4' with the actual path to your video file -->
+    <video autoplay loop muted>
+      <source src="{% static 'videos/verification_video.mp4' %}" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="overlay"></div>
+
+  <div class="verification-form">
+    <!-- Your verification form goes here -->
+    <form method="post" action="{% url 'org_verification' %}">
+      {% csrf_token %}
+      <!-- Add your socials input form -->
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Socials</span>
+        <input type="text" name="socials" class="form-control" required>
+        <!-- Add any additional styling or validation as needed -->
+      </div>
+
+      <!-- Add your submit button -->
+      <button type="submit" class="btn btn-outline-primary">Submit</button>
+    </form>
+  </div>
+{% endblock %}

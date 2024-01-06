@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+
+<div class="container">
+    <h2>LOGIN</h2>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">EMAIL</span>
+            <input type="email" name="username" id="id_username" class="form-control" required>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">PASSWORD</span>
+            <input type="password" name="password" id="id_password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-outline-primary">LOGIN</button>
+    </form>
+    <!-- add password reset-->
+</div>
+{% if form.username.errors %}
+<div class="alert alert-danger">
+    {{ form.username.errors }}
+</div>
+{% endif %}
+{% endblock %}
