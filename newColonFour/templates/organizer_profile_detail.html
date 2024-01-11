@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Colon Four{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+<h1>{{ organizer.user.name }}</h1>
+<p>GDPR Consented: {{ organizer.gdpr_consented }}</p>
+<p>Verified: {{ organizer.is_verified }}</p>
+{% endblock %}

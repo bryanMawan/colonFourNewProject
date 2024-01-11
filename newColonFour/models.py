@@ -3,6 +3,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from .services import generate_unique_slug
+
 
 
 class CustomUserManager(BaseUserManager):
@@ -55,16 +57,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def get_full_name(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.name}"
 
     def get_short_name(self):
-        return self.first_name
+        return self.name
 
 class OrganizerProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     gdpr_consented = models.BooleanField(default=False, verbose_name="GDPR Consented")
     is_verified = models.BooleanField(default=False, verbose_name="Is Verified")
-    # Add other future fields here
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = generate_unique_slug(OrganizerProfile, self.user.get_full_name())
+        super(OrganizerProfile, self).save(*args, **kwargs)
 
     @property
     def is_verified_status(self):

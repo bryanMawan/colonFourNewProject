@@ -16,8 +16,13 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" href="#">Tip us</a>
+          {% if user.is_authenticated %}
+          <a class="dropdown-item" href="{% url 'organizer-profile-detail' user.organizerprofile.slug %}">Profile</a>
+          <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+        {% else %}
           <a class="dropdown-item" href="{% url 'login' %}">Log in (as organizer)</a>
           <a class="dropdown-item" href="{% url 'register' %}">Sign up (as organizer)</a>
+        {% endif %}
         </div>
       </div>
     </div>

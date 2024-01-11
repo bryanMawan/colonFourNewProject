@@ -1,9 +1,11 @@
 # yourapp/views.py
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm
 from .models import OrganizerProfile
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 class HomePageView(TemplateView):
@@ -42,4 +44,15 @@ def org_verification(request):
     else:
         form = OrganizerVerificationRequestForm()
 
+        
+
     return render(request, 'user_verification.html', {'form': form})
+
+class OrganizerProfileDetailView(LoginRequiredMixin, DetailView):
+    model = OrganizerProfile
+    template_name = 'organizer_profile_detail.html'
+    context_object_name = 'organizer'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+
+    login_url = '/login/'  # Update this with your login route if it's different
