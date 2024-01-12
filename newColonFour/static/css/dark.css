@@ -1,75 +1,105 @@
 @font-face {
-    font-family: myfont;
-    src: url(Helvetica_Neue_Regular.otf);
-  }
-  
-  body {
-    background-color: #1e1e1e;
-    color: #dcdcdc;
-    font-family: myfont;
-  }
+  font-family: myfont;
+  src: url(Helvetica_Neue_Regular.otf);
+}
 
-  .btn-outline-primary,
-  .btn-outline-primary:focus,
-  .btn-outline-primary:active
-  .btn-outline-primary {
-    color: #dcdcdc;
-    border-radius: 0; /* Remove rounded borders */
-    border-color: #dcdcdc; /* Remove rounded borders */
-    box-shadow: none; /* Remove box-shadow on focus/active */
-  }
+/* General Styles */
+body {
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+  font-family: myfont;
+}
 
-  
-  .centered-image {
-    max-width: 200px;
-  }
-  
-  .search-box {
-    background-color: #1e1e1e;
-    color: #dcdcdc;
-    border-radius: 0;
-  }
-  
-  .search-box input[type="text"], .nav {
-    background-color: #1e1e1e;
-    color: #dcdcdc;
-  }
-  
-  .form-control, .input-group-text {
-    background-color: #1e1e1e;
-    color: #dcdcdc;
-    border-radius: 0;
-  }
-  
-  .dropdown-item,
-  .search-button:focus,
-  .search-button:active,
-  .search-button
-   {
-    background-color: #1e1e1e;
-    border: 1px solid #dcdcdc;
-    transition: background-color 0.7s, border-color 0.7s;
-    border-radius: 0;
-  }
+/* Button Styles */
+.btn-outline-primary,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary {
+  color: #dcdcdc;
+  border-radius: 0;
+  border-color: #dcdcdc;
+  box-shadow: none;
+}
 
+.btn-outline-primary:hover {
+  background-color: #dcdcdc;
+  border: 1px solid #dcdcdc;
+  color: #1e1e1e;
+}
 
-  
-  .search-button:hover {
-    background-color: #dcdcdc;
-    border: 1px solid #dcdcdc;
-    color: #1e1e1e;
-    border-radius: 0;
-  }
-  
-  .custom-alert {
-    background-color: #1e1e1e;
-    color: #dcdcdc;
-    border-color: #b50202;
-    padding: 0.75rem 1.25rem;
-    border: 1px solid #b50202;
-    border-radius: 0.25rem;
-    margin-bottom: 1rem;
-  }
+.btn-outline-primary:active,
+.btn-outline-primary.active,
+.btn-outline-primary.show,
+.btn-check:checked+.btn-outline-primary {
+  background-color: #dcdcdc;
+  border: 1px solid #dcdcdc;
+  color: #1e1e1e;
+}
 
+/* Image Styles */
+.centered-image {
+  max-width: 200px;
+}
 
-  
+/* Form and Input Styles */
+.search-box,
+.search-box input[type="text"],
+.form-control,
+.input-group-text,
+.nav {
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+  border-radius: 0;
+}
+
+/* Dropdown and Button Styles */
+.search-button:focus,
+.search-button:active,
+.search-button {
+  background-color: #1e1e1e;
+  border: 1px solid #dcdcdc;
+  transition: background-color 0.7s, border-color 0.7s;
+  border-radius: 0;
+  color: #dcdcdc;
+
+}
+
+.search-button:hover {
+  background-color: #dcdcdc;
+  border: 1px solid #dcdcdc;
+  color: #1e1e1e;
+  border-radius: 0;
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+  padding: 0px;
+  border-radius: 0;  /* Remove rounded corners */
+  border-top: none;  /* Set top border */
+  border-bottom: none;  /* Set bottom border */
+  border-left: 0.5px solid #dcdcdc;  /* Remove left border */
+  border-right: 0.5px solid #dcdcdc;  /* Remove right border */
+}
+
+/* Dropdown Item Styles */
+.dropdown-item {
+  color: #dcdcdc;
+  background-color: #1e1e1e;
+  border-top: 0.5px solid #dcdcdc;  /* Remove top border */
+  border-bottom: 0.5px solid #dcdcdc;  /* Remove bottom border */
+  border-left: none;  /* Set left border */
+  border-right: none;  /* Set right border */
+  transition: background-color 0.7s, border-color 0.7s;
+  border-radius: 0;
+}
+
+/* Alert Styles */
+.custom-alert {
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+  border-color: #b50202;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #b50202;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
