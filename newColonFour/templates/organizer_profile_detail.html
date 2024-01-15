@@ -8,4 +8,12 @@
 <h1>{{ organizer.user.name }}</h1>
 <p>GDPR Consented: {{ organizer.gdpr_consented }}</p>
 <p>Verified: {{ organizer.is_verified }}</p>
+
+<!-- Bootstrap Toast for Unverified Organizer -->
+{% if not organizer.is_verified %}
+<div class="toast-body">
+    Your profile is not verified. Please <a href="{% url 'org_verification' %}">click here</a> to verify.
+  </div>
+
+{% endif %}
 {% endblock %}

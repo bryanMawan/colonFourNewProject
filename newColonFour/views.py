@@ -19,12 +19,8 @@ def register(request):
             # Log in the user
             login(request, user)
 
-            # Check if the user's organizer profile is verified
-            organizer_profile = OrganizerProfile.objects.get(user=user)
-            if organizer_profile.is_verified_status:
-                return redirect('home')  # Redirect to the home page
-            else:
-                return redirect('org_verification')  # Redirect to the orgVerification page
+            # Redirect to the home page after successful registration and login
+            return redirect('home')
 
     else:
         form = OrganizerRegistrationForm()

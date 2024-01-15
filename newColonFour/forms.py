@@ -13,10 +13,12 @@ class OrganizerRegistrationForm(UserCreationForm):
         fields = ("email", "name", "password1", "password2", "gdpr_consented")
 
     def save(self, commit=True):
+        gdpr_consented = self.cleaned_data.get('gdpr_consented', False)
+
         user = super().save(commit=False)
         if commit:
-            user.save()
-            OrganizerProfile.objects.create(user=user, gdpr_consented=self.cleaned_data['gdpr_consented'])
+            user.save(gdpr_consented=gdpr_consented)
+
         return user
     
 class OrganizerVerificationRequestForm(forms.ModelForm):

@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from .services import generate_unique_slug
+from .services import generate_unique_slug, connectprofile
 
 
 
@@ -61,6 +61,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        # Extract gdpr_consented if it's in kwargs
+        gdpr_consented = kwargs.pop('gdpr_consented', False)
+
+        super().save(*args, **kwargs)
+
+        # Connect user with an OrganizerProfile
+        connectprofile(self, gdpr_consented)
 
 class OrganizerProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
