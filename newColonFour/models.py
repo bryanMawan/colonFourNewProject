@@ -76,6 +76,10 @@ class OrganizerProfile(models.Model):
     gdpr_consented = models.BooleanField(default=False, verbose_name="GDPR Consented")
     is_verified = models.BooleanField(default=False, verbose_name="Is Verified")
     slug = models.SlugField(unique=True, blank=True)
+    profile_picture = models.ImageField(upload_to='organizer_pics/', null=True, blank=True)
+    goings = models.IntegerField(default=0)
+    number_of_events = models.IntegerField(default=0)
+    organizer_events = models.ManyToManyField('Event', related_name='organizer_profiles')
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -96,3 +100,37 @@ class OrganizerVerificationRequest(models.Model):
 
     def __str__(self):
         return f"Verification request for {self.organizer_profile}"
+    
+
+class Event(models.Model):
+    name = models.CharField(max_length=255)
+    date = models.DateTimeField()
+    location = models.CharField(max_length=255)
+    description = models.TextField()
+    is_hidden = models.BooleanField(default=False)
+    number_of_interests = models.IntegerField(default=0)
+    number_of_organizer_interests = models.IntegerField(default=0)
+    viewed = models.IntegerField(default=0)
+    poster = models.ImageField(upload_to='event_posters/', null=True, blank=True)
+    video = models.FileField(upload_to='event_videos/', null=True, blank=True)  # If storing video files
+    # video = models.URLField(null=True, blank=True)  # If using video URLs
+
+    # Methods for your specific logic
+    def contains_style(self, style):
+        # Implementation for checking style
+        pass
+
+    def distance_from(self, city):
+        # Implementation for calculating distance from a city
+        pass
+
+    def time_in_days_from(self, date):
+        # Implementation for calculating time in days from a given date
+        pass
+
+    def increment_view_count(self):
+        self.viewed += 1
+        self.save()
+
+    def __str__(self):
+        return self.name
