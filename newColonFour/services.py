@@ -4,6 +4,8 @@ from django.template.defaultfilters import slugify
 from django.utils.crypto import get_random_string
 from django.apps import apps
 
+default_image = '/static/images/photoDefault.jpg'
+
 
 def generate_unique_slug(model, value, slug_field="slug"):
     slug = slugify(value) or get_random_string(8)

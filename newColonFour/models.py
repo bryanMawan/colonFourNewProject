@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from .services import generate_unique_slug
+from .services import generate_unique_slug, default_image
 
 
 
@@ -73,6 +73,12 @@ class OrganizerProfile(models.Model):
     goings = models.IntegerField(default=0)
     number_of_events = models.IntegerField(default=0)
     organizer_events = models.ManyToManyField('Event', related_name='organizer_profiles')
+
+    def get_profile_picture_url(self):
+        if self.profile_picture and hasattr(self.profile_picture, 'url'):
+            return self.profile_picture.url
+        else:
+            return default_image
 
     def save(self, *args, **kwargs):
         if not self.slug:

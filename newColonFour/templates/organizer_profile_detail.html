@@ -8,12 +8,25 @@
 <h1>{{ organizer.user.name }}</h1>
 <p>GDPR Consented: {{ organizer.gdpr_consented }}</p>
 <p>Verified: {{ organizer.is_verified }}</p>
+<img src="{{ organizer.get_profile_picture_url }}" alt="Profile Picture">
 
 <!-- Bootstrap Toast for Unverified Organizer -->
 {% if not organizer.is_verified %}
 <div class="toast-body">
     Your profile is not verified. Please <a href="{% url 'org_verification' %}">click here</a> to verify.
-  </div>
-
+</div>
 {% endif %}
+
+<!-- Display the number of events -->
+<p>Number of events: {{ organizer.organizer_events.count }}</p>
+
+<!-- List of Events -->
+<h2>Events:</h2>
+<ul>
+    {% for event in organizer.organizer_events.all %}
+        <li>{{ event.name }} - {{ event.date }}</li>
+    {% empty %}
+        <li>No events found.</li>
+    {% endfor %}
+</ul>
 {% endblock %}

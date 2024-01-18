@@ -29,6 +29,7 @@ class OrganizerProfilePageTests(TestCase):
 
         self.client = Client()
         self.url = reverse('organizer-profile-detail', kwargs={'slug': self.organizer.slug})
+        self.default_image_url = '/static/images/photoDefault.jpg'
 
     def test_organizer_profile_page_displays_info(self):
         self.client.login(email='test@example.com', password='testpass123')
@@ -36,7 +37,7 @@ class OrganizerProfilePageTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.organizer.user.get_full_name())
-        self.assertContains(response, self.organizer.profile_picture.url if self.organizer.profile_picture else 'No photo')
+        self.assertContains(response, self.organizer.profile_picture.url if self.organizer.profile_picture else self.default_image_url)
         self.assertContains(response, f'Number of events: {self.organizer.organizer_events.count()}')
 
         # Check for each event
