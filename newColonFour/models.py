@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from .services import generate_unique_slug, connectprofile
+from .services import generate_unique_slug
 
 
 
@@ -62,14 +62,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.name
     
-    def save(self, *args, **kwargs):
-        # Extract gdpr_consented if it's in kwargs
-        gdpr_consented = kwargs.pop('gdpr_consented', False)
 
-        super().save(*args, **kwargs)
-
-        # Connect user with an OrganizerProfile
-        connectprofile(self, gdpr_consented)
 
 class OrganizerProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -103,6 +96,14 @@ class OrganizerVerificationRequest(models.Model):
     
 
 class Event(models.Model):
+
+    organizer = models.ForeignKey(
+        'OrganizerProfile',  # Assuming OrganizerProfile is in the same app. If not, use 'app_name.ModelName'
+        on_delete=models.CASCADE,  # Defines what happens when the referenced OrganizerProfile is deleted. CASCADE means the event will also be deleted.
+        related_name='organized_events',  # Allows access from OrganizerProfile to related events.
+        null=True,  # Allows an event to exist without an organizer.
+        blank=True,  # Allows the field to be blank in forms and admin.
+    )
     name = models.CharField(max_length=255)
     date = models.DateTimeField()
     location = models.CharField(max_length=255)

@@ -16,14 +16,11 @@ def generate_unique_slug(model, value, slug_field="slug"):
 
     return slug
 
-def connectprofile(user, gdpr_consented=False):
+def update_organizer_profile(user, gdpr_consented):
     OrganizerProfile = apps.get_model('newColonFour', 'OrganizerProfile')
-    
-    organizer_profile, created = OrganizerProfile.objects.get_or_create(
+
+    OrganizerProfile.objects.update_or_create(
         user=user, 
         defaults={'gdpr_consented': gdpr_consented}
     )
 
-    if not created and gdpr_consented != organizer_profile.gdpr_consented:
-        organizer_profile.gdpr_consented = gdpr_consented
-        organizer_profile.save()

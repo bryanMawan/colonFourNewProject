@@ -5,6 +5,11 @@ from django.shortcuts import render, redirect
 from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm
 from .models import OrganizerProfile
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages 
+from django.contrib.auth.views import LoginView
+from .services import update_organizer_profile
+
+
 
 
 
@@ -16,8 +21,14 @@ def register(request):
         form = OrganizerRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            gdpr_consented = form.cleaned_data.get('gdpr_consented', False)
+            # Call the service function
+            update_organizer_profile(user, gdpr_consented)
             # Log in the user
             login(request, user)
+
+            # Add a success message
+            messages.success(request, f'Welcome {user.get_full_name()}!')
 
             # Redirect to the home page after successful registration and login
             return redirect('home')
@@ -26,6 +37,19 @@ def register(request):
         form = OrganizerRegistrationForm()
 
     return render(request, 'registration.html', {'form': form})
+
+class CustomLoginView(LoginView):
+    template_name = 'login.html'
+
+    def form_valid(self, form):
+        # Perform the login
+        login(self.request, form.get_user())
+
+        # Add a success message
+        messages.success(self.request, f'Welcome back {form.get_user().get_full_name()}!')
+
+        # Redirect to the home page
+        return redirect('home')
 
 def org_verification(request):
     if request.method == 'POST':

@@ -3,6 +3,9 @@ from django.urls import reverse
 from ..models import CustomUser, OrganizerProfile
 from ..forms import OrganizerRegistrationForm
 from django.contrib.auth import get_user_model
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "colonFourNewProject.settings.py" )
+
 
 class TestCaseUser(TestCase):
 
@@ -38,7 +41,17 @@ class TestRegisterView(TestCase):
 class TestLoginLogout(TestCase):
 
     def setUp(self):
-        self.user = CustomUser.objects.create_user(email='user@example.com', password='testpass123')
+        form_data = {
+            'email': 'user@example.com',
+            'name': 'Test User 2',
+            'password1': 'testpass123',
+            'password2': 'testpass123',
+            'gdpr_consented': True
+        }
+        self.client.post(reverse('register'), form_data)
+        self.client.get(reverse('logout'))
+
+        self.user = CustomUser.objects.get(email='user@example.com')
 
     def test_login(self):
         response = self.client.post(reverse('login'), {'username': 'user@example.com', 'password': 'testpass123'})
@@ -52,12 +65,24 @@ class TestLoginLogout(TestCase):
 class TestAccessControl(TestCase):
 
     def setUp(self):
-        self.user = CustomUser.objects.create_user(email='user2@example.com', password='testpass123', name='Test User 2')
-        self.organizer_profile = self.user.organizerprofile  # Access the related OrganizerProfile
-        self.slug = self.organizer_profile.slug  # Access the slug of the OrganizerProfile
+        form_data = {
+            'email': 'user2@example.com',
+            'name': 'Test User 2',
+            'password1': 'testpass123',
+            'password2': 'testpass123',
+            'gdpr_consented': True
+        }
+        self.client.post(reverse('register'), form_data)
+
+        user = CustomUser.objects.get(email='user2@example.com')
+        self.organizer_profile = user.organizerprofile
+        self.slug = self.organizer_profile.slug
 
 
     def test_organizer_profile_detail_view(self):
+        response = self.client.get(reverse('logout'))
+
         # Use the slug from the organizer_profile created in setUp
         response = self.client.get(reverse('organizer-profile-detail', kwargs={'slug': self.slug}))
+        print(self.organizer_profile)
         self.assertEqual(response.status_code, 302)  # Redirects to login page
