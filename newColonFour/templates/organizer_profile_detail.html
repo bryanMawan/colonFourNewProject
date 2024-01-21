@@ -4,6 +4,8 @@
 {% block title %}Colon Four{% endblock %}
 
 {% block content %}
+{% include 'createEventModal.html' %}
+
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 <h1>{{ organizer.user.name }}</h1>
 <p>GDPR Consented: {{ organizer.gdpr_consented }}</p>
@@ -29,4 +31,10 @@
         <li>No events found.</li>
     {% endfor %}
 </ul>
+
+<div class="col-12">
+    <button type="button" class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#createEventModal">
+        Create Event
+    </button>
+</div>
 {% endblock %}

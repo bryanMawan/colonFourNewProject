@@ -103,3 +103,33 @@ body {
   border-radius: 0;
   margin-bottom: 1rem;
 }
+
+.icon-button {
+  border: none;
+  background: none;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button img {
+  width: 50px;  /* Adjust size as needed */
+  height: auto;
+}
+
+.modal-content,
+.modal-header,
+.modal-body {
+  background-color: #1e1e1e; /* Dark background */
+  color: #dcdcdc; /* Light text */
+  border: 1px solid #dcdcdc; /* Light border */
+  border-radius: 0;
+
+
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #dcdcdc; /* Light border */
+}

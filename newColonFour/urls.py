@@ -8,7 +8,6 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
     path('organizer/<slug:slug>/', OrganizerProfileDetailView.as_view(), name='organizer-profile-detail'),
-
     path('org-verification/', org_verification, name='org_verification'),
     path('register/', register, name='register'),  # Add this line
 

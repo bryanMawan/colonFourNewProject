@@ -3,8 +3,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField  # Only if using PostgreSQL
 from .services import generate_unique_slug, default_image
-
 
 
 class CustomUserManager(BaseUserManager):
@@ -22,6 +22,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         return self.create_user(email, password, **extra_fields)
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -63,7 +64,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.name
     
 
-
 class OrganizerProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     gdpr_consented = models.BooleanField(default=False, verbose_name="GDPR Consented")
@@ -92,6 +92,7 @@ class OrganizerProfile(models.Model):
     def __str__(self):
         return self.user.get_full_name()  # Or any other string representation
     
+
 class OrganizerVerificationRequest(models.Model):
     organizer_profile = models.OneToOneField(OrganizerProfile, on_delete=models.CASCADE)
     url = models.URLField()
@@ -114,9 +115,13 @@ class Event(models.Model):
     date = models.DateTimeField()
     location = models.CharField(max_length=255)
     description = models.TextField()
-    is_hidden = models.BooleanField(default=False)
+    is_hidden = models.BooleanField(default=True)
     number_of_interests = models.IntegerField(default=0)
     number_of_organizer_interests = models.IntegerField(default=0)
+    start_time = models.TimeField(null=True, blank=True) #temporal
+    end_time = models.TimeField(null=True, blank=True) #temporal
+    # level(open, beginner ...)
+    styles = ArrayField(models.CharField(max_length=100),null=True, blank=True)
     viewed = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='event_posters/', null=True, blank=True)
     video = models.FileField(upload_to='event_videos/', null=True, blank=True)  # If storing video files
@@ -141,3 +146,21 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Workshop(Event):
+    # Additional fields specific to Workshop can be added here
+    #price
+    # teacher(s) dancer model
+    # guest(s) model
+    pass
+
+
+class Battle(Event):
+    # Additional fields specific to Battle can be added here
+    pass
+
+
+class Showcase(Event):
+    # Additional fields specific to Showcase can be added here
+    pass

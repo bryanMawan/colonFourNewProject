@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Modal -->
+<div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createEventModalLabel">Choose Event Type</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Icons -->
+        <div class="d-flex justify-content-around">
+            <button type="button" class="icon-button">
+                <img src="{% static 'images/icons/wrench.png' %}" alt="Wrench Icon">
+            </button>
+            <button type="button" class="icon-button">
+                <img src="{% static 'images/icons/flamenco-dancer.png' %}" alt="Flamenco Dancer Icon">
+            </button>
+            <button type="button" class="icon-button">
+                <img src="{% static 'images/icons/swords.png' %}" alt="Swords Icon">
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
