@@ -113,9 +113,18 @@ body {
   justify-content: center;
 }
 
+.icon-button:hover {
+  border: 1px solid #dcdcdc; /* Border on hover */
+}
+
 .icon-button img {
   width: 50px;  /* Adjust size as needed */
   height: auto;
+}
+
+.icon-label {
+  color: #dcdcdc; /* Text color */
+  margin-top: 5px; /* Space between image and text */
 }
 
 .modal-content,
@@ -123,7 +132,7 @@ body {
 .modal-body {
   background-color: #1e1e1e; /* Dark background */
   color: #dcdcdc; /* Light text */
-  border: 1px solid #dcdcdc; /* Light border */
+  border: 0.5px solid #dcdcdc; /* Light border */
   border-radius: 0;
 
 
