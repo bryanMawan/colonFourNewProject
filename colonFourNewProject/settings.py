@@ -158,10 +158,9 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'console': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/newColonFour.log',
+            'class': 'logging.StreamHandler',
             'formatter': 'detailed',
         },
     },
@@ -173,7 +172,7 @@ LOGGING = {
     },
     'loggers': {
         'newColonFour': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },
