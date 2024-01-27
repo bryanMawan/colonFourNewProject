@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField  # Only if using PostgreSQL
-from .services import generate_unique_slug, default_image
+from .services import generate_unique_slug, default_image, COUNTRY_CHOICES
 
 
 class CustomUserManager(BaseUserManager):
@@ -134,7 +134,7 @@ class Event(models.Model):
 
     def distance_from(self, city):
         # Implementation for calculating distance from a city
-        pass
+        pass 
 
     def time_in_days_from(self, date):
         # Implementation for calculating time in days from a given date
@@ -146,11 +146,35 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Dancer(models.Model):
+    name = models.CharField(max_length=255)
+    country = models.CharField(max_length=3, choices=COUNTRY_CHOICES)  # Use a CharField with choices
+    picture = models.ImageField(upload_to='dancer_pics/', null=True, blank=True)
+    styles = ArrayField(models.CharField(max_length=100))
+    dancer_has_consented = models.BooleanField(default=False)  # Add the new field
+
+
+
+    # Many-to-many relationship with Event
+    events = models.ManyToManyField('Event', related_name='dancers')
+
+    def get_picture_url(self):
+        if self.picture and hasattr(self.picture, 'url'):
+            return self.picture.url
+        else:
+            return default_image
+
+    def __str__(self):
+        return self.name 
     
+    def get_styles(self):
+        return list(self.styles)
 
 class Workshop(Event):
     # Additional fields specific to Workshop can be added here
-    #price
+    # price
     # teacher(s) dancer model
     # guest(s) model
     pass

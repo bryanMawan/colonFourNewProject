@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Dancer - Colon Four{% endblock %}
+
+
+
+{% block content %}
+{% block foo %}
+{% include "createEventModal.html" %}
+{% endblock %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+
+
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+
+ 
+  <div class="container">
+    <div class="row">
+        {% if messages %}
+        <div class="alert alert-success(">
+          {% for message in messages %}
+            {{ message }} <a href="#" id="toggleCreateEventModal" data-bs-toggle="modal" data-bs-target="#createEventModal"">here</a>
+          {% endfor %}
+        </div>
+      {% endif %}
+</div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Search Dancers</span>
+      <input type="text" class="form-control" placeholder="Enter dancer's name or style" aria-label="Search Dancers" aria-describedby="basic-addon1">
+    </div>
+
+    <p class="d-inline-flex gap-3">
+
+    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample">
+     CREATE DANCER </button>
+
+     <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#createEventModal">NEXT</button>
+     </p>
+     <BR></BR>
+
+      <div class="collapse" id="collapseForm">
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <!-- Name Field -->
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Name</span>
+        <input type="text" name="name" id="id_name" class="form-control" required value="{{ form.name.value|default_if_none:'' }}">
+      </div>
+      {% if form.name.errors %}
+        <div class="alert alert-danger">{{ form.name.errors }}</div>
+      {% endif %}
+
+      <!-- Country Field -->
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Country</span>
+        <select name="country" id="id_country" class="form-select" required>
+          <option value="" selected disabled>Select Country</option>
+          {% for choice in form.fields.country.choices %}
+            <option value="{{ choice.0 }}" {% if choice.0 == form.country.value %}selected{% endif %}>
+              {{ choice.1 }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      {% if form.country.errors %}
+        <div class="alert alert-danger">{{ form.country.errors }}</div>
+      {% endif %}
+
+      <!-- Styles Field -->
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Styles</span>
+        <input type="text" name="styles" id="id_styles" class="form-control" required value="{{ form.styles.value|default_if_none:'' }}">
+      </div>
+      {% if form.styles.errors %}
+        <div class="alert alert-danger">{{ form.styles.errors }}</div>
+      {% endif %}
+
+      <!-- Picture Field -->
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Picture</span>
+        <input type="file" name="picture" id="id_picture" class="form-control" accept="image/*">
+      </div>
+      {% if form.picture.errors %}
+        <div class="alert alert-danger">{{ form.picture.errors }}</div>
+      {% endif %}
+
+        <!-- Dancer Consent Checkbox -->
+        <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="id_gdpr_consented" name="dancer_has_consented" required>
+        <label class="form-check-label" for="id_gdpr_consented">By checking this, the dancer has consented to their information (which is accurate) being posted on our site</label>
+    </div>
+
+    <br></br>
+
+      <button type="submit" class="btn btn-outline-primary">CREATE</button>
+    </form>
+    
+  </div>
+</div>
+</div>
+
+
+{% endblock %}

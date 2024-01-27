@@ -1,7 +1,7 @@
 # yourapp/urls.py
 from django.urls import path
 from django.contrib.auth.views import LogoutView
-from .views import HomePageView, register, org_verification, OrganizerProfileDetailView, CustomLoginView
+from .views import HomePageView, register, org_verification, OrganizerProfileDetailView, CustomLoginView, DancerCreateView
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home'),
@@ -10,6 +10,8 @@ urlpatterns = [
     path('organizer/<slug:slug>/', OrganizerProfileDetailView.as_view(), name='organizer-profile-detail'),
     path('org-verification/', org_verification, name='org_verification'),
     path('register/', register, name='register'),  # Add this line
+    path('dancer/create/', DancerCreateView.as_view(), name='create_dancer'),
+
 
 
     # Add other URL patterns as needed

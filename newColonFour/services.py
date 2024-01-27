@@ -6,6 +6,12 @@ from django.apps import apps
 
 default_image = '/static/images/photoDefault.jpg'
 
+COUNTRY_CHOICES = [
+    ('USA', 'United States'),
+    ('CAN', 'Canada'),
+    # Add more countries as needed
+]
+
 
 def generate_unique_slug(model, value, slug_field="slug"):
     slug = slugify(value) or get_random_string(8)
@@ -26,3 +32,13 @@ def update_organizer_profile(user, gdpr_consented):
         defaults={'gdpr_consented': gdpr_consented}
     )
 
+def get_user_or_client_ip(request):
+    if request.user.is_authenticated:
+        return request.user
+    else:
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
