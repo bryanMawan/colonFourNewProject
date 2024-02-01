@@ -5,12 +5,29 @@ from django.utils.crypto import get_random_string
 from django.apps import apps
 
 default_image = '/static/images/photoDefault.jpg'
+dancer_success_msg = " has been added as a dancer. Create more dancers or proceed by clicking the 'Next' button or "
 
 COUNTRY_CHOICES = [
     ('USA', 'United States'),
     ('CAN', 'Canada'),
     # Add more countries as needed
 ]
+
+BATTLE_TYPE_CHOICES = [
+        ('1vs1', '1vs1'),
+        ('2vs2', '2vs2'),
+        ('3vs3', '3vs3'),
+        ('crew', 'Crew'),
+        # Add more battle types if needed
+    ]
+
+LEVEL_CHOICES = [
+        ('Open', 'Open'),
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+        # Add more battle types if needed
+    ]
 
 
 def generate_unique_slug(model, value, slug_field="slug"):

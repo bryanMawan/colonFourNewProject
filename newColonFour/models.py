@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField  # Only if using PostgreSQL
-from .services import generate_unique_slug, default_image, COUNTRY_CHOICES
+from .services import generate_unique_slug, default_image, COUNTRY_CHOICES, BATTLE_TYPE_CHOICES, LEVEL_CHOICES
 
 
 class CustomUserManager(BaseUserManager):
@@ -26,9 +26,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=100)  # A single field for the full name
-    # first_name = models.CharField(max_length=30)
-    # last_name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100) 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -120,7 +118,7 @@ class Event(models.Model):
     number_of_organizer_interests = models.IntegerField(default=0)
     start_time = models.TimeField(null=True, blank=True) #temporal
     end_time = models.TimeField(null=True, blank=True) #temporal
-    # level(open, beginner ...)
+    level = models.CharField(max_length=13, choices=LEVEL_CHOICES, default='1vs1')
     styles = ArrayField(models.CharField(max_length=100),null=True, blank=True)
     viewed = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='event_posters/', null=True, blank=True)
@@ -155,6 +153,11 @@ class Dancer(models.Model):
     styles = ArrayField(models.CharField(max_length=100))
     dancer_has_consented = models.BooleanField(default=False)  # Add the new field
 
+    def __str__(self):
+        # Assuming the first style in the list is the primary style for simplicity
+        primary_style = self.styles[0] if self.styles else "No Style"
+        return f"{self.name}({self.country}) - {primary_style}"
+
 
 
     # Many-to-many relationship with Event
@@ -181,6 +184,10 @@ class Workshop(Event):
 
 
 class Battle(Event):
+    judges = models.ManyToManyField('Dancer', related_name='battle_judges', blank=True)
+    host = models.ForeignKey('Dancer', on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.CharField(max_length=10, choices=BATTLE_TYPE_CHOICES, default='1vs1')
+    is_7tosmoke = models.BooleanField(default=False)
     # Additional fields specific to Battle can be added here
     pass
 

@@ -179,11 +179,17 @@ LOGGING = {
     },
 }
 
+
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-        "LOCATION": "127.0.0.1:11211",
-    }
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'rediss://redis-13880.c300.eu-central-1-1.ec2.cloud.redislabs.com:13880/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'PASSWORD': config('REDIS_PASSWORD'),  # Fetch password from .env file
+            'SSL': True,
+        },
+    },
 }
 
 

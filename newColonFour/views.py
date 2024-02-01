@@ -7,8 +7,12 @@ from .models import OrganizerProfile, Dancer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
-from .services import update_organizer_profile
+from .services import update_organizer_profile, dancer_success_msg
+from .selectors import get_all_dancers
 from django.urls import reverse_lazy
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -52,6 +56,12 @@ class CustomLoginView(LoginView):
         messages.success(self.request, f'Welcome back {form.get_user().get_full_name()}!')
         # Redirect to the home page
         return redirect('home')
+    
+    def form_invalid(self, form):
+        # Add a generic error message
+        messages.error(self.request, 'Login failed. Please check your credentials and try again.')
+        # Reload the login page
+        return super().form_invalid(form)
 
 
 def org_verification(request):
@@ -81,6 +91,8 @@ class OrganizerProfileDetailView(LoginRequiredMixin, DetailView):
 
     login_url = '/login/'  # Update this with your login route if it's different
 
+
+# @method_decorator(ratelimit(key='user', rate='15/s', method='POST', block=True), name='dispatch')
 class DancerCreateView(LoginRequiredMixin, CreateView):
     model = Dancer
     form_class = DancerForm
@@ -95,5 +107,16 @@ class DancerCreateView(LoginRequiredMixin, CreateView):
         dancer_name = form.cleaned_data['name']
         logger.debug(f'User "{user_name.title()}" created a dancer: "{dancer_name.title()}"')
         # to here (move to services)
-        messages.success(self.request, f'"{self.object.name}" has been added as a dancer. To proceed, Click the "Next" button or ')
+        messages.success(self.request, f'"{self.object.name}"' + dancer_success_msg)
         return response
+    
+    def get_context_data(self, **kwargs):
+        context = super(DancerCreateView, self).get_context_data(**kwargs)
+        context['all_dancers'] = get_all_dancers()  # Use the selector to add all dancers to the context
+        return context
+    
+    def dispatch(self, request, *args, **kwargs):
+        if getattr(request, 'limited', False):
+            logger.warning(f"Rate limit exceeded for user {request.user.username}")
+        return super(DancerCreateView, self).dispatch(request, *args, **kwargs)
+

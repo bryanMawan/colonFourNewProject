@@ -6,6 +6,16 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 
 <div class="container">
+    <br>
+    {% if messages %}
+  {% for message in messages %}
+    <div class="alert custom-alert alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+<br>
     <h2>LOGIN</h2>
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}

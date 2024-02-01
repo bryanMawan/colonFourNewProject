@@ -75,28 +75,25 @@ class DancerCreateViewTest(TestCase):
         form_data = {
             'name': 'Test Dancer',
             'country': 'USA',
-            'picture': '',  # You may need to handle file uploads appropriately
-            'styles': 'Hip Hop',  # Assuming styles is a list
+            'picture': '',
+            'styles': 'Hip Hop',
             'dancer_has_consented': True,
         }
 
-        # Capture logs using Django's LogCapture
+        # Capture logs to the console
         with self.assertLogs('newColonFour.views', level='DEBUG') as log_output:
             response = self.client.post(reverse('create_dancer'), data=form_data)
 
         # Check that the dancer is created in the database
-        self.assertEqual(response.status_code, 302)  # Expect a redirect status code
+        self.assertEqual(response.status_code, 302)
         dancer = Dancer.objects.get(name='Test Dancer')
         self.assertEqual(dancer.country, 'USA')
+        self.assertIn('Hip Hop', dancer.styles)
 
-        # Ensure the submitted style is in the list of styles
-        submitted_style = 'Hip Hop'
-        self.assertIn(submitted_style, dancer.styles)
-
-        # Check log content
+        # Check log content for console output
         expected_log_message = f'DEBUG:newColonFour.views:User "Test User" created a dancer: "Test Dancer"'
         self.assertIn(expected_log_message, log_output.output)
-    
+
     def test_create_dancer_rate_limiting(self):
         # Log in the user
         self.client.login(email='testuser@example.com', password='testpassword')
@@ -143,8 +140,14 @@ class DancerCreateViewTest(TestCase):
                 'styles': 'Hip Hop',
                 'dancer_has_consented': True,
             }
+        # Capture logs for rate limit exceeded
+        with self.assertLogs('newColonFour.views', level='WARNING') as log_output:
             response = self.client.post(reverse('create_dancer'), data=form_data)
             self.assertEqual(response.status_code, 403)  # Expect a forbidden status code
+
+        # Check log content for rate limit exceeded
+        expected_log_message = 'WARNING:newColonFour.views:Rate limit exceeded for creating dancers'
+        self.assertIn(expected_log_message, log_output.output)
 
     def tearDown(self):
         # Clean up the log file after the test

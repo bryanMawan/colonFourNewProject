@@ -116,7 +116,18 @@ body {
   margin-bottom: 1rem;
 }
 
+.alert-danger{
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+  border-color: #ff0606;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #ff0606;
+  border-radius: 0;
+  margin-bottom: 1rem;
+}
+
 .icon-button {
+  margin: 10px; /* Adds margin around icon buttons to prevent them from bleeding out the edges */
   border: none;
   background: none;
   padding: 10px;
@@ -148,6 +159,11 @@ body {
   border-radius: 0;
 
 
+
+}
+
+.modal-content, .modal-body {
+  padding: 20px; /* Adjust this value as needed to ensure content doesn't touch the edges */
 }
 
 .modal-header,
@@ -158,4 +174,16 @@ body {
 .btn-close{
   color: #dcdcdc; /* Text color */
 
+}
+
+/* Responsive Adjustments for Smaller Screens */
+@media (max-width: 576px) {
+  .icon-button img {
+    width: 40px; /* Optionally adjust the size of icons on smaller screens */
+    height: auto;
+  }
+  
+  .modal-content, .modal-body {
+    padding: 15px; /* Adjust padding for smaller screens if necessary */
+  }
 }
