@@ -24,7 +24,7 @@
 <!-- List of Events -->
 <h2>Events:</h2>
 <ul>
-    {% for event in organizer.organizer_events.all %}
+    {% for event in organizer.organized_events.all %}
         <li>{{ event.name }} - {{ event.date }}</li>
     {% empty %}
         <li>No events found.</li>

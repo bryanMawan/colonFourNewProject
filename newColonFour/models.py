@@ -106,8 +106,6 @@ class Event(models.Model):
         'OrganizerProfile',  # Assuming OrganizerProfile is in the same app. If not, use 'app_name.ModelName'
         on_delete=models.CASCADE,  # Defines what happens when the referenced OrganizerProfile is deleted. CASCADE means the event will also be deleted.
         related_name='organized_events',  # Allows access from OrganizerProfile to related events.
-        null=True,  # Allows an event to exist without an organizer.
-        blank=True,  # Allows the field to be blank in forms and admin.
     )
     name = models.CharField(max_length=255)
     date = models.DateTimeField()
@@ -144,6 +142,16 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_styles(self):
+        # Start with the event's own styles, ensuring they're titled
+        unique_styles = set(style.title() for style in self.styles) if self.styles else set()
+        
+        # Add titled styles from all associated dancers
+        for dancer in self.dancers.all():
+            unique_styles.update([style.title() for style in dancer.special_get_styles()])
+            
+        return list(unique_styles)
 
 
 class Dancer(models.Model):
@@ -157,6 +165,12 @@ class Dancer(models.Model):
         # Assuming the first style in the list is the primary style for simplicity
         primary_style = self.styles[0] if self.styles else "No Style"
         return f"{self.name}({self.country}) - {primary_style}"
+
+    def special_get_styles(self):
+        # Return a list of unique styles
+        styles = [style.title() for style in set(self.styles)]
+        return styles
+
 
 
 

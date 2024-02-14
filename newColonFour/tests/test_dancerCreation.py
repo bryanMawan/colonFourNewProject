@@ -3,7 +3,6 @@ from django.urls import reverse
 from unittest.mock import patch  # Import the patch function
 from ..models import Dancer
 from datetime import datetime, timedelta
-import os
 
 
 class DancerCreateViewTest(TestCase):
@@ -149,9 +148,5 @@ class DancerCreateViewTest(TestCase):
         expected_log_message = 'WARNING:newColonFour.views:Rate limit exceeded for creating dancers'
         self.assertIn(expected_log_message, log_output.output)
 
-    def tearDown(self):
-        # Clean up the log file after the test
-        log_file_path = 'colonFourNewProject/logs/newColonFour.log'
-        if os.path.exists(log_file_path):
-            os.remove(log_file_path)
+
         

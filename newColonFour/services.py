@@ -3,6 +3,9 @@
 from django.template.defaultfilters import slugify
 from django.utils.crypto import get_random_string
 from django.apps import apps
+import logging
+
+logger = logging.getLogger(__name__)
 
 default_image = '/static/images/photoDefault.jpg'
 dancer_success_msg = " has been added as a dancer. Create more dancers or proceed by clicking the 'Next' button or "
@@ -48,6 +51,37 @@ def update_organizer_profile(user, gdpr_consented):
         user=user, 
         defaults={'gdpr_consented': gdpr_consented}
     )
+
+def get_all_styles():
+    # Dynamically fetch models
+    Dancer = apps.get_model('newColonFour', 'Dancer')
+    Event = apps.get_model('newColonFour', 'Event')
+    
+    all_styles = set()
+
+    # Check if there are any Event instances
+    if Event.objects.exists():
+        # Get styles from Events
+        for event in Event.objects.all():
+            all_styles.update(event.get_styles())
+    else:
+        # If no Event instances, get styles from Dancers
+        for dancer in Dancer.objects.all():
+            all_styles.update(dancer.special_get_styles())
+
+    return list(all_styles)
+
+
+def set_battle_organizer(battle, user):
+    OrganizerProfile = apps.get_model('newColonFour', 'OrganizerProfile')
+    organizer_profile, created = OrganizerProfile.objects.get_or_create(user=user)
+    if created:
+        logger.info(f"Created new OrganizerProfile for user {user}")
+    else:
+        logger.info(f"Found existing OrganizerProfile for user {user}")
+
+    battle.organizer = organizer_profile
+    return battle
 
 def get_user_or_client_ip(request):
     if request.user.is_authenticated:

@@ -2,16 +2,18 @@
 from django.views.generic import TemplateView, DetailView, CreateView
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
-from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm
-from .models import OrganizerProfile, Dancer
+from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm, BattleForm
+from .models import OrganizerProfile, Dancer, Battle
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
-from .services import update_organizer_profile, dancer_success_msg
+from .services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer
 from .selectors import get_all_dancers
 from django.urls import reverse_lazy
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
+from django.shortcuts import get_object_or_404
+
 
 import logging
 
@@ -91,6 +93,19 @@ class OrganizerProfileDetailView(LoginRequiredMixin, DetailView):
 
     login_url = '/login/'  # Update this with your login route if it's different
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Get the organizer from the context
+        organizer = context['organizer']
+        # Fetch the organizer's events
+        events = organizer.organized_events.all()
+        # Log the events for debugging
+        logger.info(f'Organizer {organizer} events: {list(events)}')
+        # Optionally, add the events to the context (if needed)
+        context['events'] = events
+        return context
+
 
 # @method_decorator(ratelimit(key='user', rate='15/s', method='POST', block=True), name='dispatch')
 class DancerCreateView(LoginRequiredMixin, CreateView):
@@ -119,4 +134,45 @@ class DancerCreateView(LoginRequiredMixin, CreateView):
         if getattr(request, 'limited', False):
             logger.warning(f"Rate limit exceeded for user {request.user.username}")
         return super(DancerCreateView, self).dispatch(request, *args, **kwargs)
+    
+
+class BattleCreate(LoginRequiredMixin, CreateView):
+    model = Battle
+    form_class = BattleForm
+    template_name = 'event/battle.html'
+    login_url = '/login/'
+
+    def get_context_data(self, **kwargs):
+        context = super(BattleCreate, self).get_context_data(**kwargs)
+        context['all_dancers'] = get_all_dancers()  # Use the selector to add all dancers to the context
+        context['all_styles'] = get_all_styles()  # Use the service to get all styles
+
+        return context
+    
+    def get_success_url(self):
+        """
+        Override the get_success_url method to redirect to the organizer's profile page.
+        """
+        organizer_profile = get_object_or_404(OrganizerProfile, user=self.request.user)
+        # Then, construct the URL using the 'organizer-profile-detail' view and the organizer's slug.
+        return reverse_lazy('organizer-profile-detail', kwargs={'slug': organizer_profile.slug})
+
+    def form_valid(self, form):
+        battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
+        battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
+        battle.save()  # Now save the battle to the database
+        # Set the current user as the host of the battle
+        response = super().form_valid(form)
+
+        
+        # Log the creation of the battle. Move the detailed logging logic to services if needed.
+        user_name = self.request.user.get_full_name()
+        battle_name = form.cleaned_data['name']
+        logger.info(f'User "{user_name}" created a battle: "{battle_name}"')
+        
+        # Show success message
+        messages.success(self.request, f'Battle "{battle_name}" has been successfully created.')
+        
+        return response
+
 
