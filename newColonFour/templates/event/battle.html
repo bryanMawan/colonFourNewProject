@@ -134,14 +134,17 @@
             {% endif %}
         </div>
 
+        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample">
+            OPTIONAL FIELDS </button>
+        
+        <button type="submit" class="btn btn-outline-primary">SUBMIT</button>
+
+
+        <div class="collapse" id="collapseForm">
+
         <!-- Optional Fields Group -->
         <div class="mb-3">
-            <h3>Optional Fields</h3>
-            <!-- Checkbox to toggle optional fields -->
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="optionalFieldsToggle" onchange="toggleOptionalFields()">
-                <label class="form-check-label" for="optionalFieldsToggle">Enable Optional Fields</label>
-            </div>
+<br>
                         <!-- Additional Optional Fields as required -->
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="id_is_7tosmoke" name="is_7tosmoke">
@@ -151,13 +154,13 @@
                 <div class="alert alert-danger">{{ form.is_7tosmoke.errors }}</div>
             {% endif %}
                 <!-- Dancers and Hosts Select Fields -->
-    <select name="dancers" id="id_dancers" class="form-select mb-3" multiple disabled>
+    <select name="dancers" id="id_dancers" class="form-select mb-3" multiple >
         {% for dancer in all_dancers %}
             <option value="{{ dancer.id }}">{{ dancer.name }}</option>
         {% endfor %}
     </select>
 
-    <select name="hosts" id="id_hosts" class="form-select mb-3" multiple disabled>
+    <select name="hosts" id="id_hosts" class="form-select mb-3" multiple>
         {% for dancer in all_dancers %}
             <option value="{{ dancer.id }}">{{ dancer.name }}</option>
         {% endfor %}
@@ -166,20 +169,12 @@
     <!-- Display Video Field -->
     <div class="input-group mb-3">
         <label class="input-group-text" for="id_display_video">Display Video</label>
-        <input type="file" name="display_video" id="id_display_video" class="form-control" disabled accept="video/*">
+        <input type="file" name="display_video" id="id_display_video" class="form-control"  accept="video/*">
     </div>
         </div>
 
-        <button type="submit" class="btn btn-outline-primary">Submit</button>
     </form>
 </div>
 </div>
-<script>
-    function toggleOptionalFields() {
-        const isChecked = document.getElementById('optionalFieldsToggle').checked;
-        document.getElementById('id_dancers').disabled = !isChecked;
-        document.getElementById('id_hosts').disabled = !isChecked;
-        document.getElementById('id_display_video').disabled = !isChecked;
-    }
-    </script>
+</div>
 {% endblock %}
