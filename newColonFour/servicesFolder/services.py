@@ -10,7 +10,7 @@ import logging
 from .GeolocationDatabase import GeolocationDatabase
 
 logger = logging.getLogger(__name__)
-geo_db = GeolocationDatabase("Geo.db")
+geo_db = GeolocationDatabase()
 default_query = "3 Rue de l'Est, 75020 Paris, France"
 
 default_image = '/static/images/photoDefault.jpg'
@@ -126,7 +126,10 @@ def distance_between_cities(city1, city2):
     :return: The distance in kilometers between the two cities, or None if both lookups fail.
     """
     lat1, lon1, success1 = geo_db.get_location(city1)
+    print("this is city 1: " + city1)
     lat2, lon2, success2 = geo_db.get_location(city2)
+    print("this is city 2: " + city2)
+
     
     # If either lookup fails, fall back to default coordinates for comparison
     if not success1:
