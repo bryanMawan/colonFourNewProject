@@ -1,14 +1,15 @@
 # yourapp/views.py
-from django.views.generic import TemplateView, DetailView, CreateView
+from django.views.generic import TemplateView, DetailView, CreateView, ListView
+from django.utils.timezone import now
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm, BattleForm
-from .models import OrganizerProfile, Dancer, Battle
+from .models import OrganizerProfile, Dancer, Battle, Event
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
-from .services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer
-from .selectors import get_all_dancers
+from .servicesFolder.services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer, update_event_location_point, geo_db
+from .selectors import get_all_dancers, get_sorted_events
 from django.urls import reverse_lazy
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
@@ -24,7 +25,22 @@ logger = logging.getLogger(__name__)
 class HomePageView(TemplateView):
     template_name = 'home.html'
 
+class SearchHomePage(ListView):
+    # Assuming your Event model is in models.py and template is in templates folder
+    model = Event  # Update this to your actual model
+    template_name = 'home_copy.html'
+    context_object_name = 'events'  # Custom name for the queryset in the template context
 
+
+    def get_queryset(self):
+        # Default search query is set to "Paris"
+        search_query = self.request.GET.get('searchQuery', 'Paris, France')
+        utc_date_str = self.request.GET.get('utc-date', now().isoformat())
+        
+        #FOR CHATGPT: METHOD TO CHECK IF utc_date_str IS NOT NULL ELSE RETURN THE SYSTEM UTC TIME IN ISOFORMAT
+        
+        # Correctly call get_sorted_events with the required arguments
+        return get_sorted_events(search_query=search_query, utc_date_str=utc_date_str)
 def register(request):
     if request.method == 'POST':
         form = OrganizerRegistrationForm(request.POST)
@@ -160,6 +176,7 @@ class BattleCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
         battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
+        update_event_location_point(battle.id, geo_db)  # Update the location point
         battle.save()  # Now save the battle to the database
         # Set the current user as the host of the battle
         response = super().form_valid(form)
@@ -174,5 +191,6 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         messages.success(self.request, f'Battle "{battle_name}" has been successfully created.')
         
         return response
+
 
 

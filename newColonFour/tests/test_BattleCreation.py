@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from ..models import Battle, OrganizerProfile, CustomUser
 from ..forms import BattleForm
-from ..services import set_battle_organizer
+from ..servicesFolder.services import set_battle_organizer
 
 class BattleCreateViewTest(TestCase):
     def setUp(self):

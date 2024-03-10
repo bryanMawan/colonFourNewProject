@@ -1,10 +1,14 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.utils.timezone import make_aware, datetime
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField  # Only if using PostgreSQL
-from .services import generate_unique_slug, default_image, COUNTRY_CHOICES, BATTLE_TYPE_CHOICES, LEVEL_CHOICES
+from .servicesFolder.services import generate_unique_slug, default_image, COUNTRY_CHOICES, BATTLE_TYPE_CHOICES, LEVEL_CHOICES, distance_between_cities
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class CustomUserManager(BaseUserManager):
@@ -101,7 +105,6 @@ class OrganizerVerificationRequest(models.Model):
     
 
 class Event(models.Model):
-
     organizer = models.ForeignKey(
         'OrganizerProfile',  # Assuming OrganizerProfile is in the same app. If not, use 'app_name.ModelName'
         on_delete=models.CASCADE,  # Defines what happens when the referenced OrganizerProfile is deleted. CASCADE means the event will also be deleted.
@@ -110,6 +113,7 @@ class Event(models.Model):
     name = models.CharField(max_length=255)
     date = models.DateTimeField()
     location = models.CharField(max_length=255)
+    location_point = models.CharField(max_length=30, blank=True, null=True)
     description = models.TextField()
     is_hidden = models.BooleanField(default=True)
     number_of_interests = models.IntegerField(default=0)
@@ -128,9 +132,22 @@ class Event(models.Model):
         # Implementation for checking style
         pass
 
-    def distance_from(self, city):
-        # Implementation for calculating distance from a city
-        pass 
+    def get_trimmed_location(self):
+        # Assuming the format is always "street, city, country"
+        parts = self.location.split(", ")
+        if len(parts) >= 3:
+            return f"{parts[-2]}, {parts[-1]}"
+        return self.location  # Fallback to the full location if the format is unexpected
+    
+    def distance_from(self, target_city):
+        
+        event_city = self.location.split(',')[1].strip()  # Adjust based on your actual location format
+        # Ensure city names are properly capitalized as they might be case-sensitive in your database or geocoding service
+        event_city_title = event_city.title()
+        target_city_title = target_city.title()
+        # Calculate the distance using the function from your services module
+        distance = distance_between_cities(event_city_title, target_city_title)
+        return distance
 
     def time_in_days_from(self, date):
         # Implementation for calculating time in days from a given date
@@ -152,6 +169,21 @@ class Event(models.Model):
             unique_styles.update([style.title() for style in dancer.special_get_styles()])
             
         return list(unique_styles)
+    def days_until(self, aware_date):
+        """
+        Calculate the difference in days between the event date and the provided aware date string.
+        
+        :param aware_date_str: An aware date string in the format "YYYY-MM-DD HH:MM:SS.ffffff+ZZ:ZZ"
+        :return: The difference in days as an integer.
+        """
+        delta = self.date - aware_date
+        diff = delta.days
+
+        logger.debug(f"for Event: {self.name}")
+        logger.debug(f"This is the date difference: {diff}")
+        logger.debug(f"This is the start date: {self.start_time}")
+
+        return diff
 
 
 class Dancer(models.Model):
