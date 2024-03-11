@@ -163,19 +163,16 @@ def sanitize_utc(utc_date_str):
         # Return None or raise an error for invalid input
         return None
 
-def update_event_location_point(event_id, geo_db):
-    # Dynamically fetch the Event model
-    Event = apps.get_model('newColonFour', 'Event')
-    # Initialize your geolocation database
+def update_event_location_point(battle, geo_db):
+    # No need to fetch the Battle instance, as it's already passed in
+    # Assuming 'battle.location' exists and is similar in format to 'event.location'
+    city = ", ".join(battle.location.split(",")[-2:])  # Get the last two items as the city
 
-    # Retrieve the event by ID
-    event = Event.objects.get(id=event_id)
-    # Assuming 'event.location' is in a format like "3 Rue de l'Est, 75020 Paris, France"
-    city = ", ".join(event.location.split(",")[-2:])  # Get the last two items as the city
-
-    lat, lon = geo_db.get_location(city)
-    if lat and lon:
-        # Update the event's location_point field
-        # FOR CHATGPT: SET THE location_point AS STRING(E.G 40.7127281, -74.0060152)
-        event.location_point = f"{lat}, {lon}"
-        event.save()
+    lat, lon, success = geo_db.get_location(city)
+    if success:
+        # Set the battle's location_point field as a string (e.g., "40.7127281, -74.0060152")
+        battle.location_point = f"{lat}, {lon}"
+        battle.save()
+    else:
+        # Handle cases where location cannot be determined
+        logger.warning(f"Location lookup failed for battle {battle.name} at {battle.location}")

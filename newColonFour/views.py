@@ -176,7 +176,10 @@ class BattleCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
         battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
-        update_event_location_point(battle.id, geo_db)  # Update the location point
+        #FORCHATGPT: CHANGE THE update_event_location_point() TO TAKE battle INSTEAD OF battle.id AS PARAMETRE AND -
+        # IT SHOULD STE THE BATTKE LOCATION POINT AS DONE IN THE set_battle_organizer METHOD IN THE SERVICES.PY. THE FIELD
+        # IN THE BATTLE MODEL IS CALLED "location_point"
+        update_event_location_point(battle, geo_db)  # Update the location point
         battle.save()  # Now save the battle to the database
         # Set the current user as the host of the battle
         response = super().form_valid(form)
