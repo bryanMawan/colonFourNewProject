@@ -163,7 +163,7 @@ def sanitize_utc(utc_date_str):
         # Return None or raise an error for invalid input
         return None
 
-def update_event_location_point(battle, geo_db):
+def update_event_location_point(battle, geo_db=geo_db):
     # No need to fetch the Battle instance, as it's already passed in
     # Assuming 'battle.location' exists and is similar in format to 'event.location'
     city = ", ".join(battle.location.split(",")[-2:])  # Get the last two items as the city
