@@ -34,8 +34,9 @@ class SearchHomePage(ListView):
 
     def get_queryset(self):
         # Default search query is set to "Paris"
-        search_query = self.request.GET.get('searchQuery', 'Paris, France')
+        search_query = self.request.GET.get('search-box', 'Paris, France')
         utc_date_str = self.request.GET.get('utc-date', now().isoformat())
+        print("this is search query in get_queryset: " + search_query)
         
         #FOR CHATGPT: METHOD TO CHECK IF utc_date_str IS NOT NULL ELSE RETURN THE SYSTEM UTC TIME IN ISOFORMAT
         

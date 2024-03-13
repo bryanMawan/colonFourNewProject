@@ -12,6 +12,7 @@ def get_all_dancers():
 
 def get_sorted_events(search_query, utc_date_str):
     # Parse the UTC date string
+    print("this is utc str: " + utc_date_str)
     utc_date = datetime.strptime(utc_date_str, "%Y-%m-%dT%H:%M:%S.%f%z") if utc_date_str else None
 
     # Filter events on or after the specified date and time
