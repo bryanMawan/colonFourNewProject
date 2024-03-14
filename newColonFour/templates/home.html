@@ -5,18 +5,25 @@
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/scroll.css' %}">
+
 
 <div class="container">
-  <div class="row justify-content-end">
-    <div class="col-md-2 d-flex justify-content-end mt-4">
-      <div class="dropdown-center">
+  <div class="row align-items-start">
+    <div class="col-md-3">
+      <a href="{% url 'home' %}">
+        <img src="{% static 'images/colonfour.png' %}" alt="Centered Image" class="img-fluid" style="max-width: 100px; height: auto;">
+      </a>
+    </div>
+    <div class="col-md-8 d-flex justify-content-end mt-4">
+      <div class="dropdown">
         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"
           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Actions
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" href="#">Tip us</a>
-          {% if user.is_authenticated %}
+          {% if user.is_authenticated and user.organizerprofile and user.organizerprofile.slug %}
           <a class="dropdown-item" href="{% url 'organizer-profile-detail' user.organizerprofile.slug %}">Profile</a>
           <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
         {% else %}
@@ -41,18 +48,36 @@
 <div class="container ">
   <div class="row justify-content-center align-items-center" style="height: 100vh;">
     <div class="col-md-6" style="margin-top: -250px;"> <!-- Adjusted top margin -->
-      <img src="{% static 'images/colonfour.png' %}" alt="Centered Image"
-        class="img-fluid mx-auto d-block centered-image">
-      <form class="mt-3">
+      <form class="mt-3" id="search-form">
         <div class="input-group">
-          <input type="text" class="form-control search-box" placeholder="WHERE ARE YOU...">
+          <input type="text" name="search-box" class="form-control search-box" placeholder="WHERE ARE YOU...">
+              <!-- Hidden input for UTC time -->
+          <input type="hidden" id="utc-date" name="utc-date" value="">
           <div class="input-group-append">
             <button class="btn btn-primary search-button" type="button">SEARCH</button>
+
           </div>
         </div>
       </form>
+
+<div class="scroll-container mt-5"> <!-- Adjust max-height as needed -->
+  {% for event in events %}
+    <div class="card">
+      <p>{{ event.name }} - {{ event.date }} - {{ event.location }}</p>
+    </div>
+  {% endfor %}
+
+  
+</div>
     </div>
   </div>
 </div>
+
+
+
+
+<script src="{% static 'js/submitFormWithoutAjax.js' %}"></script>
+<script src="{% static 'js/scroll.js' %}"></script>
+
 
 {% endblock %}

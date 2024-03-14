@@ -1,0 +1,38 @@
+.scroll-container {
+    display: flex;
+    overflow-x: auto;
+    justify-content: flex-start; /* Aligns items to the start, preventing unwanted overflow on the left */
+    max-width: 100%; /* or any specific value */
+    margin: auto; /* centers the container */
+    scroll-behavior: smooth;
+    /* Adjust the height as needed */
+    height: 400px;
+    align-items: center;
+    scroll-snap-type: x mandatory;
+
+
+}
+
+.card {
+    flex: none; /* Prevent cards from stretching */
+    margin: 20px;
+    transition: transform 0.3s ease-in-out;
+    /* Style your cards (size, border, etc.) */
+    width: 280px;
+    height: 300px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Ensure each card aligns to the snap point */
+    scroll-snap-align: center;
+}
+
+.shadow-effect {
+    box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.2); /* Adjust shadow as needed */
+}
+
+.scale-up {
+    transform: scale(1.1); /* Scale the card to be 20% larger */
+    z-index: 10; /* Ensure the scaled card is above others */
+}

@@ -28,7 +28,7 @@ class HomePageView(TemplateView):
 class SearchHomePage(ListView):
     # Assuming your Event model is in models.py and template is in templates folder
     model = Event  # Update this to your actual model
-    template_name = 'home_copy.html'
+    template_name = 'home.html'
     context_object_name = 'events'  # Custom name for the queryset in the template context
 
 

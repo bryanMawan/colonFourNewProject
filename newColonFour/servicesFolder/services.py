@@ -126,9 +126,7 @@ def distance_between_cities(city1, city2):
     :return: The distance in kilometers between the two cities, or None if both lookups fail.
     """
     lat1, lon1, success1 = geo_db.get_location(city1)
-    print("this is city 1: " + city1)
     lat2, lon2, success2 = geo_db.get_location(city2)
-    print("this is city 2: " + city2)
 
     
     # If either lookup fails, fall back to default coordinates for comparison

@@ -13,12 +13,8 @@ body {
 }
 
 
-@media (max-width: 768px) {
-  .container {
-      align-items: flex-start; /* Align items to the top on small screens */
-      padding-top: 20px; /* Add some padding at the top */
-  }
-}
+
+
 
 /* Button Styles */
 .btn-outline-primary,
