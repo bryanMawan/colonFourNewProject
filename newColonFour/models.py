@@ -116,8 +116,8 @@ class Event(models.Model):
     location_point = models.CharField(max_length=30, blank=True, null=True)
     description = models.TextField()
     is_hidden = models.BooleanField(default=True)
-    number_of_interests = models.IntegerField(default=0)
-    number_of_organizer_interests = models.IntegerField(default=0)
+    goings = models.IntegerField(default=0)
+    number_of_goings = models.IntegerField(default=0)
     start_time = models.TimeField(null=True, blank=True) #temporal
     end_time = models.TimeField(null=True, blank=True) #temporal
     level = models.CharField(max_length=13, choices=LEVEL_CHOICES, default='1vs1')

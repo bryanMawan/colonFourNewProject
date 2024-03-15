@@ -60,15 +60,25 @@
         </div>
       </form>
 
-<div class="scroll-container mt-5"> <!-- Adjust max-height as needed -->
-  {% for event in events %}
-    <div class="card">
-      <p>{{ event.name }} - {{ event.date }} - {{ event.location }}</p>
-    </div>
-  {% endfor %}
+<!-- start card div -->
+      <div class="scroll-container mt-5 md-2"> <!-- Adjust max-height as needed -->
+        {% for event in events %}
+          <div class="card position-relative"> <!-- Ensure the card is relatively positioned -->
+            <p>{{ event.name }} - {{ event.date }} - {{ event.location }}</p>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ event.goings }}
+              <span class="visually-hidden">goings</span>
+            </span>
+            <!-- New Badge for event.level at the bottom right -->
+            <span class="position-absolute bottom-0 start-100 translate-middle badge rounded-pill bg-success">
+              {{ event.level }}
+              <span class="visually-hidden">level</span>
+            </span>
+          </div>
+        {% endfor %}
+      </div>
+<!-- end card div -->
 
-  
-</div>
     </div>
   </div>
 </div>
