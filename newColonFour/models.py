@@ -105,11 +105,20 @@ class OrganizerVerificationRequest(models.Model):
     
 
 class Event(models.Model):
+    WORKSHOP = 'workshop'
+    BATTLE = 'battle'
+    SHOWCASE = 'showcase'
+    EVENT_TYPE_CHOICES = [
+        (WORKSHOP, 'Workshop'),
+        (BATTLE, 'Battle'),
+        (SHOWCASE, 'Showcase'),
+    ]
     organizer = models.ForeignKey(
         'OrganizerProfile',  # Assuming OrganizerProfile is in the same app. If not, use 'app_name.ModelName'
         on_delete=models.CASCADE,  # Defines what happens when the referenced OrganizerProfile is deleted. CASCADE means the event will also be deleted.
         related_name='organized_events',  # Allows access from OrganizerProfile to related events.
     )
+    event_type = models.CharField(max_length=10, choices=EVENT_TYPE_CHOICES, default=WORKSHOP)
     name = models.CharField(max_length=255)
     date = models.DateTimeField()
     location = models.CharField(max_length=255)
@@ -235,6 +244,10 @@ class Battle(Event):
     type = models.CharField(max_length=10, choices=BATTLE_TYPE_CHOICES, default='1vs1')
     is_7tosmoke = models.BooleanField(default=False)
     # Additional fields specific to Battle can be added here
+
+    def save(self, *args, **kwargs):
+        self.type = self.BATTLE  # Set the type for the Battle instance
+        super().save(*args, **kwargs)
     pass
 
 

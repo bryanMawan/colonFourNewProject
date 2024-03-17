@@ -61,22 +61,28 @@
       </form>
 
 <!-- start card div -->
-      <div class="scroll-container mt-5 md-2"> <!-- Adjust max-height as needed -->
-        {% for event in events %}
-          <div class="card position-relative"> <!-- Ensure the card is relatively positioned -->
-            <p>{{ event.name }} - {{ event.date }} - {{ event.location }}</p>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              {{ event.goings }}
-              <span class="visually-hidden">goings</span>
-            </span>
-            <!-- New Badge for event.level at the bottom right -->
-            <span class="position-absolute bottom-0 start-100 translate-middle badge rounded-pill bg-success">
-              {{ event.level }}
-              <span class="visually-hidden">level</span>
-            </span>
-          </div>
-        {% endfor %}
-      </div>
+<div class="scroll-container mt-5 md-2"> <!-- Adjust max-height as needed -->
+  {% for event in events %}
+    <div class="card position-relative"> <!-- Ensure the card is relatively positioned -->
+      <p>{{ event.name }} - {{ event.date }} - {{ event.location }}</p>
+      <!-- Badge for event.goings at the top right -->
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ event.goings }}
+        <span class="visually-hidden">goings</span>
+      </span>
+      <!-- Adjusted New Badge for event.type at the top left -->
+      <span class="position-absolute top-0 start-0 badge rounded-pill bg-primary" style="margin-top: 0.5rem; margin-left: 0.5rem;">
+        {{ event.get_event_type_display }}
+        <span class="visually-hidden">type</span>
+      </span>
+      <!-- Adjusted Badge for event.level at the bottom right -->
+      <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success" style="margin-bottom: 0.5rem; margin-right: 0.5rem;">
+        {{ event.level }}
+        <span class="visually-hidden">level</span>
+      </span>
+    </div>
+  {% endfor %}
+</div>
 <!-- end card div -->
 
     </div>

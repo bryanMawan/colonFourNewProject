@@ -14,11 +14,16 @@ def get_sorted_events(search_query, utc_date_str):
     # Parse the UTC date string
     utc_date = datetime.strptime(utc_date_str, "%Y-%m-%dT%H:%M:%S.%f%z") if utc_date_str else None
 
+
     # Filter events on or after the specified date and time
     events = Event.objects.filter(
         Q(date__gt=utc_date.date()) | 
         Q(date=utc_date.date(), start_time__gte=utc_date.time())
     )
+
+
+
+
 
     # Step 2: Calculate Days Until, Distances, and prepare for sorting
     events_with_calculations = [
@@ -30,6 +35,8 @@ def get_sorted_events(search_query, utc_date_str):
         )
         for event in events
     ]
+     
+    
 
     # Step 3: Sort Events by days_until, distance, and then start_time
     sorted_events_with_calculations = sorted(events_with_calculations, key=lambda x: (x[1], x[2], x[3]))
