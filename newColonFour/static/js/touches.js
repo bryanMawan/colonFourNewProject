@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (event.touches.length === 1) {
                     touchDurationTimer = setTimeout(() => {
                         showModal('detailsModal');
-                    }, 300); // Adjusted time to 400ms to account for the initial delay
+                    }, 400); // Adjusted time to 400ms to account for the initial delay
                 }
-            }, 100); // Short delay to check for an additional touch
+            }, 200); // Short delay to check for an additional touch
         }
     }
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.touches.length === 2) { // Check for two finger touch
             twoFingerTouchTimer = setTimeout(() => {
                 showModal('filtersModal');
-            }, 400);
+            }, 600);
         }
     }
 
