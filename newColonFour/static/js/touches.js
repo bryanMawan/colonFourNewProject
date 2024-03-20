@@ -1,27 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     let lastTouchTime = 0;
     let touchDurationTimer;
-    let lastTouchType = ''; // Track the type of the last touch (single or double)
 
     function onDoubleTap(event) {
         event.preventDefault(); // Prevent default to disable double click to zoom for mobile devices
         const now = Date.now();
         const timeSinceLastTouch = now - lastTouchTime;
-        const touchType = event.touches.length === 2 ? 'double' : 'single';
 
         if (timeSinceLastTouch < 300 && timeSinceLastTouch > 0) {
-            // Distinguish between single and double finger double taps
-            if (touchType === 'single' && lastTouchType === 'single') {
-                // Single-finger double tap
-                showModal('goingModal');
-            } else if (touchType === 'double' && lastTouchType === 'double') {
-                // Two-finger double tap
-                showModal('filtersModal');
-            }
+            // This is a double tap, trigger the "going modal"
+            showModal('goingModal');
         }
 
         lastTouchTime = now;
-        lastTouchType = touchType; // Update the last touch type
     }
 
     function onLongPressStart(event) {
