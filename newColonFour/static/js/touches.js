@@ -16,10 +16,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function onLongPressStart(event) {
-        if(event.touches.length === 1) { // Ensure single touch for long press
-            touchDurationTimer = setTimeout(() => {
-                showModal('detailsModal');
-            }, 500);
+        if (event.touches.length === 1) {
+            setTimeout(() => {
+                // After a brief period, check if only one finger is still touching the screen
+                if (event.touches.length === 1) {
+                    touchDurationTimer = setTimeout(() => {
+                        showModal('detailsModal');
+                    }, 300); // Adjusted time to 400ms to account for the initial delay
+                }
+            }, 100); // Short delay to check for an additional touch
         }
     }
 
@@ -31,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.touches.length === 2) { // Check for two finger touch
             twoFingerTouchTimer = setTimeout(() => {
                 showModal('filtersModal');
-            }, 500);
+            }, 400);
         }
     }
 

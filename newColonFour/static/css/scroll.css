@@ -10,12 +10,13 @@
     align-items: center;
     scroll-snap-type: x mandatory;
 
+    /* Adjust the height as needed sdhkvhjaguhdkgbjaslbdjkaslnbdjbas */
 
 }
 
 .card {
     flex: none; /* Prevent cards from stretching */
-    margin: 9px;
+    margin: 20px;
     transition: transform 0.3s ease-in-out;
     /* Style your cards (size, border, etc.) */
     width: 280px;
