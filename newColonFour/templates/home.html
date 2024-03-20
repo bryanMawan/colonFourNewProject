@@ -4,12 +4,21 @@
 {% block title %}Colon Four{% endblock %}
 
 {% block content %}
+
+{% block foo %}
+{% include "detailsModal.html" %}
+{% include "filtersModal.html" %}
+{% include "goingModal.html" %}
+
+{% endblock %}
+
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/scroll.css' %}">
 
-
+<!-- Single container starts here -->
 <div class="container">
-  <div class="row align-items-start">
+  <!-- First Row: Logo and Dropdown -->
+  <div class="row align-items-start ">
     <div class="col-md-3">
       <a href="{% url 'home' %}">
         <img src="{% static 'images/colonfour.png' %}" alt="Centered Image" class="img-fluid" style="max-width: 100px; height: auto;">
@@ -17,98 +26,92 @@
     </div>
     <div class="col-md-8 d-flex justify-content-end mt-4">
       <div class="dropdown">
-        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"
-          data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Actions
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" href="#">Tip us</a>
           {% if user.is_authenticated and user.organizerprofile and user.organizerprofile.slug %}
-          <a class="dropdown-item" href="{% url 'organizer-profile-detail' user.organizerprofile.slug %}">Profile</a>
-          <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-        {% else %}
-          <a class="dropdown-item" href="{% url 'login' %}">Log in (as organizer)</a>
-          <a class="dropdown-item" href="{% url 'register' %}">Sign up (as organizer)</a>
-        {% endif %}
+            <a class="dropdown-item" href="{% url 'organizer-profile-detail' user.organizerprofile.slug %}">Profile</a>
+            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+          {% else %}
+            <a class="dropdown-item" href="{% url 'login' %}">Log in (as organizer)</a>
+            <a class="dropdown-item" href="{% url 'register' %}">Sign up (as organizer)</a>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<br>
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  {% endfor %}
-{% endif %}
-<div class="container">
+  <!-- Displaying Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Second Row: Search Form and Event Cards -->
   <div class="row justify-content-center align-items-center" style="height: 100vh;">
-    <div class="col-md-6" style="margin-top: -250px;"> <!-- Adjusted top margin -->
+    <div class="col-md-6" style="margin-top: -250px;">
       <form class="mt-3" id="search-form">
         <div class="input-group">
           <input type="text" name="search-box" class="form-control search-box" placeholder="WHERE ARE YOU...">
-              <!-- Hidden input for UTC time -->
           <input type="hidden" id="utc-date" name="utc-date" value="">
           <div class="input-group-append">
             <button class="btn btn-primary search-button" type="button">SEARCH</button>
-
           </div>
         </div>
       </form>
 
-<!-- Date Display Div Above Scroll Container -->
-<div class="date-display-container text-center my-3 mt-5">
-  <h3 id="eventDateDisplay">On <span>Placeholder Date</span></h3>
-</div>
+      <div class="row mt-4">
+        <div class="col-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
+            <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+          </svg>
+        </div>
+        <div class="col-10">
+          <p id="eventDateDisplay" class="h5">On <span>Placeholder Date</span></p>
+        </div>
+      </div>
+      <div class="scroll-container md-3">
+        {% for event in events %}
+          <div class="card position-relative" data-event-date="{{ event.date }}" data-event-location="{{ event.location }}">
+            <p>{{ event.name }}</p>
+            <!-- Badges for event details -->
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ event.goings }}
+              <span class="visually-hidden">goings</span>
+            </span>
+            <span class="position-absolute top-0 start-0 badge rounded-pill bg-primary" style="margin-top: 0.5rem; margin-left: 0.5rem;">
+              {{ event.get_event_type_display }}
+              <span class="visually-hidden">type</span>
+            </span>
+            <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success" style="margin-bottom: 0.5rem; margin-right: 0.5rem;">
+              {{ event.level }}
+              <span class="visually-hidden">level</span>
+            </span>
+          </div>
+        {% endfor %}
+      </div>
 
-
-<!-- start card div -->
-<div class="scroll-container md-2"> <!-- Adjust max-height as needed -->
-  {% for event in events %}
-    <div class="card position-relative"  data-event-date="{{ event.date }}" data-event-location="{{ event.location }}"> <!-- Ensure the card is relatively positioned -->
-      <p>{{ event.name }}</p>
-      <!-- Badge for event.goings at the top right -->
-      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-        {{ event.goings }}
-        <span class="visually-hidden">goings</span>
-      </span>
-      <!-- Adjusted New Badge for event.type at the top left -->
-      <span class="position-absolute top-0 start-0 badge rounded-pill bg-primary" style="margin-top: 0.5rem; margin-left: 0.5rem;">
-        {{ event.get_event_type_display }}
-        <span class="visually-hidden">type</span>
-      </span>
-      <!-- Adjusted Badge for event.level at the bottom right -->
-      <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success" style="margin-bottom: 0.5rem; margin-right: 0.5rem;">
-        {{ event.level }}
-        <span class="visually-hidden">level</span>
-      </span>
-    </div>
-  {% endfor %}
-</div>
-<!-- end card div -->
-
-<div class="row location-display-container my-3">
-  <div class="col-9">
-    <h4 id="eventLocationDisplay">@ <span>Placeholder Location</span></h4>
-  </div>
-  <div class="col-3">
-    <button class="btn btn-primary w-100">Action Button</button>
-  </div>
-</div>
-
+      <div class="row location-display-container my-3">
+        <div class="col-12">
+          <p id="eventLocationDisplay" class="h6">@ <span>Placeholder Location</span></p>
+        </div>
+      </div>
+      
     </div>
   </div>
 </div>
-
-
-
+<!-- Single container ends here -->
 
 <script src="{% static 'js/submitFormWithoutAjax.js' %}"></script>
 <script src="{% static 'js/scroll.js' %}"></script>
+<script src="{% static 'js/touches.js' %}"></script>
 
 
 {% endblock %}

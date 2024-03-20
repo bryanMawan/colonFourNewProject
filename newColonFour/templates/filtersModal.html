@@ -1,0 +1,29 @@
+{% load static %}
+
+{% block content %}
+<!-- Modal -->
+<div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="goingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="goingModalLabel">Event Participation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div class="modal-body">
+        filterrrrr Are you going to this event?
+      </div>
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Yes, I'm going!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

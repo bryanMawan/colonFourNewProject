@@ -15,7 +15,7 @@
 
 .card {
     flex: none; /* Prevent cards from stretching */
-    margin: 20px;
+    margin: 9px;
     transition: transform 0.3s ease-in-out;
     /* Style your cards (size, border, etc.) */
     width: 280px;
