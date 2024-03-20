@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     let lastTouchTime = 0;
     let touchDurationTimer;
-    let twoFingerTouchTimer; // Timer for two finger touch
 
     function onDoubleTap(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default to disable double click to zoom for mobile devices
         const now = Date.now();
         const timeSinceLastTouch = now - lastTouchTime;
 
         if (timeSinceLastTouch < 300 && timeSinceLastTouch > 0) {
+            // This is a double tap, trigger the "going modal"
             showModal('goingModal');
         }
 
@@ -16,36 +16,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function onLongPressStart(event) {
-        if (event.touches.length === 1) {
-            setTimeout(() => {
-                // After a brief period, check if only one finger is still touching the screen
-                if (event.touches.length === 1) {
-                    touchDurationTimer = setTimeout(() => {
-                        showModal('detailsModal');
-                    }, 400); // Adjusted time to 400ms to account for the initial delay
-                }
-            }, 200); // Short delay to check for an additional touch
-        }
+        // Start a timer to detect long press
+        touchDurationTimer = setTimeout(() => {
+            showModal('detailsModal');
+        }, 410); // Trigger after 500 milliseconds
     }
 
     function onLongPressEnd(event) {
+        // If the touch ends before 500ms, clear the timer
         clearTimeout(touchDurationTimer);
     }
 
-    function twoFingerLongPressStart(event) {
-        if (event.touches.length === 2) { // Check for two finger touch
-            twoFingerTouchTimer = setTimeout(() => {
-                showModal('filtersModal');
-            }, 600);
-        }
-    }
-
-    function twoFingerLongPressEnd(event) {
-        clearTimeout(twoFingerTouchTimer);
-    }
-
     function showModal(modalId) {
-        $('#' + modalId).modal('show');
+        // Assuming you have a modal with an id of modalId
+        $('#' + modalId).modal('show'); // This example uses Bootstrap's modal, adjust accordingly if you're using something else
     }
 
     // Add touch event listeners to each event card
@@ -53,10 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('touchend', onDoubleTap);
         card.addEventListener('touchstart', onLongPressStart);
         card.addEventListener('touchend', onLongPressEnd);
-        card.addEventListener('touchcancel', onLongPressEnd);
-        // Two-finger long press listeners
-        card.addEventListener('touchstart', twoFingerLongPressStart);
-        card.addEventListener('touchend', twoFingerLongPressEnd);
-        card.addEventListener('touchcancel', twoFingerLongPressEnd);
+        card.addEventListener('touchcancel', onLongPressEnd); // Handle case where the touch is cancelled
     });
 });
