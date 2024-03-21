@@ -7,23 +7,55 @@
     <div class="modal-content">
       <!-- Modal Header -->
       <div class="modal-header">
-        <h5 class="modal-title" id="goingModalLabel">Event Participation</h5>
+        <h5 class="modal-title" id="goingModalLabel">Going/Cancelling</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <!-- Modal Body -->
       <div class="modal-body">
-        Are you going to this event?
+        <!-- Toggle Field -->
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <span class="mr-5">Going    </span>
+          <div class="form-check form-switch">
+            <input class="form-check-input ml-2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+          </div>
+          <span class="ml-2">Cancelling</span>
+        </div>
+      
+        <!-- Phone Number Field -->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Your Phone Number" required>
+          <label for="phoneNumber">Phone Number</label>
+        </div>
+
+        <!-- Send Button -->
+        <button type="button" class="btn btn-primary mb-2" data-url="{% url 'send_code' %}">Send Code</button>
+        
+      
+        <!-- SMS Code Field -->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="smsCode" name="smsCode" placeholder="SMS Code" disabled>
+          <label for="smsCode">SMS Code</label>
+        </div>
+
       </div>
+      
+
       <!-- Modal Footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Yes, I'm going!</button>
+        <button type="button" class="btn btn-primary">Done</button>
       </div>
     </div>
   </div>
 </div>
+
+      <!-- js -->
+<script src="{% static 'js/phoneNumber.js' %}"></script>
+<script src="{% static 'js/resetModal.js' %}"></script>
+
+
 
 {% endblock %}
 

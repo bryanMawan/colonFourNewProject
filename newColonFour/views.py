@@ -8,12 +8,15 @@ from .models import OrganizerProfile, Dancer, Battle, Event
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
-from .servicesFolder.services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer, update_event_location_point, geo_db
+from .servicesFolder.services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer, update_event_location_point, geo_db, generate_totp_code, send_code
 from .selectors import get_all_dancers, get_sorted_events
 from django.urls import reverse_lazy
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 
 
 import logging
@@ -177,9 +180,9 @@ class BattleCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
         battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
-        #FORCHATGPT: CHANGE THE update_event_location_point() TO TAKE battle INSTEAD OF battle.id AS PARAMETRE AND -
-        # IT SHOULD STE THE BATTKE LOCATION POINT AS DONE IN THE set_battle_organizer METHOD IN THE SERVICES.PY. THE FIELD
-        # IN THE BATTLE MODEL IS CALLED "location_point"
+
+        #Gpt: a set type that takes the battle and the battle options from the EVENT_TYPE_CHOICES in the services.py
+
         update_event_location_point(battle, geo_db)  # Update the location point
         battle.save()  # Now save the battle to the database
         # Set the current user as the host of the battle
@@ -195,6 +198,20 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         messages.success(self.request, f'Battle "{battle_name}" has been successfully created.')
         
         return response
+    
+@csrf_exempt  # Note: Better to use csrf token in AJAX request for security
+@require_http_methods(["POST"])
+def send_code_view(request):
+    # Dummy implementation for sending the code
+    # Extract phone number from POST data
+    phone_number = request.POST.get('phoneNumber', '')
+    
+    # Here you would call your method to send the actual code to the phone number
+    code = generate_totp_code(phone_number)
+    # sendCode(totp_code, 'SMS', phone_number)
+    send_code(code, phone_number)
+    # For now, we just simulate a successful operation
+    return JsonResponse({"message": "Code sent successfully", "success": True})
 
 
 

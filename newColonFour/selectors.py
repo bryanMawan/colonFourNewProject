@@ -39,7 +39,8 @@ def get_sorted_events(search_query, utc_date_str):
     
 
     # Step 3: Sort Events by days_until, distance, and then start_time
-    sorted_events_with_calculations = sorted(events_with_calculations, key=lambda x: (x[1], x[2], x[3]))
+    # gpt: question:  if i change this(key=lambda x: (x[1], x[2], x[3])) to this(key=lambda x: (x[2], x[1], x[3]) then the distance comes first in priority yes?) 
+    sorted_events_with_calculations = sorted(events_with_calculations, key=lambda x: (x[2], x[1], x[3]))
 
     # Extract sorted events
     sorted_events = [item[0] for item in sorted_events_with_calculations]

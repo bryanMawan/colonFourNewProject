@@ -8,6 +8,10 @@ from django.utils.timezone import is_aware, make_aware, utc
 from django.core.exceptions import ValidationError
 import logging
 from .GeolocationDatabase import GeolocationDatabase
+import pyotp
+import hashlib
+import base64
+import time  # Import the time module
 
 logger = logging.getLogger(__name__)
 geo_db = GeolocationDatabase()
@@ -22,6 +26,8 @@ COUNTRY_CHOICES = [
     # Add more countries as needed
 ]
 
+
+
 BATTLE_TYPE_CHOICES = [
         ('1vs1', '1vs1'),
         ('2vs2', '2vs2'),
@@ -32,7 +38,6 @@ BATTLE_TYPE_CHOICES = [
 
 LEVEL_CHOICES = [
         ('Open', 'Open'),
-        ('Beginner', 'Beginner'),
         ('Intermediate', 'Intermediate'),
         ('Advanced', 'Advanced'),
         # Add more battle types if needed
@@ -174,3 +179,47 @@ def update_event_location_point(battle, geo_db=geo_db):
     else:
         # Handle cases where location cannot be determined
         logger.warning(f"Location lookup failed for battle {battle.name} at {battle.location}")
+
+def generate_totp_code(phone_number, interval=300):
+    """
+    Generates a time-based one-time password (TOTP) code based on a phone number.
+
+    :param phone_number: The user's phone number as a unique identifier.
+    :param interval: The time interval in seconds for the TOTP algorithm. Default is 30 seconds.
+    :return: A 6-digit TOTP code as a string.
+    """
+    # Hash the phone number to use as a base for the secret key
+    hash_digest = hashlib.sha256(phone_number.encode()).digest()
+    
+    # Base32 encode the hash digest to use as the TOTP secret key
+    secret_key = base64.b32encode(hash_digest).decode('utf-8')
+
+    # Create a TOTP object with the secret key
+    totp = pyotp.TOTP(secret_key, interval=interval)
+
+    # Generate a TOTP code
+    totp_code = totp.now()
+
+    return totp_code
+
+def verify_totp_code(submitted_code, phone_number, interval=300):
+    """
+    Verifies a submitted TOTP code against the expected code generated with the user's phone number.
+
+    :param submitted_code: The TOTP code submitted by the user.
+    :param phone_number: The user's phone number used to generate the original TOTP code.
+    :param interval: The time interval in seconds for the TOTP algorithm. Default is 30 seconds.
+    :return: True if the code is correct and still valid, False otherwise.
+    """
+    # Generate the expected TOTP code using the same method as before
+    expected_code = generate_totp_code(phone_number, interval=interval)
+    print(expected_code)
+
+    # Check if the submitted code matches the expected code
+    if submitted_code == expected_code:
+        return True
+    else:
+        return False
+    
+def send_code(code, number):
+    print(f"{code} for {number}")
