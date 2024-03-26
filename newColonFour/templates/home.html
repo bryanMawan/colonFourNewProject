@@ -78,13 +78,16 @@
           <p id="eventDateDisplay" class="h5">On <span>Placeholder Date</span></p>
         </div>
       </div>
+      <!-- holder for most recently doubled tapped event -->
+      <input type="hidden" id="current-event-id" value="" name="current-event-id">
+
       <div class="scroll-container md-3">
         {% for event in events %}
-          <div class="card position-relative" data-event-date="{{ event.date }}" data-event-location="{{ event.location }}">
+          <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.date }}" data-event-location="{{ event.location }}">
             <p>{{ event.name }}</p>
             <!-- Badges for event details -->
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              {{ event.goings }}
+              {{ event.get_number_of_goers }}
               <span class="visually-hidden">goings</span>
             </span>
             <span class="position-absolute top-0 start-0 badge rounded-pill bg-primary" style="margin-top: 0.5rem; margin-left: 0.5rem;">

@@ -123,6 +123,7 @@ class Event(models.Model):
     date = models.DateTimeField()
     location = models.CharField(max_length=255)
     location_point = models.CharField(max_length=30, blank=True, null=True)
+    goers = ArrayField(models.CharField(max_length=64), null=True, blank=True, default=list)
     description = models.TextField()
     is_hidden = models.BooleanField(default=True)
     goings = models.IntegerField(default=0)
@@ -193,6 +194,35 @@ class Event(models.Model):
         logger.debug(f"This is the start date: {self.start_time}")
 
         return diff
+    
+    def add_goer(self, goer_hash):
+        """
+        Adds a goer's hash to the goers array if not already present.
+        Returns True if the hash was added, False otherwise.
+        """
+        if goer_hash not in self.goers:
+            self.goers.append(goer_hash)
+            self.save()
+            return True
+        return False
+
+    def remove_goer(self, goer_hash):
+        """
+        Removes a goer's hash from the goers array if present.
+        Returns True if the hash was removed, False otherwise.
+        """
+        if goer_hash in self.goers:
+            self.goers.remove(goer_hash)
+            self.save()
+            return True
+        return False
+    
+
+    def get_number_of_goers(self):
+        """
+        Returns the total number of goers' hashes.
+        """
+        return len(self.goers)
 
 
 class Dancer(models.Model):

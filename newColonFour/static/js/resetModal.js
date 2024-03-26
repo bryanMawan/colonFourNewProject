@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('smsCode').value = '';
       document.getElementById('smsCode').disabled = true;
 
+      // Hide the verifyCodeBtn button again
+      var verifyCodeBtn = document.querySelector('.btn-success.mb-2');
+      verifyCodeBtn.style.display = 'none';
+
+
+
       // Reset the toggle switch to its default state, if needed
       document.getElementById('flexSwitchCheckDefault').checked = false; // or false, depending on your default
 
@@ -20,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Ensure the send code button is centered
       sendCodeBtn.style.marginRight = 'auto';
       sendCodeBtn.style.marginLeft = 'auto';
+
+
 
       // You can also reset any other states or styles as required
     });

@@ -14,11 +14,16 @@
       </div>
       <!-- Modal Body -->
       <div class="modal-body">
+
+        <div class="alert alert-primary" role="alert" style="display:none;">
+          A simple primary alert with. Give it a click if you like.        <!-- text to be replaced by adjustAlert  -->
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <!-- Toggle Field -->
         <div class="d-flex justify-content-center align-items-center mb-3">
           <span class="mr-5">Going    </span>
           <div class="form-check form-switch">
-            <input class="form-check-input ml-2" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <input class="form-check-input ml-2" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="goingToggle">
           </div>
           <span class="ml-2">Cancelling</span>
         </div>
@@ -38,6 +43,10 @@
           <input type="text" class="form-control" id="smsCode" name="smsCode" placeholder="SMS Code" disabled>
           <label for="smsCode">SMS Code</label>
         </div>
+
+        <!-- Verify Code Button -->
+        <button type="button" class="btn btn-success mb-2" data-url="{% url 'verify_code' %}" style="display:none;" >Verify Code</button>
+
 
       </div>
       

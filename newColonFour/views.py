@@ -8,7 +8,7 @@ from .models import OrganizerProfile, Dancer, Battle, Event
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
-from .servicesFolder.services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer, update_event_location_point, geo_db, generate_totp_code, send_code
+from .servicesFolder.services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer, update_event_location_point, geo_db, generate_totp_code, send_code, verify_totp_code, hash_telephone_number
 from .selectors import get_all_dancers, get_sorted_events
 from django.urls import reverse_lazy
 from django_ratelimit.decorators import ratelimit
@@ -214,4 +214,34 @@ def send_code_view(request):
     return JsonResponse({"message": "Code sent successfully", "success": True})
 
 
+@csrf_exempt
+@require_http_methods(["POST"])
+def verify_code_view(request):
+    phone_number = request.POST.get('phoneNumber', '')
+    submitted_code = request.POST.get('smsCode', '')
+    going_toggle = request.POST.get('goingToggle') == 'true'
+    print(going_toggle)
 
+    current_event_id = request.POST.get('eventId') 
+    print("current_event_id: " + current_event_id)
+
+    if verify_totp_code(submitted_code, phone_number):
+        process_msg = ""
+        event = get_object_or_404(Event, id=current_event_id)
+        hashed_phone_number = hash_telephone_number(phone_number)
+
+        if going_toggle:
+            event.remove_goer(hashed_phone_number)
+            process_msg = "removed"
+            logger.info(f'"{phone_number}" hashed and {process_msg} to "{event.name}" event')
+
+        else:
+            event.add_goer(hashed_phone_number)
+            process_msg = "added"
+            logger.info(f'"{phone_number}" hashed and {process_msg} to "{event.name}" event')
+
+
+        # Logic for when the toggle is off
+        return JsonResponse({"message": f"You have been {process_msg} successfully", "valid": True})
+    else:
+        return JsonResponse({"message": "Invalid code or code expired", "valid": False}, status=400)

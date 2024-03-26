@@ -213,7 +213,6 @@ def verify_totp_code(submitted_code, phone_number, interval=300):
     """
     # Generate the expected TOTP code using the same method as before
     expected_code = generate_totp_code(phone_number, interval=interval)
-    print(expected_code)
 
     # Check if the submitted code matches the expected code
     if submitted_code == expected_code:
@@ -223,3 +222,13 @@ def verify_totp_code(submitted_code, phone_number, interval=300):
     
 def send_code(code, number):
     print(f"{code} for {number}")
+
+def hash_telephone_number(telephone_number):
+    # Ensure the input is a string and encode it
+    encoded_number = str(telephone_number).encode()
+    # Create a SHA-256 hash object
+    hash_object = hashlib.sha256()
+    # Update the hash object with the encoded telephone number
+    hash_object.update(encoded_number)
+    # Return the hexadecimal representation of the digest
+    return hash_object.hexdigest()
