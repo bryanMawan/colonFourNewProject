@@ -208,6 +208,9 @@ def send_code_view(request):
     
     # Here you would call your method to send the actual code to the phone number
     code = generate_totp_code(phone_number)
+
+    logger.debug(f'code "{code}" for number; "{phone_number}"')
+
     # sendCode(totp_code, 'SMS', phone_number)
     send_code(code, phone_number)
     # For now, we just simulate a successful operation
