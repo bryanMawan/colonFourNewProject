@@ -12,8 +12,9 @@ body {
 
 }
 
-
-
+/* CSS */
+.hidden { display: none; }
+.visible { display: block; /* or 'flex', 'inline-block', etc., depending on your needs */ }
 
 
 /* Button Styles */

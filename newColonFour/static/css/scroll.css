@@ -14,6 +14,10 @@
 
 }
 
+/* CSS */
+.hidden { display: none; }
+.visible { display: block; /* or 'flex', 'inline-block', etc., depending on your needs */ }
+
 .card {
     flex: none; /* Prevent cards from stretching */
     margin: 20px;

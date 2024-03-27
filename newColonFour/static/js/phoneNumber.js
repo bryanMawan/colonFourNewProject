@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     var sendCodeBtn = document.querySelector('.btn-primary.mb-2');
     var verifyCodeBtn = document.querySelector('.btn-success.mb-2');
 
 
-    sendCodeBtn.addEventListener('click', function() {
+    sendCodeBtn.addEventListener('click', function () {
         var phoneNumber = document.getElementById('phoneNumber').value;
         if (!phoneNumber) {
             alert('Please fill in your phone number.');
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sendCode(phoneNumber);
     });
 
-    verifyCodeBtn.addEventListener('click', function() {
+    verifyCodeBtn.addEventListener('click', function () {
         var phoneNumber = document.getElementById('phoneNumber').value;
         var smsCode = document.getElementById('smsCode').value;
         verifyCode(phoneNumber, smsCode);
@@ -41,16 +41,16 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: 'phoneNumber=' + encodeURIComponent(phoneNumber)
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('smsCode').disabled = false;
-                sendCodeBtn.style.display = 'none';
-                verifyCodeBtn.style.display = 'inline-block';
-            } else {
-                console.error('Failed to send code:', data.message);
-            }
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('smsCode').disabled = false;
+                    sendCodeBtn.style.display = 'none';
+                    verifyCodeBtn.style.display = 'inline-block';
+                } else {
+                    console.error('Failed to send code:', data.message);
+                }
+            });
     }
 
     function verifyCode(phoneNumber, smsCode) {
@@ -68,14 +68,16 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: `phoneNumber=${encodeURIComponent(phoneNumber)}&smsCode=${encodeURIComponent(smsCode)}&goingToggle=${document.getElementById('flexSwitchCheckDefault').checked}&eventId=${encodeURIComponent(eventId)}`
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.valid) {
-                adjustAlert(true, 'success', data.message); // Show an success alert
-            } else {
-                adjustAlert(true, 'danger', data.message); // Show an error alert
-            }
-        });
+            .then(response => response.json())
+            .then(data => {
+                const alertTrigger = data.valid
+                if (alertTrigger) {
+                    verifyCodeBtn.style.display = 'none';
+                    appendAlert(data.message, 'success')
+                } else {
+                    appendAlert(data.message, 'danger')
+                }
+            });
     }
 
 
@@ -92,5 +94,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         return cookieValue;
+    }
+
+    const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+    const appendAlert = (message, type) => {
+        const wrapper = document.createElement('div')
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+            `   <div>${message}</div>`,
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '</div>'
+        ].join('')
+
+        alertPlaceholder.append(wrapper)
     }
 });
