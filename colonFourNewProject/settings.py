@@ -89,7 +89,7 @@ WSGI_APPLICATION = "colonFourNewProject.wsgi.application"
         'PORT': config('POSTGRES_PORT', cast=int),  # Default PostgreSQL port is 5432
     })"""
 try:
-    if DEBUG:
+    if not DEBUG:
         DATABASES = {
             'default': {
                 'ENGINE': config('DB_ENGINE'),
