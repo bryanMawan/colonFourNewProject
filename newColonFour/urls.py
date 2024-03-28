@@ -3,7 +3,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
-from .views import HomePageView, register, org_verification, OrganizerProfileDetailView, CustomLoginView, DancerCreateView, BattleCreate, SearchHomePage, send_code_view, verify_code_view
+from .views import HomePageView, register, org_verification, OrganizerProfileDetailView, CustomLoginView, DancerCreateView, BattleCreate, SearchHomePage, CreateTipView, send_code_view, verify_code_view
 
 urlpatterns = [
     path('oldhome/', HomePageView.as_view(), name='oldhome'),
@@ -17,6 +17,8 @@ urlpatterns = [
     path('battle/create/', BattleCreate.as_view(), name='create_battle'),  # Add this line for battle creation
     path('send-code/', send_code_view, name='send_code'),
     path('verify-code/', verify_code_view, name='verify_code'),
+    path('tip/create/', CreateTipView.as_view(), name='create_tip'),
+
 
 
 

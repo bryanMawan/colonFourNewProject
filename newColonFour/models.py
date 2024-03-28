@@ -284,3 +284,54 @@ class Battle(Event):
 class Showcase(Event):
     # Additional fields specific to Showcase can be added here
     pass
+
+
+class Tip(models.Model):
+    EVENT_TYPES = [
+        ('workshop', 'Workshop'),
+        ('battle', 'Battle'),
+        ('showcase', 'Showcase'),
+    ]
+
+    name = models.CharField(max_length=255)
+    date = models.DateTimeField()
+    location = models.CharField(max_length=255)
+    description = models.TextField()
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
+    styles = ArrayField(models.CharField(max_length=100), null=True, blank=True)
+    level = models.CharField(max_length=13, choices=LEVEL_CHOICES, default='1vs1')
+    poster = models.ImageField(upload_to='tip_posters/', null=True, blank=True)
+    video = models.FileField(upload_to='tip_videos/', null=True, blank=True)  # If storing video files
+    contact_info = models.CharField(max_length=255)
+    type = models.CharField(max_length=10, choices=EVENT_TYPES)
+
+    def verify(self):
+        """
+        Verify the tip and create an event based on the information provided.
+        """
+        # Assuming OrganizerProfile has a method to create events
+        organizer_profile = settings.AUTH_USER_MODEL.organizerprofile_set.get(contact_info=self.contact_info)
+
+        if organizer_profile:
+            event_data = {
+                'organizer': organizer_profile,
+                'event_type': self.type,
+                'name': self.name,
+                'date': self.date,
+                'location': self.location,
+                'description': self.description,
+                'start_time': self.start_time,
+                'end_time': self.end_time,
+                'styles': self.styles,
+                'level': self.level,
+                'poster': self.poster,
+                'video': self.video,
+                'is_hidden': False,  # Automatically set to False when verified
+            }
+
+            event = Event.objects.create(**event_data)
+            return event
+        else:
+            # Handle case where organizer profile is not found
+            return None

@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+
+<div class="container">
+    <h2 class="text-center">Tip Registration</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Poster Field -->
+        <div class="mb-3">
+            <label for="id_poster" class="form-label">Poster</label>
+            <input type="file" name="poster" id="id_poster" class="form-control" accept="image/*">
+            {% if form.poster.errors %}
+                <div class="alert alert-danger">{{ form.poster.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <button type="button" class="btn btn-outline-primary">Get Info</button>
+        </div>
+
+        <!-- Name Field -->
+        <div class="mb-3">
+            <label for="id_name" class="form-label">Name</label>
+            <input type="text" name="name" id="id_name" class="form-control" required value="{{ form.name.value|default_if_none:'' }}">
+            {% if form.name.errors %}
+                <div class="alert alert-danger">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Date Field -->
+        <div class="mb-3">
+            <label for="id_date" class="form-label">Date</label>
+            <input type="datetime-local" name="date" id="id_date" class="form-control" required value="{{ form.date.value|default_if_none:'' }}">
+            {% if form.date.errors %}
+                <div class="alert alert-danger">{{ form.date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Location Field -->
+        <div class="mb-3">
+            <label for="id_location" class="form-label">Location</label>
+            <input type="text" name="location" id="id_location" class="form-control" required value="{{ form.location.value|default_if_none:'' }}">
+            {% if form.location.errors %}
+                <div class="alert alert-danger">{{ form.location.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Description Field -->
+        <div class="mb-3">
+            <label for="id_description" class="form-label">Description</label>
+            <textarea name="description" id="id_description" class="form-control" required>{{ form.description.value|default_if_none:'' }}</textarea>
+            {% if form.description.errors %}
+                <div class="alert alert-danger">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Start Time Field -->
+        <div class="mb-3">
+            <label for="id_start_time" class="form-label">Start Time</label>
+            <input type="time" name="start_time" id="id_start_time" class="form-control" value="{{ form.start_time.value|default_if_none:'' }}">
+            {% if form.start_time.errors %}
+                <div class="alert alert-danger">{{ form.start_time.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- End Time Field -->
+        <div class="mb-3">
+            <label for="id_end_time" class="form-label">End Time</label>
+            <input type="time" name="end_time" id="id_end_time" class="form-control" value="{{ form.end_time.value|default_if_none:'' }}">
+            {% if form.end_time.errors %}
+                <div class="alert alert-danger">{{ form.end_time.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Styles Field -->
+        <div class="mb-3">
+            <label for="id_styles" class="form-label">Styles</label>
+            <input type="text" name="styles" id="id_styles" class="form-control" value="{{ form.styles.value|default_if_none:'' }}">
+            {% if form.styles.errors %}
+                <div class="alert alert-danger">{{ form.styles.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Level Field -->
+        <div class="mb-3">
+            <label for="id_level" class="form-label">Level</label>
+            <select name="level" id="id_level" class="form-select" required>
+                <option value="" selected disabled>Select Level</option>
+                {% for choice in form.fields.level.choices %}
+                    <option value="{{ choice.0 }}" {% if choice.0 == form.level.value %}selected{% endif %}>
+                        {{ choice.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if form.level.errors %}
+                <div class="alert alert-danger">{{ form.level.errors }}</div>
+            {% endif %}
+        </div>
+
+
+        <!-- Contact Info Field -->
+        <div class="mb-3">
+            <label for="id_contact_info" class="form-label">Contact Info</label>
+            <input type="text" name="contact_info" id="id_contact_info" class="form-control" required value="{{ form.contact_info.value|default_if_none:'' }}">
+            {% if form.contact_info.errors %}
+                <div class="alert alert-danger">{{ form.contact_info.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Type Field -->
+        <div class="mb-3">
+            <label for="id_type" class="form-label">Type</label>
+            <select name="type" id="id_type" class="form-select" required>
+                <option value="" selected disabled>Select Type</option>
+                {% for choice in form.fields.type.choices %}
+                    <option value="{{ choice.0 }}" {% if choice.0 == form.type.value %}selected{% endif %}>
+                        {{ choice.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if form.type.errors %}
+                <div class="alert alert-danger">{{ form.type.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

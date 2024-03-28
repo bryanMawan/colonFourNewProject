@@ -3,8 +3,8 @@ from django.views.generic import TemplateView, DetailView, CreateView, ListView
 from django.utils.timezone import now
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
-from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm, BattleForm
-from .models import OrganizerProfile, Dancer, Battle, Event
+from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm, BattleForm, TipForm
+from .models import OrganizerProfile, Dancer, Battle, Event, Tip
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
@@ -248,3 +248,15 @@ def verify_code_view(request):
         return JsonResponse({"message": f"You have been {process_msg} successfully", "valid": True})
     else:
         return JsonResponse({"message": "Invalid code or code expired", "valid": False}, status=400)
+
+class CreateTipView(CreateView):
+    model = Tip
+    form_class = TipForm
+    template_name = 'create_tip.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        tip_name = form.instance.name  # Get the name of the created tip
+        logger.info(f"A tip has been created: {tip_name}")
+        return response

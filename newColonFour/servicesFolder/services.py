@@ -143,8 +143,8 @@ def distance_between_cities(city1, city2):
         logger.warning(f"Lookup for city {city2} failed, using default coordinates.")
         lat2, lon2 = geo_db.default_lat, geo_db.default_lon
 
-    # Proceed with distance calculation using either the looked-up or default coordinates
-        # Calculate the distance
+    # Proceed with distance calculation using the default coordinates
+    # Calculate the distance
     distance = haversine(lat1, lon1, lat2, lon2)
 
     # Log the calculated distance and city names for debugging

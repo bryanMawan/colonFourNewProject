@@ -29,9 +29,54 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Ensure each card aligns to the snap point */
+    overflow: visible; /* Allows overflow content to be visible */
+    position: relative; /* Positioning context for the event name */
     scroll-snap-align: center;
 }
+
+.event-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
+    position: absolute; /* Positioned absolutely within the card */
+    top: 0;
+    left: 0;
+    z-index: 1; /* Ensures the image is at the bottom layer */
+}
+
+.event-name {
+    position: absolute;
+    bottom: 10px; /* Adjust as necessary */
+    left: 10px; /* Adjust as necessary */
+    z-index: 2; /* Ensures the text is above the image */
+    color: white; /* Contrast text color */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for better readability */
+    padding: 5px; /* Padding for better readability */
+    border-radius: 5px; /* Optional: rounded corners for the text background */
+}
+
+.badge {
+    z-index: 3; /* Ensure the badges are above the image */
+    position: absolute;
+    background-color: #dcdcdc; /* Set background color */
+    color: #1e1e1e; /* Set text color */
+}
+
+.badge-goers {
+    top: -10px; /* Moves the badge upwards */
+    right: -10px; /* Moves the badge to the right */
+}
+
+.badge-type {
+    top: 10px; /* Normal position */
+    left: 10px; /* Normal position */
+}
+
+.badge-level {
+    bottom: 10px; /* Normal position */
+    right: 10px; /* Normal position */
+}
+
 
 .shadow-effect {
     box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.2); /* Adjust shadow as needed */

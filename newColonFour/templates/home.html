@@ -30,7 +30,7 @@
           Actions
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Tip us</a>
+          <a class="dropdown-item" href="{% url 'create_tip' %}">Tip us</a>
           {% if user.is_authenticated and user.organizerprofile and user.organizerprofile.slug %}
             <a class="dropdown-item" href="{% url 'organizer-profile-detail' user.organizerprofile.slug %}">Profile</a>
             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -78,28 +78,38 @@
           <p id="eventDateDisplay" class="h5">On <span>Placeholder Date</span></p>
         </div>
       </div>
+
       <!-- holder for most recently doubled tapped event -->
       <input type="hidden" id="current-event-id" value="" name="current-event-id">
 
       <div class="scroll-container md-3">
         {% for event in events %}
-          <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.date }}" data-event-location="{{ event.location }}">
-            <p>{{ event.name }}</p>
-            <!-- Badges for event details -->
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              {{ event.get_number_of_goers }}
-              <span class="visually-hidden">goings</span>
-            </span>
-            <span class="position-absolute top-0 start-0 badge rounded-pill bg-primary" style="margin-top: 0.5rem; margin-left: 0.5rem;">
-              {{ event.get_event_type_display }}
-              <span class="visually-hidden">type</span>
-            </span>
-            <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success" style="margin-bottom: 0.5rem; margin-right: 0.5rem;">
-              {{ event.level }}
-              <span class="visually-hidden">level</span>
-            </span>
-          </div>
-        {% endfor %}
+        <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.date }}" data-event-location="{{ event.location }}">
+          {% if event.poster %}
+            <img src="{{ event.poster.url }}" alt="{{ event.name }}" class="event-poster">
+          {% endif %}
+          <p class="event-name">{{ event.name }}</p>
+          <!-- Badges for event details -->
+          <span class="badge badge-goers rounded-pill">
+            {{ event.get_number_of_goers }}
+            <span class="visually-hidden">goings</span>
+          </span>
+          <span class="badge badge-type rounded-pill">
+            {{ event.get_event_type_display }}
+            <span class="visually-hidden">type</span>
+          </span>
+          <span class="badge badge-level rounded-pill">
+            {{ event.level }}
+            <span class="visually-hidden">level</span>
+          </span>
+        </div>
+      {% endfor %}
+      
+      
+      
+      
+      
+
       </div>
 
       <div class="row location-display-container my-3">

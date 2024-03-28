@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, OrganizerProfile, OrganizerVerificationRequest, Dancer, Battle, Event
+from .models import CustomUser, OrganizerProfile, OrganizerVerificationRequest, Dancer, Battle, Event, Tip
+
 
 class OrganizerRegistrationForm(UserCreationForm):
     gdpr_consented = forms.BooleanField(
@@ -51,3 +52,9 @@ class BattleForm(forms.ModelForm):
         # Add custom validation logic for time fields if needed
 
         return cleaned_data
+    
+
+class TipForm(forms.ModelForm):
+    class Meta:
+        model = Tip
+        exclude = ['video']  # Exclude the video field from the for
