@@ -276,7 +276,8 @@ class Battle(Event):
     # Additional fields specific to Battle can be added here
 
     def save(self, *args, **kwargs):
-        self.type = self.BATTLE  # Set the type for the Battle instance
+        logger.debug(f'Setting type to BATTLE for {self.name}')
+        self.event_type = self.BATTLE  # Set the type for the Battle instance
         super().save(*args, **kwargs)
     pass
 

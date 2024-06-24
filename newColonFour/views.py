@@ -181,8 +181,6 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
         battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
 
-        #Gpt: a set type that takes the battle and the battle options from the EVENT_TYPE_CHOICES in the services.py
-
         update_event_location_point(battle, geo_db)  # Update the location point
         battle.save()  # Now save the battle to the database
         # Set the current user as the host of the battle
