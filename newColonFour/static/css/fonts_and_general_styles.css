@@ -1,0 +1,64 @@
+@font-face {
+    font-family: myfont;
+    src: url(Helvetica_Neue_Regular.otf);
+  }
+  
+  /* General Styles */
+  body {
+    background-color: #1e1e1e;
+    color: #dcdcdc;
+    font-family: myfont;
+    text-transform: uppercase;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .visible {
+    display: block;
+    /* or 'flex', 'inline-block', etc., depending on your needs */
+  }
+  
+  /* Bottom Navigation Styles */
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #1e1e1e;
+    padding: 10px 0;
+  }
+  
+  .nav-item {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .nav-item svg {
+    fill: #dcdcdc;
+  }
+  
+  /* Responsive Adjustments for Smaller Screens */
+  @media (max-width: 576px) {
+    .icon-button svg {
+      width: 40px; /* Optionally adjust the size of icons on smaller screens */
+      height: auto;
+    }
+  
+    .modal-content,
+    .modal-body {
+      padding: 15px; /* Adjust padding for smaller screens if necessary */
+    }
+  }
+  
+  /* No Select */
+  .no-select {
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* Internet Explorer/Edge */
+    user-select: none;          /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  }
+  

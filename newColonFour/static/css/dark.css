@@ -8,14 +8,17 @@ body {
   background-color: #1e1e1e;
   color: #dcdcdc;
   font-family: myfont;
-
-
+  text-transform: uppercase;
 }
 
-/* CSS */
-.hidden { display: none; }
-.visible { display: block; /* or 'flex', 'inline-block', etc., depending on your needs */ }
+.hidden {
+  display: none;
+}
 
+.visible {
+  display: block;
+  /* or 'flex', 'inline-block', etc., depending on your needs */
+}
 
 /* Button Styles */
 .btn-outline-primary,
@@ -68,7 +71,6 @@ body {
   transition: background-color 0.7s, border-color 0.7s;
   border-radius: 0;
   color: #dcdcdc;
-
 }
 
 .search-button:hover {
@@ -121,7 +123,7 @@ body {
   margin-bottom: 1rem;
 }
 
-.alert-danger{
+.alert-danger {
   background-color: #1e1e1e;
   color: #dcdcdc;
   border-color: #ff0606;
@@ -131,8 +133,9 @@ body {
   margin-bottom: 1rem;
 }
 
+/* Icon Button Styles */
 .icon-button {
-  margin: 10px; /* Adds margin around icon buttons to prevent them from bleeding out the edges */
+  margin: 10px;
   border: none;
   background: none;
   padding: 10px;
@@ -145,16 +148,33 @@ body {
   border: 1px solid #dcdcdc; /* Border on hover */
 }
 
-.icon-button img {
+.icon-button svg {
   width: 50px;  /* Adjust size as needed */
   height: auto;
 }
 
-.icon-label {
-  color: #dcdcdc; /* Text color */
-  margin-top: 5px; /* Space between image and text */
+/* Bottom Navigation Styles */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #1e1e1e;
+  padding: 10px 0;
 }
 
+.nav-item {
+  flex: 1;
+  text-align: center;
+}
+
+.nav-item svg {
+  fill: #dcdcdc;
+}
+
+/* Modal Styles */
 .modal-content,
 .modal-header,
 .modal-body {
@@ -162,12 +182,10 @@ body {
   color: #dcdcdc; /* Light text */
   border: 0.5px solid #dcdcdc; /* Light border */
   border-radius: 0;
-
-
-
 }
 
-.modal-content, .modal-body {
+.modal-content,
+.modal-body {
   padding: 20px; /* Adjust this value as needed to ensure content doesn't touch the edges */
 }
 
@@ -176,19 +194,19 @@ body {
   border-color: #dcdcdc; /* Light border */
 }
 
-.btn-close{
+.btn-close {
   color: #dcdcdc; /* Text color */
-
 }
 
 /* Responsive Adjustments for Smaller Screens */
 @media (max-width: 576px) {
-  .icon-button img {
+  .icon-button svg {
     width: 40px; /* Optionally adjust the size of icons on smaller screens */
     height: auto;
   }
-  
-  .modal-content, .modal-body {
+
+  .modal-content,
+  .modal-body {
     padding: 15px; /* Adjust padding for smaller screens if necessary */
   }
 }

@@ -1,0 +1,74 @@
+/* Button Styles */
+.btn-outline-primary,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary {
+  color: #dcdcdc;
+  border-radius: 0;
+  border-color: #dcdcdc;
+  box-shadow: none;
+}
+
+.btn-outline-primary:hover {
+  background-color: #dcdcdc;
+  border: 1px solid #dcdcdc;
+  color: #1e1e1e;
+}
+
+.btn-outline-primary:active,
+.btn-outline-primary.active,
+.btn-outline-primary.show,
+.btn-check:checked+.btn-outline-primary {
+  background-color: #dcdcdc;
+  border: 1px solid #dcdcdc;
+  color: #1e1e1e;
+}
+
+/* Form and Input Styles */
+.search-box,
+.search-box input[type="text"],
+.form-control,
+.input-group-text,
+.nav {
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+  border-radius: 0;
+}
+
+/* Dropdown and Button Styles */
+.search-button:focus,
+.search-button:active,
+.search-button {
+  background-color: #1e1e1e;
+  border: 1px solid #dcdcdc;
+  transition: background-color 0.7s, border-color 0.7s;
+  border-radius: 0;
+  color: #dcdcdc;
+}
+
+.search-button:hover {
+  background-color: #dcdcdc;
+  border: 1px solid #dcdcdc;
+  color: #1e1e1e;
+  border-radius: 0;
+}
+
+/* Icon Button Styles */
+.icon-button {
+  margin: 10px;
+  border: none;
+  background: none;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button:hover {
+  border: 1px solid #dcdcdc; /* Border on hover */
+}
+
+.icon-button svg {
+  width: 50px;  /* Adjust size as needed */
+  height: auto;
+}
