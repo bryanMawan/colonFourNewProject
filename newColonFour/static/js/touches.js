@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log("DT this is event id: " + eventId)
         document.getElementById('current-event-id').value = eventId;
-
     
         if (timeSinceLastTouch < 300 && timeSinceLastTouch > 0) {
             showModal('goingModal', eventId);
@@ -23,11 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
         touchDurationTimer = setTimeout(() => {
             showModal('detailsModal');
         }, 500); // Trigger after 500 milliseconds
+        // Add no-select class to the body to prevent text selection during long press
+        document.body.classList.add('no-select');
     }
 
     function onLongPressEnd(event) {
         // If the touch ends before 500ms, clear the timer
         clearTimeout(touchDurationTimer);
+        // Remove no-select class to allow normal text selection
+        document.body.classList.remove('no-select');
     }
 
     function showModal(modalId, eventId) {
