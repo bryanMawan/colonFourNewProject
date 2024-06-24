@@ -11,26 +11,22 @@
       </div>
       <div class="modal-body">
         <!-- Icons -->
-        <div class="d-flex justify-content-around">
-            <button type="button" class="icon-button">
-                <img src="{% static 'images/icons/wrench.png' %}" alt="Wrench Icon">
-                <div class="icon-label">WORKSHOP</div>
-
-            </button>
-            <button type="button" class="icon-button">
-                <img src="{% static 'images/icons/flamenco-dancer.png' %}" alt="Flamenco Dancer Icon">
-                <div class="icon-label">SHOWCASE</div>
-
-            </button>
-            <a href="{% url 'create_battle' %}" class="icon-button" style="text-decoration: none; color: inherit;">
-              <img src="{% static 'images/icons/swords.png' %}" alt="Swords Icon">
-                <div class="icon-label">BATTLE</div>
-
-              </a>
-            </div>
+        <div class="d-flex justify-content-around flex-wrap">
+          <button type="button" class="icon-button">
+            <img src="{% static 'images/icons/wrench.png' %}" alt="Wrench Icon">
+            <div class="icon-label">WORKSHOP</div>
+          </button>
+          <button type="button" class="icon-button">
+            <img src="{% static 'images/icons/flamenco-dancer.png' %}" alt="Flamenco Dancer Icon">
+            <div class="icon-label">SHOWCASE</div>
+          </button>
+          <a href="{% url 'create_battle' %}" class="icon-button" style="text-decoration: none; color: inherit;">
+            <img src="{% static 'images/icons/swords.png' %}" alt="Swords Icon">
+            <div class="icon-label">BATTLE</div>
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
-

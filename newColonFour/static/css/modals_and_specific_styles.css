@@ -105,3 +105,26 @@
     opacity: 1; /* Button becomes fully opaque when hovered */
   }
   
+  /* Additional Modal Styles */
+  .modal-body .icon-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+  }
+  
+  .modal-body .icon-button img {
+    width: 50px;  /* Adjust as needed */
+    height: auto;
+  }
+  
+  .modal-body .icon-label {
+    margin-top: 5px;
+    color: #dcdcdc;
+    font-size: 14px;  /* Adjust as needed */
+  }
+  
+  .modal-body .d-flex {
+    flex-wrap: wrap;
+  }

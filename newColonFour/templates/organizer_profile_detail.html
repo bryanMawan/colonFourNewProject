@@ -5,7 +5,9 @@
 
 {% block content %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/buttons_and_forms.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/modals_and_specific_styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/fonts_and_general_styles.css' %}">
 <h1>{{ organizer.user.name }}</h1>
 <p>GDPR Consented: {{ organizer.gdpr_consented }}</p>
 <p>Verified: {{ organizer.is_verified }}</p>
