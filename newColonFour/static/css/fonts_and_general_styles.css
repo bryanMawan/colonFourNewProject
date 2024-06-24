@@ -31,6 +31,11 @@
     background-color: #1e1e1e;
     padding: 10px 0;
   }
+
+  /* Ensure content is not hidden behind the bottom nav bar */
+.content-container {
+    padding-bottom: 70px; /* Adjust based on the height of your bottom nav bar */
+  }
   
   .nav-item {
     flex: 1;
