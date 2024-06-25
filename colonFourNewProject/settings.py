@@ -203,6 +203,7 @@ LOGGING = {
 }
 
 
+# Add this to your CACHES setting
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -213,5 +214,10 @@ CACHES = {
             'SSL': True,
         },
     },
+    'django-backblaze-b2': {  # Add this new cache configuration
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'django-backblaze-b2-cache',
+    },
 }
+
 
