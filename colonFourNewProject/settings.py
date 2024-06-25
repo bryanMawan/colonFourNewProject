@@ -152,7 +152,7 @@ if not DEBUG:
     MEDIA_URL = f'https://{config("B2_BUCKET_NAME")}.backblazeb2.com/file/{config("B2_BUCKET_NAME")}/'
 
     BACKBLAZE_CONFIG = {
-        'account_id': config('B2_APP_KEY_ID'),
+        'application_key_id': config('B2_APP_KEY_ID'),
         'application_key': config('B2_APP_KEY'),
         'bucket': config('B2_BUCKET_NAME'),
     }
