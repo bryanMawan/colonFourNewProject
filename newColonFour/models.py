@@ -133,7 +133,7 @@ class Event(models.Model):
     level = models.CharField(max_length=13, choices=LEVEL_CHOICES, default='1vs1')
     styles = ArrayField(models.CharField(max_length=100),null=True, blank=True)
     viewed = models.IntegerField(default=0)
-    poster = models.ImageField(upload_to='colonfourMedia/', null=True, blank=True)
+    poster = models.ImageField(upload_to='event_posters/', null=True, blank=True)
     video = models.FileField(upload_to='event_videos/', null=True, blank=True)  # If storing video files
     # video = models.URLField(null=True, blank=True)  # If using video URLs
 
