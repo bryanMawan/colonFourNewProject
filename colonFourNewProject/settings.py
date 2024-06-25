@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'storages',  # Add django-storages here
 ]
 
 MIDDLEWARE = [
@@ -80,14 +81,6 @@ WSGI_APPLICATION = "colonFourNewProject.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-""" gpt: use if debug true, use the databse settings below, else use these ones ('default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('POSTGRES_DATABASE'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': config('POSTGRES_HOST'),
-        'PORT': config('POSTGRES_PORT', cast=int),  # Default PostgreSQL port is 5432
-    })"""
 try:
     if not DEBUG:
         DATABASES = {
@@ -119,7 +112,6 @@ except UndefinedValueError as e:
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'newColonFour.CustomUser'
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -154,9 +146,16 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', "static")
 
-# media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Media files configuration
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = 'storages.backends.b2.B2Storage'
+    B2_APP_KEY_ID = config('B2_APP_KEY_ID')
+    B2_APP_KEY = config('B2_APP_KEY')
+    B2_BUCKET_NAME = config('B2_BUCKET_NAME')
+    MEDIA_URL = f'https://{B2_BUCKET_NAME}.backblazeb2.com/file/{B2_BUCKET_NAME}/'
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Default primary key field type
@@ -211,8 +210,4 @@ CACHES = {
         },
     },
 }
-
-
-
-
 
