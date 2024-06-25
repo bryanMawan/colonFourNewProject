@@ -148,7 +148,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', "static")
 
 # Media files configuration
 if not DEBUG:
-    DEFAULT_FILE_STORAGE = 'storages.backends.b2.B2Storage'
+    DEFAULT_FILE_STORAGE = 'django_backblaze_b2.B2Storage'
     B2_APP_KEY_ID = config('B2_APP_KEY_ID')
     B2_APP_KEY = config('B2_APP_KEY')
     B2_BUCKET_NAME = config('B2_BUCKET_NAME')
