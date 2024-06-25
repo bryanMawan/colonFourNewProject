@@ -92,12 +92,12 @@ try:
     if not DEBUG:
         DATABASES = {
             'default': {
-                'ENGINE': 'django.db.backends.postgresql_psycopg2',
-                'NAME': config('POSTGRES_DATABASE'),
-                'USER': config('POSTGRES_USER'),
-                'PASSWORD': config('POSTGRES_PASSWORD'),
-                'HOST': config('POSTGRES_HOST'),
-                'PORT': config('POSTGRES_PORT', cast=int),  # Default PostgreSQL port is 5432
+                'ENGINE': config('DB_ENGINE'),
+                'NAME': config('DB_NAME'),
+                'USER': config('DB_USER'),
+                'PASSWORD': config('DB_PASSWORD'),
+                'HOST': config('DB_HOST'),
+                'PORT': config('DB_PORT'),
             }
         }
     else:
