@@ -151,7 +151,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', "static")
 
 # Media files configuration
-if  DEBUG:
+if not DEBUG:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     GS_BUCKET_NAME = config('GS_BUCKET_NAME')
 
