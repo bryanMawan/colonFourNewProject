@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import base64
 import os
+import json
 from decouple import config, UndefinedValueError
+from google.oauth2 import service_account
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -147,15 +151,26 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', "static")
 
 # Media files configuration
-if not DEBUG:
-    DEFAULT_FILE_STORAGE = 'django_backblaze_b2.storage.BackblazeB2Storage'
-    MEDIA_URL = f'https://{config("B2_BUCKET_NAME")}.backblazeb2.com/file/{config("B2_BUCKET_NAME")}/'
+if  DEBUG:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = config('GS_BUCKET_NAME')
 
-    BACKBLAZE_CONFIG = {
-        'application_key_id': config('B2_APP_KEY_ID'),
-        'application_key': config('B2_APP_KEY'),
-        'bucket': config('B2_BUCKET_NAME'),
-    }
+    # Retrieve the base64-encoded JSON from the environment variable
+    encoded_google_credentials_json = config('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+
+    # Decode the base64-encoded string
+    decoded_google_credentials_json = base64.b64decode(encoded_google_credentials_json).decode('utf-8')
+
+    # Load the decoded string as JSON
+    google_credentials = json.loads(decoded_google_credentials_json)
+
+    # Use the JSON to create Google service account credentials
+    try:
+        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(google_credentials)
+    except json.JSONDecodeError as e:
+        raise RuntimeError(f"Invalid JSON for GOOGLE_APPLICATION_CREDENTIALS_JSON: {e}")
+
+    MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
