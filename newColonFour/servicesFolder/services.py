@@ -38,7 +38,7 @@ BATTLE_TYPE_CHOICES = [
 
 LEVEL_CHOICES = [
         ('Open', 'Open'),
-        ('Intermediate', 'Intermediate'),
+        ('Rookie', 'Rookie'),
         ('Advanced', 'Advanced'),
         # Add more battle types if needed
     ]
