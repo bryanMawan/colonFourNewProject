@@ -64,9 +64,9 @@
         <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.date }}" data-event-location="{{ event.location }}">
           {% if event.poster %}
             <img src="{{ event.poster.url }}" alt="{{ event.name }}" class="event-poster">
-            <p>{{ event.poster.url }}</p> <!-- Add this line to debug the URL -->
 
           {% endif %}
+          <p class="event-name">{{ event.name }}</p>
           <!-- Badges for event details YES -->
           <span class="badge badge-goers rounded-pill">
             {{ event.get_number_of_goers }}
