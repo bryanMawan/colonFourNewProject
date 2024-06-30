@@ -2,11 +2,11 @@
     display: flex;
     overflow-x: auto;
     justify-content: flex-start; /* Aligns items to the start, preventing unwanted overflow on the left */
-    max-width: 100%; /* or any specific value */
+    max-width: 80%; /* or any specific value */
     margin: auto; /* centers the container */
     scroll-behavior: smooth;
     /* Adjust the height as needed */
-    height: 400px;
+    height: 320px;
     align-items: center;
     scroll-snap-type: x mandatory;
 
@@ -23,8 +23,8 @@
     margin: 20px;
     transition: transform 0.3s ease-in-out;
     /* Style your cards (size, border, etc.) */
-    width: 280px;
-    height: 300px;
+    width: 210px;
+    height: 230px;
     border: 1px solid black;
     display: flex;
     justify-content: center;
