@@ -189,9 +189,7 @@ class Event(models.Model):
         delta = self.date - aware_date
         diff = delta.days
 
-        logger.debug(f"for Event: {self.name}")
-        logger.debug(f"This is the date difference: {diff}")
-        logger.debug(f"This is the start date: {self.start_time}")
+        logger.debug(f"Event: {self.name} | Date diff: {diff} | Begins: {self.start_time}")
 
         return diff
     

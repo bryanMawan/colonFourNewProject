@@ -18,6 +18,8 @@ urlpatterns = [
     path('send-code/', send_code_view, name='send_code'),
     path('verify-code/', verify_code_view, name='verify_code'),
     path('tip/create/', CreateTipView.as_view(), name='create_tip'),
+    path('search/', SearchHomePage.as_view(), name='search_home_page'),
+
 
 
 

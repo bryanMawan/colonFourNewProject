@@ -66,4 +66,20 @@
     -ms-user-select: none;      /* Internet Explorer/Edge */
     user-select: none;          /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
   }
+
+  .input-group .form-floating {
+    flex: 1;
+  }
+  
+  .input-group .form-floating .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    height: calc(3.5rem + 2px); /* Match the height of the input including borders */
+  }
+  
   

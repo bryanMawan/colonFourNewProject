@@ -39,12 +39,11 @@ class SearchHomePage(ListView):
         # Default search query is set to "Paris"
         search_query = self.request.GET.get('search-box', 'Paris, France')
         utc_date_str = self.request.GET.get('utc-date', now().isoformat())
-        print("this is search query in get_queryset: " + search_query)
         
-        #FOR CHATGPT: METHOD TO CHECK IF utc_date_str IS NOT NULL ELSE RETURN THE SYSTEM UTC TIME IN ISOFORMAT
         
         # Correctly call get_sorted_events with the required arguments
         return get_sorted_events(search_query=search_query, utc_date_str=utc_date_str)
+    
 def register(request):
     if request.method == 'POST':
         form = OrganizerRegistrationForm(request.POST)

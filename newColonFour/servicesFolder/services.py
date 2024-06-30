@@ -148,7 +148,7 @@ def distance_between_cities(city1, city2):
     distance = haversine(lat1, lon1, lat2, lon2)
 
     # Log the calculated distance and city names for debugging
-    logger.debug(f"Distance between {city1} and {city2}: {distance} kilometers.")
+    logger.debug(f"Distance: {city1} to {city2} - {distance:.2f} kilometers")
 
     return distance
     
