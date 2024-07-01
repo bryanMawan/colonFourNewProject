@@ -35,7 +35,7 @@
   <!-- Second Row: Search Form and Event Cards -->
   <div class="row justify-content-center align-items-center" style="height: 100vh;">
     <div class="col-md-6">
-      <form class="mt-3" id="search-form" method="GET" action="{% url 'search_home_page' %}">
+      <form class="mt-1" id="search-form" method="GET" action="{% url 'search_home_page' %}">
         <div class="input-group">
           <div class="form-floating flex-grow-1">
             <input type="text" name="search-box" class="form-control search-box" id="floatingSearch" placeholder="WHERE ARE YOU...">
@@ -87,7 +87,7 @@
         {% endfor %}
       </div>
 
-      <div class="row location-display-container my-3">
+      <div class="row location-display-container my-1">
         <div class="col-12">
           <p id="eventLocationDisplay" class="h6">@ <span>Placeholder Location</span></p>
         </div>
