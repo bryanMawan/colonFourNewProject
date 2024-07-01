@@ -29,7 +29,7 @@
     bottom: 0;
     width: 100%;
     background-color: #1e1e1e;
-    padding: 10px 0;
+    padding: 6px 0;
   }
 
   /* Ensure content is not hidden behind the bottom nav bar */
@@ -43,13 +43,15 @@
   }
   
   .nav-item svg {
+    width: 9.6px;  /* Reduce width by 40% (16px * 0.6) */
+    height: 9.6px; /* Reduce height by 40% (16px * 0.6) */
     fill: #dcdcdc;
   }
   
   /* Responsive Adjustments for Smaller Screens */
   @media (max-width: 576px) {
     .icon-button svg {
-      width: 40px; /* Optionally adjust the size of icons on smaller screens */
+      width: 24px; /* Optionally adjust the size of icons on smaller screens */
       height: auto;
     }
   
