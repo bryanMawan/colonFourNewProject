@@ -40,7 +40,7 @@ class SearchHomePage(ListView):
         utc_date_str = self.request.GET.get('utc-date', now().isoformat())
         
         # Fetch events using your sorting logic
-        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str)
+        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str) 
         
         return events
 
