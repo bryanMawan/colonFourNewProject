@@ -15,7 +15,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/buttons_and_forms.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/modals_and_specific_styles.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/fonts_and_general_styles.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css/dynamicPlaceholder.css' %}">
 
 <!-- Single container starts here -->
 <div class="container">
@@ -38,7 +37,7 @@
       <form class="mt-1" id="search-form" method="GET" action="{% url 'search_home_page' %}">
         <div class="input-group">
           <div class="form-floating flex-grow-1">
-            <input type="text" name="search-box" class="form-control search-box" id="floatingSearch" placeholder="WHERE ARE YOU...">
+            <input type="text" name="search-box" class="form-control search-box" id="autocomplete" placeholder="WHERE ARE YOU...">
             <label for="floatingSearch" id="floatingSearchLabel">WHERE ARE YOU...</label>
           </div>
           <input type="hidden" id="utc-date" name="utc-date" value="">
@@ -97,10 +96,17 @@
 </div>
 <!-- Single container ends here -->
 
+<!-- Include Google Maps Places Autocomplete -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places"></script>
+
+<!-- Single container ends here -->
+
 <script src="{% static 'js/submitFormWithoutAjax.js' %}"></script>
 <script src="{% static 'js/scroll.js' %}"></script>
 <script src="{% static 'js/touches.js' %}"></script>
 <script src="{% static 'js/placeholderToggle.js' %}"></script>
+<script src="{% static 'js/autocomplete.js' %}"></script>
+
 
 
 {% endblock %}

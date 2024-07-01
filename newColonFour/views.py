@@ -17,6 +17,8 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
 
 
 import logging
@@ -29,20 +31,24 @@ class HomePageView(TemplateView):
     template_name = 'home.html'
 
 class SearchHomePage(ListView):
-    # Assuming your Event model is in models.py and template is in templates folder
-    model = Event  # Update this to your actual model
+    model = Event
     template_name = 'home.html'
-    context_object_name = 'events'  # Custom name for the queryset in the template context
-
+    context_object_name = 'events'
 
     def get_queryset(self):
-        # Default search query is set to "Paris"
         search_query = self.request.GET.get('search-box', 'Paris, France')
         utc_date_str = self.request.GET.get('utc-date', now().isoformat())
         
+        # Fetch events using your sorting logic
+        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str)
         
-        # Correctly call get_sorted_events with the required arguments
-        return get_sorted_events(search_query=search_query, utc_date_str=utc_date_str)
+        return events
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
+        return context
+
     
 def register(request):
     if request.method == 'POST':

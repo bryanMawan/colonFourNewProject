@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('floatingSearch');
+  const searchInput = document.querySelector('.form-control.search-box'); // Update to select by class
   const searchInputLabel = document.getElementById('floatingSearchLabel');
   
   function updateLabelOnFocus() {
-    searchInputLabel.textContent = 'format: city, country';
+    searchInputLabel.textContent = '"city, country"';
   }
 
   function resetLabelOnBlur() {
