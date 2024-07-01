@@ -59,7 +59,12 @@
   /* Modal Styles */
   .modal-content,
   .modal-header,
-  .modal-body {
+  .modal-body 
+  .offcanvas-body,
+  .offcanvas-header,
+ .scrollable-area,
+ .offcanvas-body,
+ .fixed-button-bar{
     background-color: #1e1e1e; /* Dark background */
     color: #dcdcdc; /* Light text */
     border: 0.5px solid #dcdcdc; /* Light border */
@@ -127,4 +132,21 @@
   
   .modal-body .d-flex {
     flex-wrap: wrap;
+  }
+
+
+  .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .scrollable-area {
+    flex: 1; /* Takes remaining space */
+    overflow-y: auto;
+  }
+  
+  .fixed-button-bar {
+    flex-shrink: 0; /* Does not shrink */
+    padding: 10px 15px; /* Adjust padding as needed */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for separation */
   }
