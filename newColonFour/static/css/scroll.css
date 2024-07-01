@@ -2,7 +2,7 @@
     display: flex;
     overflow-x: auto;
     justify-content: flex-start; /* Aligns items to the start, preventing unwanted overflow on the left */
-    max-width: 80%; /* or any specific value */
+    max-width: 100%; /* or any specific value */
     margin: auto; /* centers the container */
     scroll-behavior: smooth;
     /* Adjust the height as needed */
