@@ -72,7 +72,8 @@
   }
 
   /* Button Styles */
-.filter-button {
+.filter-button,
+.badge-filter {
     padding: 5px 10px;
     border: 1px solid #dcdcdc;
 }

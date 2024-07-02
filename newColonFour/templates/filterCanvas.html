@@ -9,7 +9,7 @@
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChosenFilters" aria-expanded="true" aria-controls="collapseChosenFilters">
-              Chosen Filters
+              Active Filters
             </button>
           </h2>
           <div id="collapseChosenFilters" class="accordion-collapse collapse show" aria-labelledby="headingChosenFilters" data-bs-parent="#chosenFiltersAccordion">
@@ -30,11 +30,27 @@
           </h2>
           <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters" data-bs-parent="#filterAccordion">
             <div class="accordion-body">
-                <!-- Input field and button for creating badges -->
-                <div class="mb-3">
-                  <input type="text" class="form-control" id="badgeText" placeholder="Enter badge text">
+                <div class="row mb-3">
+                    <div class="col">
+                      <input type="text" class="form-control" id="searchBar" placeholder="Search filter options...">
+                    </div>
+                    <div class="col">
+                      <div class="input-group">
+                        <span class="input-group-text">Filter by</span>
+                        <select class="form-select" id="filterDropdown">
+                          <option selected>Select an option</option>
+                          <option value="style">Style</option>
+                          <option value="event-type">Event Type</option>
+                          <option value="format">Format</option>
+                          <option value="level">Level</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                    <!-- filterBadgesContainer -->
+                  <div id="filterBadgesContainer">
+                    <!-- Dynamic badges will be added here -->
                 </div>
-                <button class="btn btn-primary" id="createBadgeBtn">Create Badge</button>
               </div>
           </div>
         </div>

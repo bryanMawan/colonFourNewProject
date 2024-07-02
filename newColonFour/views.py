@@ -12,7 +12,7 @@ from .servicesFolder.services import update_organizer_profile, dancer_success_ms
 from .selectors import get_all_dancers, get_sorted_events
 from django.urls import reverse_lazy
 from django_ratelimit.decorators import ratelimit
-from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_GET
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -29,6 +29,21 @@ logger = logging.getLogger(__name__)
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
+
+
+@require_GET
+def fetch_suboptions(request):
+    option = request.GET.get('option')
+    
+    suboptions = {
+        'style': ['Casual', 'Formal', 'Sporty'],
+        'event-type': ['Conference', 'Workshop', 'Meetup'],
+        'format': ['Online', 'Offline'],
+        'level': ['Beginner', 'Intermediate', 'Advanced']
+    }
+
+    data = suboptions.get(option, [])
+    return JsonResponse({'suboptions': data})
 
 class SearchHomePage(ListView):
     model = Event
