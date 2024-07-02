@@ -13,10 +13,9 @@
             </button>
           </h2>
           <div id="collapseChosenFilters" class="accordion-collapse collapse show" aria-labelledby="headingChosenFilters" data-bs-parent="#chosenFiltersAccordion">
-            <div class="accordion-body">
-              <!-- Content for Chosen Filters accordion -->
-              ...
-            </div>
+            <div class="accordion-body" id="chosenFiltersBody">
+                <!-- Badges will be dynamically added here -->
+              </div>
           </div>
         </div>
       </div>
@@ -31,9 +30,12 @@
           </h2>
           <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters" data-bs-parent="#filterAccordion">
             <div class="accordion-body">
-              <!-- Content for Filter accordion -->
-              ...
-            </div>
+                <!-- Input field and button for creating badges -->
+                <div class="mb-3">
+                  <input type="text" class="form-control" id="badgeText" placeholder="Enter badge text">
+                </div>
+                <button class="btn btn-primary" id="createBadgeBtn">Create Badge</button>
+              </div>
           </div>
         </div>
       </div>

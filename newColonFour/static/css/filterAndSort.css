@@ -70,4 +70,17 @@
     background-color: #dcdcdc;
     color: #1e1e1e;
   }
+
+  /* Button Styles */
+.filter-button {
+    padding: 5px 10px;
+    border: 1px solid #dcdcdc;
+}
+  
+  .filter-close-icon {
+    cursor: pointer;
+    font-size: 14px;
+    color: #dc3545; /* Bootstrap danger color */
+  }
+  
   
