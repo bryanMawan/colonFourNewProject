@@ -1,0 +1,73 @@
+/* Offcanvas Styles */
+.offcanvas {
+    background-color: #1e1e1e; /* Dark background */
+    color: #dcdcdc; /* Light text */
+    border: 0.5px solid #dcdcdc; /* Light border */
+  }
+  
+  .offcanvas-header {
+    background-color: #1e1e1e; /* Dark background */
+    border-bottom: 0.5px solid #dcdcdc; /* Light border */
+  }
+  
+  .offcanvas-title {
+    color: #dcdcdc; /* Light text */
+  }
+  
+  .offcanvas-body {
+    padding: 15px; /* Adjust padding as needed */
+  }
+  
+  /* Accordion Styles */
+  .accordion {
+    margin-bottom: 15px; /* Adjust spacing between accordions */
+  }
+  
+  .accordion-item {
+    background-color: #1e1e1e; /* Dark background */
+    border: 0.5px solid #dcdcdc; /* Light border */
+    border-radius: 0;
+  }
+  
+  .accordion-button {
+    background-color: #1e1e1e; /* Dark background */
+    color: #dcdcdc; /* Light text */
+    border: none; /* Remove default border */
+  }
+  
+  .accordion-button:hover {
+    background-color: #2c2c2c; /* Darker background on hover */
+  }
+  
+  .accordion-button.collapsed {
+    background-color: #1e1e1e; /* Dark background */
+    color: #dcdcdc; /* Light text */
+  }
+  
+  .accordion-body {
+    background-color: #2c2c2c; /* Slightly lighter background for accordion body */
+    color: #dcdcdc; /* Light text */
+    border-top: 0.5px solid #dcdcdc; /* Light border on top */
+  }
+  
+  /* Apply Button */
+  .fixed-button-bar {
+    position: fixed;
+    bottom: 15px; /* Adjust distance from bottom */
+    left: 0;
+    width: 97%;
+    padding: 15px;
+    background-color: #1e1e1e; /* Dark background */
+    text-align: center;
+  }
+  
+  .btn-outline-primary {
+    color: #dcdcdc;
+    border-color: #dcdcdc;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #dcdcdc;
+    color: #1e1e1e;
+  }
+  
