@@ -19,6 +19,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from urllib.parse import unquote
 
 
 import logging
@@ -53,9 +54,13 @@ class SearchHomePage(ListView):
     def get_queryset(self):
         search_query = self.request.GET.get('search-box', 'Paris, France')
         utc_date_str = self.request.GET.get('utc-date', now().isoformat())
-        
-        # Fetch events using your sorting logic
-        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str) 
+
+        # Extract filters from query parameters
+        filters = self.request.GET.getlist('filters')
+        decoded_filters = [unquote(filter) for filter in filters]
+
+        # Implement the logic to filter events based on the extracted filters
+        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str, filters=decoded_filters)
         
         return events
 

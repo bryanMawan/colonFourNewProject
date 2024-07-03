@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchBar = document.getElementById('searchBar'); // Get the search bar element
     const addDateRangeFilterBtn = document.getElementById('addDateRangeFilterBtn');
     const addWeekendFilterBtn = document.getElementById('addWeekendFilterBtn');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 
 
 
@@ -16,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener for "Weekend" filter button
     addWeekendFilterBtn.addEventListener('click', handleAddWeekendFilter);
+
+    applyFiltersBtn.addEventListener('click', handleApplyFilters);
+
 
 });
 
@@ -297,4 +301,19 @@ function showAlert(message) {
             alert.remove();
         }
     }, 5000);
+}
+
+function handleApplyFilters() {
+    const chosenFiltersBody = document.getElementById('chosenFiltersBody');
+    const filterButtons = chosenFiltersBody.getElementsByClassName('filter-button');
+    let filters = [];
+
+    for (const button of filterButtons) {
+        const filterText = button.textContent.replace('×', '').trim();
+        filters.push(filterText);
+    }
+
+    const queryString = filters.map(filter => `filters=${encodeURIComponent(filter)}`).join('&');
+    const newUrl = `${window.location.pathname}?${queryString}`;
+    window.location.href = newUrl;
 }
