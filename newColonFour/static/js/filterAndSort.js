@@ -29,12 +29,18 @@ function handleSearchInput(event) {
 }
 
 /**
- * Handles the dropdown change event, fetches sub-options, and displays them as badges.
+ * Handles the dropdown change event, fetches sub-options if applicable, and displays the input field for "Name".
  * @param {Event} event - The change event of the dropdown.
  */
 async function handleDropdownChange(event) {
     const selectedOption = event.target.value;
-    if (selectedOption) {
+    const filterBadgesContainer = document.getElementById('filterBadgesContainer');
+    
+    filterBadgesContainer.innerHTML = ''; // Clear previous content
+    
+    if (selectedOption === 'name') {
+        displayNameInputField();
+    } else if (selectedOption) {
         try {
             const suboptions = await fetchSuboptions(selectedOption);
             displaySuboptions(suboptions);
@@ -43,6 +49,35 @@ async function handleDropdownChange(event) {
         }
     }
 }
+
+/**
+ * Displays the input field and button for adding a "Name" filter.
+ */
+function displayNameInputField() {
+    const filterBadgesContainer = document.getElementById('filterBadgesContainer');
+    const dropdownText = document.getElementById('filterDropdown').value;
+
+
+    const nameInputField = document.createElement('input');
+    nameInputField.type = 'text';
+    nameInputField.className = 'form-control mb-2';
+    nameInputField.placeholder = 'Enter name';
+
+    const addButton = document.createElement('button');
+    addButton.className = 'btn btn-outline-primary';
+    addButton.textContent = 'Add to filter';
+    addButton.addEventListener('click', () => {
+        const nameText = nameInputField.value.trim();
+        if (nameText !== '') {
+            createAndAppendFilterButton(nameText, dropdownText); // Pass null for dropdownText
+            nameInputField.value = ''; // Clear input field after adding
+        }
+    });
+
+    filterBadgesContainer.appendChild(nameInputField);
+    filterBadgesContainer.appendChild(addButton);
+}
+
 
 /**
  * Fetches sub-options from the server based on the selected dropdown option.
@@ -55,8 +90,10 @@ async function fetchSuboptions(option) {
         throw new Error('Network response was not ok');
     }
     const data = await response.json();
+    console.log('Fetched suboptions:', data); // Debugging line
     return data.suboptions;
 }
+
 
 /**
  * Displays sub-options as badges and filters them based on the search input.
@@ -70,15 +107,20 @@ function displaySuboptions(suboptions) {
     filterBadgesContainer.innerHTML = ''; // Clear previous badges
 
     suboptions.forEach(suboption => {
-        const badge = createBadge(suboption);
-        if (suboption.toLowerCase().includes(searchText)) {
-            badge.style.display = ''; // Show badge if it matches search text
+        if (typeof suboption === 'string') { // Ensure suboption is a string
+            const badge = createBadge(suboption);
+            if (suboption.toLowerCase().includes(searchText)) {
+                badge.style.display = ''; // Show badge if it matches search text
+            } else {
+                badge.style.display = 'none'; // Hide badge if it doesn't match search text
+            }
+            filterBadgesContainer.appendChild(badge);
         } else {
-            badge.style.display = 'none'; // Hide badge if it doesn't match search text
+            console.error('Suboption is not a string:', suboption); // Debugging line
         }
-        filterBadgesContainer.appendChild(badge);
     });
 }
+
 
 
 /**
@@ -102,23 +144,9 @@ function createBadge(suboption) {
 function handleBadgeClick(event) {
     const badgeText = event.target.textContent;
     const dropdownText = document.getElementById('filterDropdown').value;
-    const combinedText = `${dropdownText}: ${badgeText}`;
-    
-    const chosenFiltersBody = document.getElementById('chosenFiltersBody');
-    const existingButtons = chosenFiltersBody.getElementsByClassName('filter-button');
-
-    for (const button of existingButtons) {
-        const buttonText = button.textContent.replace('×', '').trim();
-        console.log(`Checking button with text: ${buttonText}`); // Debug statement
-        if (buttonText === combinedText) {
-            console.log(`Duplicate found: ${combinedText}`); // Debug statement
-            return; // Do not add the button if it already exists
-        }
-    }
-
-    console.log(`No duplicate found, adding filter button: ${combinedText}`); // Debug statement
-    createAndAppendFilterButton(combinedText);
+    createAndAppendFilterButton(badgeText, dropdownText);
 }
+
 
 
 /**
@@ -126,32 +154,36 @@ function handleBadgeClick(event) {
  */
 function handleCreateFilterButton() {
     const filterText = document.getElementById('badgeText').value.trim();
-    
+    const dropdownText = document.getElementById('filterDropdown').value;
+
+
     if (filterText !== '') {
-        createAndAppendFilterButton(filterText);
-        // Clear input field after button creation
-        document.getElementById('badgeText').value = '';
+        createAndAppendFilterButton(filterText, dropdownText); // Pass null for dropdownText
+        document.getElementById('badgeText').value = ''; // Clear input field after button creation
     }
 }
+
 
 /**
  * Creates a filter button with the given text and appends it to the chosen filters section.
  * If a filter button with the same text already exists, it won't be added again.
  * @param {string} text - The text for the filter button.
  */
-function createAndAppendFilterButton(text) {
+function createAndAppendFilterButton(badgeText, dropdownText) {
+    const combinedText = dropdownText ? `${dropdownText}: ${badgeText}` : badgeText;
     const chosenFiltersBody = document.getElementById('chosenFiltersBody');
     const existingButtons = chosenFiltersBody.getElementsByClassName('filter-button');
 
     for (const button of existingButtons) {
-        if (button.textContent.trim() === text) {
+        if (button.textContent.replace('×', '').trim() === combinedText) {
             return; // Do not add the button if it already exists
         }
     }
 
-    const button = createFilterButton(text);
+    const button = createFilterButton(combinedText);
     chosenFiltersBody.appendChild(button); // Append button to chosen filters body
 }
+
 
 /**
  * Creates a filter button element with the given text.
