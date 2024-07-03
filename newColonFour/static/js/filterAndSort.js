@@ -1,12 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     const filterDropdown = document.getElementById('filterDropdown');
-    const createButton = document.getElementById('createBadgeBtn');
+    const searchBar = document.getElementById('searchBar'); // Get the search bar element
+
 
     // Event listener for dropdown change
     filterDropdown.addEventListener('change', handleDropdownChange);
-    // Event listener for create button click
-    createButton.addEventListener('click', handleCreateFilterButton);
+
+        // Event listener for search bar input
+    searchBar.addEventListener('input', handleSearchInput);
 });
+
+/**
+ * Handles the search bar input event, filters the displayed badges based on the search input.
+ * @param {Event} event - The input event of the search bar.
+ */
+function handleSearchInput(event) {
+    const searchText = event.target.value.toLowerCase();
+    const filterBadgesContainer = document.getElementById('filterBadgesContainer');
+    const badges = filterBadgesContainer.getElementsByClassName('badge-filter');
+
+    for (const badge of badges) {
+        if (badge.textContent.toLowerCase().includes(searchText)) {
+            badge.style.display = ''; // Show badge
+        } else {
+            badge.style.display = 'none'; // Hide badge
+        }
+    }
+}
 
 /**
  * Handles the dropdown change event, fetches sub-options, and displays them as badges.
@@ -39,18 +59,27 @@ async function fetchSuboptions(option) {
 }
 
 /**
- * Displays sub-options as badges.
+ * Displays sub-options as badges and filters them based on the search input.
  * @param {Array} suboptions - An array of sub-options.
  */
 function displaySuboptions(suboptions) {
     const filterBadgesContainer = document.getElementById('filterBadgesContainer');
+    const searchBar = document.getElementById('searchBar');
+    const searchText = searchBar.value.toLowerCase();
+
     filterBadgesContainer.innerHTML = ''; // Clear previous badges
 
     suboptions.forEach(suboption => {
         const badge = createBadge(suboption);
+        if (suboption.toLowerCase().includes(searchText)) {
+            badge.style.display = ''; // Show badge if it matches search text
+        } else {
+            badge.style.display = 'none'; // Hide badge if it doesn't match search text
+        }
         filterBadgesContainer.appendChild(badge);
     });
 }
+
 
 /**
  * Creates a badge element for a given sub-option.
@@ -72,20 +101,23 @@ function createBadge(suboption) {
  */
 function handleBadgeClick(event) {
     const badgeText = event.target.textContent;
+    const dropdownText = document.getElementById('filterDropdown').value;
+    const combinedText = `${dropdownText}: ${badgeText}`;
+    
     const chosenFiltersBody = document.getElementById('chosenFiltersBody');
     const existingButtons = chosenFiltersBody.getElementsByClassName('filter-button');
 
     for (const button of existingButtons) {
         const buttonText = button.textContent.replace('×', '').trim();
         console.log(`Checking button with text: ${buttonText}`); // Debug statement
-        if (buttonText === badgeText) {
-            console.log(`Duplicate found: ${badgeText}`); // Debug statement
+        if (buttonText === combinedText) {
+            console.log(`Duplicate found: ${combinedText}`); // Debug statement
             return; // Do not add the button if it already exists
         }
     }
 
-    console.log(`No duplicate found, adding filter button: ${badgeText}`); // Debug statement
-    createAndAppendFilterButton(badgeText);
+    console.log(`No duplicate found, adding filter button: ${combinedText}`); // Debug statement
+    createAndAppendFilterButton(combinedText);
 }
 
 
@@ -142,4 +174,5 @@ function createFilterButton(text) {
     });
     
     return button;
+
 }

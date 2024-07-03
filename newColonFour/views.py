@@ -9,10 +9,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
 from .servicesFolder.services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer, update_event_location_point, geo_db, generate_totp_code, send_code, verify_totp_code, hash_telephone_number
-from .selectors import get_all_dancers, get_sorted_events
+from .selectors import get_all_dancers, get_sorted_events, get_unique_styles, get_unique_event_types, get_unique_levels
 from django.urls import reverse_lazy
-from django_ratelimit.decorators import ratelimit
 from django.views.decorators.http import require_GET
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -20,11 +21,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 
-
 import logging
 
 logger = logging.getLogger(__name__)
-
 
 
 class HomePageView(TemplateView):
@@ -36,14 +35,15 @@ def fetch_suboptions(request):
     option = request.GET.get('option')
     
     suboptions = {
-        'style': ['Casual', 'Formal', 'Sporty'],
-        'event-type': ['Conference', 'Workshop', 'Meetup'],
+        'style': get_unique_styles(),
+        'event-type': get_unique_event_types(),
         'format': ['Online', 'Offline'],
-        'level': ['Beginner', 'Intermediate', 'Advanced']
+        'level': get_unique_levels()
     }
 
     data = suboptions.get(option, [])
     return JsonResponse({'suboptions': data})
+
 
 class SearchHomePage(ListView):
     model = Event
@@ -117,9 +117,7 @@ def org_verification(request):
             # Redirect to a confirmation page or the home page
             return redirect('home')
     else:
-        form = OrganizerVerificationRequestForm()
-
-        
+        form = OrganizerVerificationRequestForm()   
 
     return render(request, 'user_verification.html', {'form': form})
 
@@ -266,6 +264,7 @@ def verify_code_view(request):
         return JsonResponse({"message": f"You have been {process_msg} successfully", "valid": True})
     else:
         return JsonResponse({"message": "Invalid code or code expired", "valid": False}, status=400)
+    
 
 class CreateTipView(CreateView):
     model = Tip

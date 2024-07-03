@@ -41,3 +41,12 @@ def get_sorted_events(search_query, utc_date_str):
     sorted_events = [item[0] for item in sorted_events_with_calculations]
 
     return sorted_events
+
+def get_unique_styles():
+    return list(Event.objects.values_list('styles', flat=True).distinct())
+
+def get_unique_event_types():
+    return list(Event.objects.values_list('event_type', flat=True).distinct())
+
+def get_unique_levels():
+    return list(Event.objects.values_list('level', flat=True).distinct())
