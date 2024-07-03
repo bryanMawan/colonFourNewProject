@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filterDropdown.addEventListener('change', handleDropdownChange);
 });
 
+
 async function handleDropdownChange(event) {
     const selectedOption = event.target.value;
     if (selectedOption) {
@@ -36,16 +37,4 @@ function displaySuboptions(suboptions) {
     });
 }
 
-function createBadge(suboption) {
-    const badge = document.createElement('button');
-    badge.className = 'btn btn-outline-secondary badge-filter';
-    badge.textContent = suboption;
-    badge.addEventListener('click', handleBadgeClick);
-    return badge;
-}
 
-function handleBadgeClick(event) {
-    const badgeText = event.target.textContent;
-    console.log('Badge clicked:', badgeText);
-    // Add logic to handle badge click event
-}

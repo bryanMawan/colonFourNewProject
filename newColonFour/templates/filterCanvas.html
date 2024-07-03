@@ -43,7 +43,10 @@
                           <option value="event-type">Event Type</option>
                           <option value="format">Format</option>
                           <option value="level">Level</option>
-                          <option value="name">Name</option> <!-- Added Name option -->
+                          <option value="name">Name</option>
+                          <option value="date-range">Date range</option>
+
+                          date-range <!-- Added Name option -->
                         </select>
                       </div>
                     </div>
@@ -51,6 +54,21 @@
                     <!-- filterBadgesContainer -->
                   <div id="filterBadgesContainer">
                     <!-- Dynamic badges will be added here -->
+                    
+                </div>
+                <div id="alertContainer"></div>
+                <div id="dateRangePickerContainer" style="display: none;">
+                    <div class="form-group mb-3">
+                        <label for="startDateInput" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDateInput">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="endDateInput" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDateInput">
+                    </div>
+                    <button class="btn btn-outline-primary mt-2" id="addDateRangeFilterBtn">Add Date Range Filter</button>
+                    <button class="btn btn-outline-primary mt-2" id="addWeekendFilterBtn">Add Weekend Filter</button>
+
                 </div>
               </div>
           </div>

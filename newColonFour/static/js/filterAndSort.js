@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const filterDropdown = document.getElementById('filterDropdown');
     const searchBar = document.getElementById('searchBar'); // Get the search bar element
+    const addDateRangeFilterBtn = document.getElementById('addDateRangeFilterBtn');
+    const addWeekendFilterBtn = document.getElementById('addWeekendFilterBtn');
+
 
 
     // Event listener for dropdown change
@@ -8,7 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Event listener for search bar input
     searchBar.addEventListener('input', handleSearchInput);
+
+    addDateRangeFilterBtn.addEventListener('click', handleAddDateRangeFilter);
+
+    // Event listener for "Weekend" filter button
+    addWeekendFilterBtn.addEventListener('click', handleAddWeekendFilter);
+
 });
+
+
 
 /**
  * Handles the search bar input event, filters the displayed badges based on the search input.
@@ -29,17 +40,23 @@ function handleSearchInput(event) {
 }
 
 /**
- * Handles the dropdown change event, fetches sub-options if applicable, and displays the input field for "Name".
+ * Handles the dropdown change event, fetches sub-options if applicable, and displays either the input field for "Name" or the date range picker.
  * @param {Event} event - The change event of the dropdown.
  */
 async function handleDropdownChange(event) {
     const selectedOption = event.target.value;
     const filterBadgesContainer = document.getElementById('filterBadgesContainer');
+    const dateRangePickerContainer = document.getElementById('dateRangePickerContainer');
     
-    filterBadgesContainer.innerHTML = ''; // Clear previous content
-    
+    // Clear previous content
+    filterBadgesContainer.innerHTML = '';
+    dateRangePickerContainer.style.display = 'none';
+
     if (selectedOption === 'name') {
         displayNameInputField();
+    } else if (selectedOption === 'date-range') {
+        // gpt: move this to its own modular method(in this method, add functionality to the addDateRangeFilterBtn so its takes the date range from the fields ad sends to the the active filter as filter badge in format "mm/dd - mm/dd" )
+        dateRangePickerContainer.style.display = 'block';
     } else if (selectedOption) {
         try {
             const suboptions = await fetchSuboptions(selectedOption);
@@ -49,6 +66,7 @@ async function handleDropdownChange(event) {
         }
     }
 }
+
 
 /**
  * Displays the input field and button for adding a "Name" filter.
@@ -164,6 +182,8 @@ function handleCreateFilterButton() {
 }
 
 
+
+
 /**
  * Creates a filter button with the given text and appends it to the chosen filters section.
  * If a filter button with the same text already exists, it won't be added again.
@@ -207,4 +227,74 @@ function createFilterButton(text) {
     
     return button;
 
+}
+
+/**
+ * Clears the start and end date inputs.
+ */
+function clearDateInputs() {
+    document.getElementById('startDateInput').value = '';
+    document.getElementById('endDateInput').value = '';
+}
+
+/**
+ * Handles adding a date range filter based on selected start and end dates.
+ */
+function handleAddDateRangeFilter() {
+    const dropdownText = document.getElementById('filterDropdown').value;
+    const startDate = document.getElementById('startDateInput').value;
+    const endDate = document.getElementById('endDateInput').value;
+
+    if (startDate && endDate) {
+        const formattedDateRange = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+        createAndAppendFilterButton(formattedDateRange, dropdownText);
+        clearDateInputs();
+    } else {
+        showAlert('Please select both start and end dates.');
+    }
+}
+
+/**
+ * Formats the date in 'mm/dd' format.
+ * @param {string} date - The date to format.
+ * @returns {string} - Formatted date string.
+ */
+function formatDate(date) {
+    const d = new Date(date);
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    return `${month}/${day}`;
+}
+
+/**
+ * Handles adding a "Weekend" filter badge to the active filters section.
+ */
+function handleAddWeekendFilter() {
+    const dropdownText = document.getElementById('filterDropdown').value;
+    const weekendBadgeText = 'Weekend';
+    createAndAppendFilterButton(weekendBadgeText, dropdownText);
+}
+
+/**
+ * Shows an alert message.
+ * @param {string} message - The message to display in the alert.
+ */
+function showAlert(message) {
+    const alertContainer = document.getElementById('alertContainer');
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger alert-dismissible fade show';
+    alert.role = 'alert';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    alertContainer.appendChild(alert);
+
+    // Automatically remove the alert after a certain time (e.g., 5 seconds)
+    setTimeout(() => {
+        if (alert) {
+            alert.remove();
+        }
+    }, 5000);
 }
