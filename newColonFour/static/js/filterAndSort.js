@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const addWeekendFilterBtn = document.getElementById('addWeekendFilterBtn');
     const applyFiltersBtn = document.getElementById('applyFiltersBtn');
     const clearFiltersBtn = document.getElementById('clearFiltersBtn'); // New clear filters button
-    clearFiltersBtn.addEventListener('click', handleClearFilters); // New clear filters button event listener
+    const chosenFiltersBody = document.getElementById('chosenFiltersBody');
+
 
 
 
@@ -20,7 +21,28 @@ document.addEventListener('DOMContentLoaded', () => {
     clearFiltersBtn.addEventListener('click', handleClearFilters); // New clear filters button event listener
 
 
+    // Initialize filters from URL
+    initializeFiltersFromURL();
+
+    console.log('Event listeners attached and filters initialized'); // Debug statement
+
+
 });
+
+
+/**
+ * Parses the URL parameters and initializes the filters.
+ */
+function initializeFiltersFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    for (const [filterType, filterValues] of urlParams.entries()) {
+        const values = filterValues.split(',').map(value => decodeURIComponent(value.trim()));
+        values.forEach(value => {
+            createAndAppendFilterButton(value, filterType);
+        });
+    }
+    console.log('Filters initialized from URL'); // Debug statement
+}
 
 
 
