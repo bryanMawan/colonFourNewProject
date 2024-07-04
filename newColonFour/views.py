@@ -56,12 +56,20 @@ class SearchHomePage(ListView):
         utc_date_str = self.request.GET.get('utc-date', now().isoformat())
 
         # Extract filters from query parameters
-        filters = self.request.GET.getlist('filters')
-        decoded_filters = [unquote(filter) for filter in filters]
+        raw_filters = self.request.GET.dict()  # Use .dict() to get all parameters as a dictionary
+        logger.debug(f"Raw filter parameters: {raw_filters}")
+
+        filters = {}
+        for key, value in raw_filters.items():
+            if key not in ['search-box', 'utc-date']:
+                filters[key] = value.split(", ")
+        logger.debug(f"Parsed filters: {filters}")
 
         # Implement the logic to filter events based on the extracted filters
-        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str, filters=decoded_filters)
+        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str, filters=filters)
         
+        logger.debug(f"Final queryset count: {len(events)}")
+
         return events
 
     def get_context_data(self, **kwargs):

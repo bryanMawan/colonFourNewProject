@@ -306,14 +306,28 @@ function showAlert(message) {
 function handleApplyFilters() {
     const chosenFiltersBody = document.getElementById('chosenFiltersBody');
     const filterButtons = chosenFiltersBody.getElementsByClassName('filter-button');
-    let filters = [];
+    const filtersDict = {};  // Dictionary to store filter types and their selected values
 
     for (const button of filterButtons) {
         const filterText = button.textContent.replace('×', '').trim();
-        filters.push(filterText);
+        const [filterType, filterValue] = filterText.split(': ');  // Split into type and value
+
+        // Append to existing values or initialize
+        if (filtersDict[filterType]) {
+            filtersDict[filterType] += `, ${filterValue}`;
+        } else {
+            filtersDict[filterType] = filterValue;
+        }
     }
 
-    const queryString = filters.map(filter => `filters=${encodeURIComponent(filter)}`).join('&');
+    console.log('Filters Dictionary:', filtersDict); // Debug statement
+
+    // Convert filtersDict to a query string format
+    const queryString = Object.entries(filtersDict)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join('&');
+    
     const newUrl = `${window.location.pathname}?${queryString}`;
+    console.log('New URL:', newUrl); // Debug statement
     window.location.href = newUrl;
 }
