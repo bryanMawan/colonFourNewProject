@@ -8,18 +8,21 @@ from .models import OrganizerProfile, Dancer, Battle, Event, Tip
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
-from .servicesFolder.services import update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer, update_event_location_point, geo_db, generate_totp_code, send_code, verify_totp_code, hash_telephone_number
-from .selectors import get_all_dancers, get_sorted_events, get_unique_styles, get_unique_event_types, get_unique_levels
+from .servicesFolder.services import (
+    update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer,
+    update_event_location_point, geo_db, generate_totp_code, send_code, verify_totp_code, hash_telephone_number
+)
+from .selectors import (
+    get_all_dancers, get_sorted_events, get_unique_styles, get_unique_event_types, get_unique_levels
+)
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET
-from django_ratelimit.decorators import ratelimit
-from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from urllib.parse import unquote
+import logging
 
 
 import logging
@@ -51,25 +54,27 @@ class SearchHomePage(ListView):
     template_name = 'home.html'
     context_object_name = 'events'
 
-    def get_queryset(self):
-        search_query = self.request.GET.get('search-box', 'Paris, France')
-        utc_date_str = self.request.GET.get('utc-date', now().isoformat())
+    def get_search_query(self):
+        return self.request.GET.get('search-box', 'Paris, France')
 
-        # Extract filters from query parameters
-        raw_filters = self.request.GET.dict()  # Use .dict() to get all parameters as a dictionary
+    def get_utc_date_str(self):
+        return self.request.GET.get('utc-date', now().isoformat())
+
+    def get_filters(self):
+        raw_filters = self.request.GET.dict()
         logger.debug(f"Raw filter parameters: {raw_filters}")
 
-        filters = {}
-        for key, value in raw_filters.items():
-            if key not in ['search-box', 'utc-date']:
-                filters[key] = value.split(", ")
+        filters = {key: value.split(", ") for key, value in raw_filters.items() if key not in ['search-box', 'utc-date']}
         logger.debug(f"Parsed filters: {filters}")
+        return filters
 
-        # Implement the logic to filter events based on the extracted filters
+    def get_queryset(self):
+        search_query = self.get_search_query()
+        utc_date_str = self.get_utc_date_str()
+        filters = self.get_filters()
+
         events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str, filters=filters)
-        
         logger.debug(f"Final queryset count: {len(events)}")
-
         return events
 
     def get_context_data(self, **kwargs):

@@ -1,15 +1,15 @@
-from .models import Dancer
-from django.db.models import Q
-from django.db.models import F, ExpressionWrapper, fields
-from django.utils.timezone import make_aware
 from datetime import datetime
-from .models import Event
+from django.db.models import Q
+from .models import Dancer, Event
 from .servicesFolder.services import distance_between_cities
 import logging
 
 logger = logging.getLogger(__name__)
 
 def get_all_dancers():
+    """
+    Retrieve all dancers from the database.
+    """
     return Dancer.objects.all()
 
 def apply_filter(queryset, filters_dict):
@@ -30,15 +30,13 @@ def apply_filter(queryset, filters_dict):
             queryset = filter_by_styles(queryset, filter_value)
         elif filter_type == "weekend-events":
             queryset = filter_weekend_events(queryset)
-        # Add more elif conditions for other filter types as needed
         else:
-            # Handle unknown filter types gracefully
-            pass
+            logger.warning(f"Ignoring unknown filter type: {filter_type}")
     return queryset
 
 def filter_by_event_type(queryset, event_types):
     """
-    Filter queryset by event types (comma-separated string).
+    Filter queryset by event types.
     """
     if event_types:
         return queryset.filter(event_type__in=event_types)
@@ -46,7 +44,7 @@ def filter_by_event_type(queryset, event_types):
 
 def filter_by_name(queryset, name_text):
     """
-    Filter queryset by event names where name_text is a subtext (comma-separated string).
+    Filter queryset by event names containing name_text.
     """
     if name_text:
         query = Q()
@@ -60,9 +58,8 @@ def filter_by_date_range(queryset, start_date, end_date):
     """
     Filter queryset by date range.
     """
-    print("dates: " + start_date + end_date)
+    logger.debug(f"Filtering by date range: {start_date} - {end_date}")
     if start_date and end_date:
-        
         return queryset.filter(date__range=[start_date, end_date])
     elif start_date:
         return queryset.filter(date__gte=start_date)
@@ -72,7 +69,7 @@ def filter_by_date_range(queryset, start_date, end_date):
 
 def filter_by_level(queryset, levels):
     """
-    Filter queryset by levels (comma-separated string).
+    Filter queryset by levels.
     """
     if levels:
         return queryset.filter(level__in=levels)
@@ -80,7 +77,7 @@ def filter_by_level(queryset, levels):
 
 def filter_by_styles(queryset, styles):
     """
-    Filter queryset by styles (using overlap, comma-separated string).
+    Filter queryset by styles.
     """
     if styles:
         return queryset.filter(styles__overlap=styles)
@@ -88,7 +85,7 @@ def filter_by_styles(queryset, styles):
 
 def filter_weekend_events(queryset):
     """
-    Filter events that fall on weekends (Friday, Saturday, or Sunday).
+    Filter queryset to include only weekend events.
     """
     return queryset.filter(
         Q(date__week_day=6) |  # Friday
@@ -96,7 +93,7 @@ def filter_weekend_events(queryset):
         Q(date__week_day=1)    # Sunday
     )
 
-def get_sorted_events(search_query, utc_date_str, filters, event_type=None, name=None, start_date=None, end_date=None, level=None, styles=None, order_by_goers=False):
+def get_sorted_events(search_query, utc_date_str, filters, order_by_goers=False):
     """
     Get sorted events based on various filters and sorting criteria.
     """
@@ -112,16 +109,24 @@ def get_sorted_events(search_query, utc_date_str, filters, event_type=None, name
 
     logger.debug(f"Initial queryset count: {queryset.count()}")
 
-    # Iterate over filters dictionary
     logger.debug(f"Applying filter: {filters}")
     queryset = apply_filter(queryset, filters)
 
-    # Optional ordering by number of goers
     if order_by_goers:
         logger.debug("Ordering by number of goers")
         # Uncomment the following line to order by number of goers
         # queryset = queryset.order_by('-number_of_goers')
 
+    events_with_calculations = calculate_event_details(queryset, search_query, utc_date)
+
+    sorted_events = sort_events(events_with_calculations)
+
+    return sorted_events
+
+def calculate_event_details(queryset, search_query, utc_date):
+    """
+    Calculate additional event details for sorting.
+    """
     events_with_calculations = [
         (
             event,
@@ -133,13 +138,15 @@ def get_sorted_events(search_query, utc_date_str, filters, event_type=None, name
     ]
 
     logger.debug(f"Events with calculations count: {len(events_with_calculations)}")
+    return events_with_calculations
 
+def sort_events(events_with_calculations):
+    """
+    Sort events based on calculated details.
+    """
     sorted_events_with_calculations = sorted(events_with_calculations, key=lambda x: (x[2], x[1], x[3]))
-
     sorted_events = [item[0] for item in sorted_events_with_calculations]
-
     logger.debug(f"Sorted events count: {len(sorted_events)}")
-
     return sorted_events
 
 def get_unique_styles():
