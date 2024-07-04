@@ -22,7 +22,8 @@ def apply_filter(queryset, filters_dict):
         elif filter_type == "name":
             queryset = filter_by_name(queryset, filter_value)
         elif filter_type == "date-range":
-            start_date, end_date = filter_value.split(" - ")
+            # INDEX 0 FOR THE ONLY DATE RANGE IN THE LIST
+            start_date, end_date = filter_value[0].split(" - ")
             queryset = filter_by_date_range(queryset, start_date, end_date)
         elif filter_type == "level":
             queryset = filter_by_level(queryset, filter_value)

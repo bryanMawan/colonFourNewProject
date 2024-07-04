@@ -191,9 +191,22 @@ function handleCreateFilterButton() {
 /**
  * Creates a filter button with the given text and appends it to the chosen filters section.
  * If a filter button with the same text already exists, it won't be added again.
- * @param {string} text - The text for the filter button.
+ * @param {string} badgeText - The text for the filter button.
+ * @param {string} dropdownText - The dropdown text.
  */
 function createAndAppendFilterButton(badgeText, dropdownText) {
+    // Ensure only one "date-range" filter button can be added
+    if (dropdownText === 'date-range') {
+        const chosenFiltersBody = document.getElementById('chosenFiltersBody');
+        const existingButtons = chosenFiltersBody.getElementsByClassName('filter-button');
+        for (const button of existingButtons) {
+            if (button.textContent.includes('date-range')) {
+                showAlert('Only one date-range filter can be added.');
+                return;
+            }
+        }
+    }
+
     const combinedText = dropdownText ? `${dropdownText}: ${badgeText}` : badgeText;
     const chosenFiltersBody = document.getElementById('chosenFiltersBody');
     const existingButtons = chosenFiltersBody.getElementsByClassName('filter-button');
@@ -250,6 +263,14 @@ function handleAddDateRangeFilter() {
     const endDate = document.getElementById('endDateInput').value;
 
     if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (start > end) {
+            showAlert('Start date must be before the end date.');
+            return;
+        }
+
         const formattedDateRange = `${formatDate(startDate)} - ${formatDate(endDate)}`;
         createAndAppendFilterButton(formattedDateRange, dropdownText);
         clearDateInputs();
@@ -259,15 +280,17 @@ function handleAddDateRangeFilter() {
 }
 
 /**
- * Formats the date in 'mm/dd' format.
+ * Formats the date in 'YYYY-MM-DD' format.
  * @param {string} date - The date to format.
  * @returns {string} - Formatted date string.
  */
 function formatDate(date) {
     const d = new Date(date);
-    const month = d.getMonth() + 1;
-    const day = d.getDate();
-    return `${month}/${day}`;
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }
 
 /**
