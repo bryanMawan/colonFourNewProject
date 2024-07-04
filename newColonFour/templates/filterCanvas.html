@@ -1,10 +1,9 @@
 <div class="offcanvas offcanvas-start" tabindex="-1" id="eventFilterOffcanvas" aria-labelledby="eventDetailsOffcanvasLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filters & Sorting</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-      <!-- Chosen Filters Accordion -->
       <div class="accordion" id="chosenFiltersAccordion">
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -16,6 +15,8 @@
             <div class="accordion-body" id="chosenFiltersBody">
                 <!-- Badges will be dynamically added here -->
               </div>
+                <button type="button" class="btn btn-outline-primary mb-2 mt-2" id="applyFiltersBtn">Apply</button>
+                <button type="button" class="btn btn-outline-primary mb-2 mt-2" id="clearFiltersBtn">Clear Filters</button>
           </div>
         </div>
       </div>
@@ -90,11 +91,6 @@
             </div>
           </div>
         </div>
-      </div>
-  
-      <!-- Fixed button bar at the bottom -->
-      <div class="fixed-button-bar">
-        <button type="button" class="btn btn-outline-primary" id="applyFiltersBtn">Apply</button>
       </div>
     </div>
   </div>

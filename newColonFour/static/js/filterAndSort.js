@@ -4,21 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const addDateRangeFilterBtn = document.getElementById('addDateRangeFilterBtn');
     const addWeekendFilterBtn = document.getElementById('addWeekendFilterBtn');
     const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn'); // New clear filters button
+    clearFiltersBtn.addEventListener('click', handleClearFilters); // New clear filters button event listener
 
 
 
-    // Event listener for dropdown change
+
+
+    // Event listeners
     filterDropdown.addEventListener('change', handleDropdownChange);
-
-        // Event listener for search bar input
     searchBar.addEventListener('input', handleSearchInput);
-
     addDateRangeFilterBtn.addEventListener('click', handleAddDateRangeFilter);
-
-    // Event listener for "Weekend" filter button
     addWeekendFilterBtn.addEventListener('click', handleAddWeekendFilter);
-
     applyFiltersBtn.addEventListener('click', handleApplyFilters);
+    clearFiltersBtn.addEventListener('click', handleClearFilters); // New clear filters button event listener
 
 
 });
@@ -297,7 +296,7 @@ function formatDate(date) {
  * Handles adding a "Weekend" filter badge to the active filters section.
  */
 function handleAddWeekendFilter() {
-    const dropdownText = document.getElementById('filterDropdown').value;
+    const dropdownText = "weekend-events";
     const weekendBadgeText = 'Weekend';
     createAndAppendFilterButton(weekendBadgeText, dropdownText);
 }
@@ -353,4 +352,9 @@ function handleApplyFilters() {
     const newUrl = `${window.location.pathname}?${queryString}`;
     console.log('New URL:', newUrl); // Debug statement
     window.location.href = newUrl;
+}
+
+function handleClearFilters() {
+    const chosenFiltersBody = document.getElementById('chosenFiltersBody');
+    chosenFiltersBody.innerHTML = '';
 }
