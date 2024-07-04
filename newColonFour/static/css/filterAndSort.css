@@ -30,8 +30,8 @@
   }
   
   .accordion-button {
-    background-color: #1e1e1e; /* Dark background */
-    color: #dcdcdc; /* Light text */
+    background-color: #dcdcdc; /* Dark background */
+    color: #1e1e1e; /* Light text */
     border: none; /* Remove default border */
   }
   
@@ -40,8 +40,8 @@
   }
   
   .accordion-button.collapsed {
-    background-color: #1e1e1e; /* Dark background */
-    color: #dcdcdc; /* Light text */
+    background-color: #dcdcdc; /* Dark background */
+    color: #1e1e1e; /* Light text */
   }
   
   .accordion-body {

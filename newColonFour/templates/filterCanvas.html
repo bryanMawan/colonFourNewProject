@@ -1,6 +1,6 @@
 <div class="offcanvas offcanvas-start" tabindex="-1" id="eventFilterOffcanvas" aria-labelledby="eventDetailsOffcanvasLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filters & Sorting</h5>
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filters & Ordering</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
@@ -68,7 +68,7 @@
                         <input type="date" class="form-control" id="endDateInput">
                     </div>
                     <button class="btn btn-outline-primary mt-2" id="addDateRangeFilterBtn">Add Date Range Filter</button>
-                    <button class="btn btn-outline-primary mt-2" id="addWeekendFilterBtn">Add Weekend Filter</button>
+                    <button class="btn btn-outline-primary mt-2" id="addWeekendFilterBtn">Add Weekend(Fri, Sat, Sun) Filter</button>
 
                 </div>
               </div>
@@ -76,22 +76,24 @@
         </div>
       </div>
   
-      <!-- Sorting Accordion -->
-      <div class="accordion" id="sortingAccordion">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSorting" aria-expanded="false" aria-controls="collapseSorting">
-              Sort by
-            </button>
-          </h2>
-          <div id="collapseSorting" class="accordion-collapse collapse" aria-labelledby="headingSorting" data-bs-parent="#sortingAccordion">
-            <div class="accordion-body">
-              <!-- Content for Sorting accordion -->
-              ...
-            </div>
-          </div>
+<!-- Sorting Accordion -->
+<div class="accordion" id="orderingAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrdering" aria-expanded="false" aria-controls="collapseSorting">
+          Order by
+        </button>
+      </h2>
+      <div id="collapseOrdering" class="accordion-collapse collapse" aria-labelledby="headingOrdering" data-bs-parent="#orderingAccordion">
+        <div class="accordion-body">
+          <button type="button" class="btn btn-outline-primary mb-2" id="orderSoonestBtn">Soonest</button>
+          <button type="button" class="btn btn-outline-primary mb-2" id="orderClosestBtn">Closest</button>
+          <button type="button" class="btn btn-outline-primary mb-2" id="orderPopularBtn">Popular</button>
         </div>
       </div>
+    </div>
+  </div>
+  
     </div>
   </div>
   

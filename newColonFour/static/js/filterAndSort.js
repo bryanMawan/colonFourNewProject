@@ -1,11 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const filterDropdown = document.getElementById('filterDropdown');
-    const searchBar = document.getElementById('searchBar'); // Get the search bar element
+    const searchBar = document.getElementById('searchBar');
     const addDateRangeFilterBtn = document.getElementById('addDateRangeFilterBtn');
     const addWeekendFilterBtn = document.getElementById('addWeekendFilterBtn');
     const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-    const clearFiltersBtn = document.getElementById('clearFiltersBtn'); // New clear filters button
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
     const chosenFiltersBody = document.getElementById('chosenFiltersBody');
+    const orderSoonestBtn = document.getElementById('orderSoonestBtn');
+    const orderClosestBtn = document.getElementById('orderClosestBtn');
+    const orderPopularBtn = document.getElementById('orderPopularBtn');
 
 
 
@@ -18,7 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     addDateRangeFilterBtn.addEventListener('click', handleAddDateRangeFilter);
     addWeekendFilterBtn.addEventListener('click', handleAddWeekendFilter);
     applyFiltersBtn.addEventListener('click', handleApplyFilters);
-    clearFiltersBtn.addEventListener('click', handleClearFilters); // New clear filters button event listener
+    clearFiltersBtn.addEventListener('click', handleClearFilters);
+    orderSoonestBtn.addEventListener('click', () => handleOrderBy('Soonest'));
+    orderClosestBtn.addEventListener('click', () => handleOrderBy('Closest'));
+    orderPopularBtn.addEventListener('click', () => handleOrderBy('Popular'));
 
 
     // Initialize filters from URL
@@ -379,4 +385,41 @@ function handleApplyFilters() {
 function handleClearFilters() {
     const chosenFiltersBody = document.getElementById('chosenFiltersBody');
     chosenFiltersBody.innerHTML = '';
+}
+
+function handleOrderBy(orderType) {
+    const existingOrderBadge = [...document.getElementsByClassName('filter-button')]
+        .find(button => button.textContent.includes(orderType));
+    if (existingOrderBadge) {
+        toggleOrderBadge(existingOrderBadge);
+    } else {
+        addOrderBadge(orderType, true); // Add as ascending by default
+    }
+    console.log(`Ordering by ${orderType}`); // Debug statement
+}
+
+function toggleOrderBadge(button) {
+    const isAscending = button.textContent.includes('↑');
+    button.textContent = button.textContent.replace(isAscending ? '↑' : '↓', isAscending ? '↓' : '↑');
+    console.log(`Toggled ${button.textContent}`); // Debug statement
+}
+
+function addOrderBadge(orderType, isAscending) {
+    // Remove any existing order badge
+    removeExistingOrderBadge();
+
+    const badgeText = `${orderType} ${isAscending ? '↑' : '↓'}`;
+    const button = createFilterButton('Order by:' + badgeText);
+    document.getElementById('chosenFiltersBody').appendChild(button);
+    console.log(`Added ${badgeText} order badge`); // Debug statement
+}
+
+function removeExistingOrderBadge() {
+    const chosenFiltersBody = document.getElementById('chosenFiltersBody');
+    const existingOrderBadge = [...chosenFiltersBody.getElementsByClassName('filter-button')]
+        .find(button => button.textContent.includes('Soonest') || button.textContent.includes('Closest') || button.textContent.includes('Popular'));
+    if (existingOrderBadge) {
+        existingOrderBadge.remove();
+        console.log('Removed existing order badge'); // Debug statement
+    }
 }
