@@ -46,10 +46,10 @@ def filter_by_name(queryset, name_text):
     """
     Filter queryset by event names containing name_text.
     """
+
     if name_text:
         query = Q()
-        name_parts = [name_part.strip() for name_part in name_text.split(',')]
-        for name_part in name_parts:
+        for name_part in name_text:
             query |= Q(name__icontains=name_part)
         return queryset.filter(query)
     return queryset
