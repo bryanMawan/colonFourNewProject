@@ -80,7 +80,7 @@
                 <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Styles</span>
-                        <input class="form-control" list="stylesOptions" id="exampleDataList" placeholder="Type to search styles...">
+                        <input class="form-control" name="styles" list="stylesOptions" id="exampleDataList" placeholder="Type to search styles...">
                         <datalist id="stylesOptions">
                             {% for style in all_styles %}
                                 <option value="{{ style }}">
@@ -134,7 +134,7 @@
             {% if form.poster.errors %}
                 <div class="alert alert-danger">{{ form.poster.errors }}</div>
             {% endif %}
-        </div>
+        </div> 
 
         <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample">
             OPTIONAL FIELDS </button>

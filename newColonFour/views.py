@@ -37,9 +37,9 @@ class HomePageView(TemplateView):
 @require_GET
 def fetch_suboptions(request):
     option = request.GET.get('option')
-    
+
     suboptions = {
-        'style': get_unique_styles(),
+        'styles': get_unique_styles(),
         'event-type': get_unique_event_types(),
         'format': ['Online', 'Offline'],
         'level': get_unique_levels()
@@ -216,6 +216,9 @@ class BattleCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
         battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
+
+                # Debug print to check styles before saving
+        print(f"Form styles before save: {battle.styles}")
 
         update_event_location_point(battle, geo_db)  # Update the location point
         battle.save()  # Now save the battle to the database

@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Q
+from django.db.models import Q, Count
 from .models import Dancer, Event
 from .servicesFolder.services import distance_between_cities
 import logging
@@ -153,7 +153,15 @@ def get_unique_styles():
     """
     Get unique styles from Event model.
     """
-    return list(Event.objects.values_list('styles', flat=True).distinct())
+    styles_lists = [[], ['afro', 'popping'], ['kuduro']]
+    
+    # Flatten the list and remove empty lists
+    flattened_styles = [item for sublist in styles_lists for item in sublist if item]
+    
+    # Remove duplicates while maintaining order
+    unique_styles = list(dict.fromkeys(flattened_styles))
+    
+    return unique_styles
 
 def get_unique_event_types():
     """

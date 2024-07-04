@@ -221,6 +221,19 @@ class Event(models.Model):
         Returns the total number of goers' hashes.
         """
         return len(self.goers)
+    
+class Battle(Event):
+    judges = models.ManyToManyField('Dancer', related_name='battle_judges', blank=True)
+    host = models.ForeignKey('Dancer', on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.CharField(max_length=10, choices=BATTLE_TYPE_CHOICES, default='1vs1')
+    is_7tosmoke = models.BooleanField(default=False)
+    # Additional fields specific to Battle can be added here
+
+    def save(self, *args, **kwargs):
+        logger.debug(f'Setting type to BATTLE for {self.name}')
+        self.event_type = self.BATTLE  # Set the type for the Battle instance
+        super().save(*args, **kwargs)
+    pass
 
 
 class Dancer(models.Model):
@@ -266,18 +279,7 @@ class Workshop(Event):
     pass
 
 
-class Battle(Event):
-    judges = models.ManyToManyField('Dancer', related_name='battle_judges', blank=True)
-    host = models.ForeignKey('Dancer', on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.CharField(max_length=10, choices=BATTLE_TYPE_CHOICES, default='1vs1')
-    is_7tosmoke = models.BooleanField(default=False)
-    # Additional fields specific to Battle can be added here
 
-    def save(self, *args, **kwargs):
-        logger.debug(f'Setting type to BATTLE for {self.name}')
-        self.event_type = self.BATTLE  # Set the type for the Battle instance
-        super().save(*args, **kwargs)
-    pass
 
 
 class Showcase(Event):

@@ -51,6 +51,10 @@ class BattleForm(forms.ModelForm):
 
         # Add custom validation logic for time fields if needed
 
+                # Debug print to check styles
+        styles = cleaned_data.get('styles')
+        print(f"Cleaned styles: {styles}")
+
         return cleaned_data
     
 
