@@ -86,12 +86,16 @@ def filter_by_styles(queryset, styles):
     :param styles: List of styles to filter by.
     :return: Filtered queryset.
     """
-    print("in styles")
+    print("in styles start")
+    print(styles)
     if styles:
         # Debug: Print event name and its styles for verification
         for event in queryset.filter(styles__overlap=styles):
             logger.debug(f"Event: {event.name}, Styles: {event.styles}")
         return queryset.filter(styles__overlap=styles)
+    
+    print("in styles end")
+
     return queryset
 
 def filter_weekend_events(queryset):
