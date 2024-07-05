@@ -208,11 +208,12 @@ def get_unique_styles():
     Get unique styles from Event model.
     """
     styles_lists = list(Event.objects.values_list('styles', flat=True).distinct())   
+    print(f"Retrieved styles lists: {styles_lists}")
 
     # Flatten the list and remove empty lists
-    # Using a set comprehension to flatten the list and normalize to lower case in one step
-    unique_styles_set = {item.lower() for sublist in styles_lists for item in sublist}
-    
+    unique_styles_set = {item for sublist in styles_lists for item in sublist if item}
+    print(f"Unique styles set: {unique_styles_set}")
+
     return list(unique_styles_set)
 
 def get_unique_event_types():
