@@ -23,6 +23,8 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import logging
+from datetime import datetime
+
 
 
 import logging
@@ -55,31 +57,75 @@ class SearchHomePage(ListView):
     context_object_name = 'events'
 
     def get_search_query(self):
-        return self.request.GET.get('search-box', 'Paris, France')
+        search_query = self.request.GET.get('search-box', 'Paris, France')
+        logger.debug(f"Search query: {search_query}")
+        return search_query
 
     def get_utc_date_str(self):
-        return self.request.GET.get('utc-date', now().isoformat())
+        utc_date_str = self.request.GET.get('utc-date', now().isoformat())
+        try:
+            # Validate UTC date format
+            datetime.strptime(utc_date_str, '%Y-%m-%dT%H:%M:%S.%fZ')
+        except ValueError:
+            logger.warning(f"Invalid UTC date format: {utc_date_str}. Using current time instead.")
+            utc_date_str = now().isoformat()
+        logger.debug(f"UTC date string: {utc_date_str}")
+        return utc_date_str
 
     def get_filters(self):
         raw_filters = self.request.GET.dict()
         logger.debug(f"Raw filter parameters: {raw_filters}")
 
-        filters = {key: value.split(", ") for key, value in raw_filters.items() if key not in ['search-box', 'utc-date']}
+        filters = {}
+        for key, value in raw_filters.items():
+            if key in ['search-box', 'utc-date']:
+                continue  # Skip these special keys
+            if ',' in value:
+                filters[key] = value.split(", ")
+            else:
+                filters[key] = [value]
         logger.debug(f"Parsed filters: {filters}")
         return filters
 
-    def get_queryset(self):
-        search_query = self.get_search_query()
-        utc_date_str = self.get_utc_date_str()
-        filters = self.get_filters()
+    def get_order_by(self):
+        raw_filters = self.request.GET.dict()
+        user_friendly_order = raw_filters.get('order-by', 'Soonest')
+        
+        order_mapping = {
+            'Soonest ↑': 'soonest-a',
+            'Soonest ↓': 'soonest-d',
+            'Closest ↑': 'distance-a',
+            'Closest ↓': 'distance-d',
+            'Popular ↑': 'goers-a',
+            'Popular ↓': 'goers-d'
+        }
 
-        events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str, filters=filters)
-        logger.debug(f"Final queryset count: {len(events)}")
-        return events
+        order_by = order_mapping.get(user_friendly_order, 'soonest-a')  # Default to 'soonest-a'
+        logger.debug(f"Order by parameter: {order_by}")
+        return order_by
+
+    def get_queryset(self):
+        try:
+            search_query = self.get_search_query()
+            utc_date_str = self.get_utc_date_str()
+            filters = self.get_filters()
+            order_by = self.get_order_by()
+
+            events = get_sorted_events(search_query=search_query, utc_date_str=utc_date_str, filters=filters, order_by=order_by)
+
+            if not events:
+                logger.warning("No events found matching the criteria.")
+            
+            logger.debug(f"Final queryset count: {len(events)}")
+            return events
+        except Exception as e:
+            logger.error(f"Error fetching queryset: {e}")
+            return Event.objects.none()  # Return an empty queryset in case of error
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
+        logger.debug(f"Context data: {context}")
         return context
 
     

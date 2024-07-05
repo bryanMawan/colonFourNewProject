@@ -94,9 +94,15 @@ def filter_weekend_events(queryset):
         Q(date__week_day=1)    # Sunday
     )
 
-def get_sorted_events(search_query, utc_date_str, filters, order_by_goers=False):
+def get_sorted_events(search_query, utc_date_str, filters, order_by='distance-a'):
     """
     Get sorted events based on various filters and sorting criteria.
+
+    :param search_query: Search query string.
+    :param utc_date_str: UTC date string.
+    :param filters: Dictionary of filters.
+    :param order_by: Sorting criteria. Can be 'distance-a', 'distance-d', 'soonest-a', 'soonest-d', 'goers-a', 'goers-d'.
+    :return: Sorted list of events.
     """
     utc_date = datetime.strptime(utc_date_str, "%Y-%m-%dT%H:%M:%S.%f%z") if utc_date_str else None
     
@@ -113,16 +119,12 @@ def get_sorted_events(search_query, utc_date_str, filters, order_by_goers=False)
     logger.debug(f"Applying filter: {filters}")
     queryset = apply_filter(queryset, filters)
 
-    if order_by_goers:
-        logger.debug("Ordering by number of goers")
-        # Uncomment the following line to order by number of goers
-        # queryset = queryset.order_by('-number_of_goers')
-
     events_with_calculations = calculate_event_details(queryset, search_query, utc_date)
 
-    sorted_events = sort_events(events_with_calculations)
+    sorted_events = sort_events(events_with_calculations, order_by)
 
     return sorted_events
+
 
 def calculate_event_details(queryset, search_query, utc_date):
     """
@@ -133,7 +135,8 @@ def calculate_event_details(queryset, search_query, utc_date):
             event,
             event.days_until(utc_date),  # Calculate days until the event
             distance_between_cities(event.get_trimmed_location(), search_query),  # Calculate distance
-            event.start_time  # Direct attribute access
+            event.start_time,  # Direct attribute access
+            event.number_of_goings  # Include number of goers
         )
         for event in queryset
     ]
@@ -141,21 +144,57 @@ def calculate_event_details(queryset, search_query, utc_date):
     logger.debug(f"Events with calculations count: {len(events_with_calculations)}")
     return events_with_calculations
 
-def sort_events(events_with_calculations):
+
+def sort_events(events_with_calculations, order_by):
     """
     Sort events based on calculated details.
+
+    :param events_with_calculations: List of events with calculated details.
+    :param order_by: Sorting criteria. Can be 'distance-a', 'distance-d', 'soonest-a', 'soonest-d', 'goers-a', 'goers-d'.
+    :return: Sorted list of events.
     """
-    sorted_events_with_calculations = sorted(events_with_calculations, key=lambda x: (x[2], x[1], x[3]))
+    ascending = order_by.endswith('-a')
+    key = None
+
+    if order_by.startswith('distance'):
+        key = lambda x: (x[2], x[1], x[3])
+    elif order_by.startswith('soonest'):
+        key = lambda x: (x[1], x[2], x[3])
+    elif order_by.startswith('goers'):
+        key = lambda x: (x[4], x[1], x[2], x[3])
+    else:
+        logger.warning(f"Unknown order_by value: {order_by}, defaulting to 'distance-a'")
+        key = lambda x: (x[2], x[1], x[3])
+        ascending = True
+
+    sorted_events_with_calculations = sorted(events_with_calculations, key=key, reverse=not ascending)
+
+    # Debug prints to visualize the order
+    if order_by.startswith('distance'):
+        logger.debug("Sorting events by distance:")
+        for event in sorted_events_with_calculations:
+            logger.debug(f"Event: {event[0].name}, Distance: {event[2]}, Days Until: {event[1]}, Start Time: {event[3]}")
+    elif order_by.startswith('soonest'):
+        logger.debug("Sorting events by soonest:")
+        for event in sorted_events_with_calculations:
+            logger.debug(f"Event: {event[0].name}, Days Until: {event[1]}, Distance: {event[2]}, Start Time: {event[3]}")
+    elif order_by.startswith('goers'):
+        logger.debug("Sorting events by popularity (number of goers):")
+        for event in sorted_events_with_calculations:
+            logger.debug(f"Event: {event[0].name}, Goers Count: {event[4]}, Days Until: {event[1]}, Distance: {event[2]}, Start Time: {event[3]}")
+
     sorted_events = [item[0] for item in sorted_events_with_calculations]
     logger.debug(f"Sorted events count: {len(sorted_events)}")
     return sorted_events
+
+
 
 def get_unique_styles():
     """
     Get unique styles from Event model.
     """
     styles_lists = list(Event.objects.values_list('styles', flat=True).distinct())   
-     
+
     # Flatten the list and remove empty lists
     # Using a set comprehension to flatten the list and normalize to lower case in one step
     unique_styles_set = {item.lower() for sublist in styles_lists for item in sublist}

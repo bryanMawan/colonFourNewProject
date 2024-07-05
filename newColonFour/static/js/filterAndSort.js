@@ -409,7 +409,7 @@ function addOrderBadge(orderType, isAscending) {
     removeExistingOrderBadge();
 
     const badgeText = `${orderType} ${isAscending ? '↑' : '↓'}`;
-    const button = createFilterButton('Order by:' + badgeText);
+    const button = createFilterButton('order-by: ' + badgeText);
     document.getElementById('chosenFiltersBody').appendChild(button);
     console.log(`Added ${badgeText} order badge`); // Debug statement
 }
