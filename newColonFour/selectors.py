@@ -79,8 +79,15 @@ def filter_by_level(queryset, levels):
 def filter_by_styles(queryset, styles):
     """
     Filter queryset by styles.
+    
+    :param queryset: Initial queryset of events.
+    :param styles: List of styles to filter by.
+    :return: Filtered queryset.
     """
     if styles:
+        # Debug: Print event name and its styles for verification
+        for event in queryset.filter(styles__overlap=styles):
+            logger.debug(f"Event: {event.name}, Styles: {event.styles}")
         return queryset.filter(styles__overlap=styles)
     return queryset
 
