@@ -142,6 +142,23 @@ class Event(models.Model):
         # Implementation for checking style
         pass
 
+    def get_formatted_date(self):
+        """
+        Returns the event's date in the format 'day, month day, year, start time'.
+        """
+        # Format the day, date, and start time
+        event_day = self.date.strftime('%A')  # Full weekday name
+        event_date = self.date.strftime('%B %d, %Y')  # Full month name, day, and year
+        event_start_time = self.start_time.strftime('%H:%M') if self.start_time else 'N/A'  # 24-hour clock
+
+        # Create the formatted string
+        formatted_date = f"{event_day}, {event_date}, {event_start_time}"
+
+        # Debug: Print the formatted date
+        logger.debug(f"Event: {self.name} | Formatted Date: {formatted_date}")
+
+        return formatted_date
+
     def get_trimmed_location(self):
         # Assuming the format is always "street, city, country"
         parts = self.location.split(", ")

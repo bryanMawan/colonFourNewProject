@@ -69,7 +69,7 @@
 
       <div class="scroll-container md-3">
         {% for event in events %}
-        <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.date }}" data-event-location="{{ event.location }}">
+        <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.get_formatted_date }}" data-event-location="{{ event.location }}">
           {% if event.poster %}
             <img src="{{ event.poster.url }}" alt="{{ event.name }}" class="event-poster">
           {% endif %}
