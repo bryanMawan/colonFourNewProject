@@ -16,6 +16,8 @@ def apply_filter(queryset, filters_dict):
     """
     Apply filters based on the filters_dict dictionary.
     """
+
+    print(filters_dict)
     for filter_type, filter_value in filters_dict.items():
         if filter_type == "event-type":
             queryset = filter_by_event_type(queryset, filter_value)
@@ -84,6 +86,7 @@ def filter_by_styles(queryset, styles):
     :param styles: List of styles to filter by.
     :return: Filtered queryset.
     """
+    print("in styles")
     if styles:
         # Debug: Print event name and its styles for verification
         for event in queryset.filter(styles__overlap=styles):
