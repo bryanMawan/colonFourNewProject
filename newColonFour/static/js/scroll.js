@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Directly access data attributes
                 eventDateDisplay.textContent = card.getAttribute('data-event-date');
                 eventLocationDisplay.textContent = card.getAttribute('data-event-location');
+                // Update hidden input with event ID
+                const eventId = card.getAttribute('data-event-id');
+                document.getElementById('lastCentermostEventId').value = eventId;
             } else {
                 card.classList.remove('scale-up');
             }

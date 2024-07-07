@@ -136,6 +136,15 @@
             {% endif %}
         </div> 
 
+        <!-- Carousel Pics Field -->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Carousel Pics</span>
+            <input type="file" name="info_pics_carousel" id="id_info_pics_carousel" class="form-control" accept="image/*" multiple>
+        </div>
+        {% if form.info_pics_carousel.errors %}
+            <div class="alert alert-danger">{{ form.info_pics_carousel.errors }}</div>
+        {% endif %}
+
         <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample">
             OPTIONAL FIELDS </button>
         

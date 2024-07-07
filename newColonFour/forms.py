@@ -33,11 +33,12 @@ class DancerForm(forms.ModelForm):
         fields = ['name', 'country', 'picture', 'styles', 'dancer_has_consented']
 
 class BattleForm(forms.ModelForm):
+
     class Meta:
         model = Battle
         fields = [
             'name', 'date', 'location', 'description', 'start_time', 'end_time',
-            'styles', 'level', 'poster', 'video', 'judges', 'type', 'host', 'is_7tosmoke'
+            'styles', 'level', 'poster', 'video', 'judges', 'type', 'host', 'is_7tosmoke', 
         ]
 
     def __init__(self, *args, **kwargs):

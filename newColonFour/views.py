@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm, BattleForm, TipForm
-from .models import OrganizerProfile, Dancer, Battle, Event, Tip
+from .models import OrganizerProfile, Dancer, Battle, Event, Tip, EventImage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages 
 from django.contrib.auth.views import LoginView
@@ -248,9 +248,8 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         context = super(BattleCreate, self).get_context_data(**kwargs)
         context['all_dancers'] = get_all_dancers()  # Use the selector to add all dancers to the context
         context['all_styles'] = get_all_styles()  # Use the service to get all styles
-
         return context
-    
+
     def get_success_url(self):
         """
         Override the get_success_url method to redirect to the organizer's profile page.
@@ -263,25 +262,41 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
         battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
 
-                # Debug print to check styles before saving
+        # Debug print to check styles before saving
         print(f"Form styles before save: {battle.styles}")
 
         update_event_location_point(battle, geo_db)  # Update the location point
         battle.save()  # Now save the battle to the database
+
+        # Debug print to check if the post dictionary
+        print(f"POST dictionary: {self.request.POST}")
+
+        # Handle info_pics_carousel
+        info_pics_files = self.request.FILES.getlist('info_pics_carousel')
+                # Debug print to check if the field name is found
+        if info_pics_files:
+            print(f"Files uploaded for field 'info_pics_files': {info_pics_files}")
+        else:
+            print("No files uploaded for field 'info_pics_files'")
+
+        for image_file in info_pics_files:
+            EventImage.objects.create(event=battle, image=image_file)
+
+        # Debug print to check images after saving
+        print(f"Battle info_pics_carousel count: {battle.info_pics_carousel.count()}")
+
         # Set the current user as the host of the battle
         response = super().form_valid(form)
 
-        
         # Log the creation of the battle. Move the detailed logging logic to services if needed.
         user_name = self.request.user.get_full_name()
         battle_name = form.cleaned_data['name']
         logger.info(f'User "{user_name}" created a battle: "{battle_name}"')
-        
+
         # Show success message
         messages.success(self.request, f'Battle "{battle_name}" has been successfully created.')
-        
+
         return response
-    
 @csrf_exempt  # Note: Better to use csrf token in AJAX request for security
 @require_http_methods(["POST"])
 def send_code_view(request):

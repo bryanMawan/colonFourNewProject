@@ -67,6 +67,10 @@
       <!-- holder for most recently doubled tapped event -->
       <input type="hidden" id="current-event-id" value="" name="current-event-id">
 
+
+            <!-- holder for lastCentermostEventId event card -->
+            <input type="hidden" id="lastCentermostEventId" name="lastCentermostEventId" value="">
+
       <div class="scroll-container md-3">
         {% for event in events %}
         <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.get_formatted_date }}" data-event-location="{{ event.location }}">

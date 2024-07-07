@@ -104,6 +104,14 @@ class OrganizerVerificationRequest(models.Model):
         return f"Verification request for {self.organizer_profile}"
     
 
+class EventImage(models.Model):
+    event = models.ForeignKey('Event', on_delete=models.CASCADE, related_name='info_pics_carousel')
+    image = models.ImageField(upload_to='event_info_pics/', null=True, blank=True)
+
+    def __str__(self):
+        return f"Image for {self.event.name}"
+    
+
 class Event(models.Model):
     WORKSHOP = 'workshop'
     BATTLE = 'battle'
@@ -136,6 +144,7 @@ class Event(models.Model):
     poster = models.ImageField(upload_to='event_posters/', null=True, blank=True)
     video = models.FileField(upload_to='event_videos/', null=True, blank=True)  # If storing video files
     # video = models.URLField(null=True, blank=True)  # If using video URLs
+
 
     # Methods for your specific logic
     def contains_style(self, style):
