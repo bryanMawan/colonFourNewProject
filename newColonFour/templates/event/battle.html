@@ -6,7 +6,7 @@
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="w-100"> <!-- Ensure the inner content has width control -->    <h2>Battle Registration</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form id="battleForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
 
@@ -188,4 +188,10 @@
 </div>
 </div>
 </div>
+
+
+<script src="{% static 'js/compress_images.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js"></script>
+
 {% endblock %}

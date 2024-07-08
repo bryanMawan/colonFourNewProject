@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, OrganizerProfile, OrganizerVerificationRequest, Dancer, Battle, Event, Tip
+from PIL import Image
+import io
 
 
 class OrganizerRegistrationForm(UserCreationForm):
@@ -38,25 +40,47 @@ class BattleForm(forms.ModelForm):
         model = Battle
         fields = [
             'name', 'date', 'location', 'description', 'start_time', 'end_time',
-            'styles', 'level', 'poster', 'video', 'judges', 'type', 'host', 'is_7tosmoke', 
+            'styles', 'level', 'poster', 'video', 'judges', 'type', 'host', 'is_7tosmoke',
         ]
-
-    def __init__(self, *args, **kwargs):
-        super(BattleForm, self).__init__(*args, **kwargs)
-        # Customize form widgets or add additional validation if needed
 
     def clean(self):
         cleaned_data = super().clean()
-        start_time = cleaned_data.get('start_time')
-        end_time = cleaned_data.get('end_time')
 
-        # Add custom validation logic for time fields if needed
+        # Calculate size of the poster image
+        poster = self.files.get('poster')
+        if poster:
+            size_of_poster = self.calculate_image_size(poster)
+            print(f"Size of poster image: {size_of_poster} bytes")
 
-                # Debug print to check styles
-        styles = cleaned_data.get('styles')
-        print(f"Cleaned styles: {styles}")
+        # Calculate size of each carousel image
+        carousel_images = self.files.getlist('info_pics_carousel')
+        total_carousel_size = 0
+        for image in carousel_images:
+            size = self.calculate_image_size(image)
+            total_carousel_size += size
+            print(f"Size of carousel image: {size} bytes")
+
+        print(f"Total size of carousel images: {total_carousel_size} bytes")
 
         return cleaned_data
+
+    def calculate_image_size(self, image_field):
+        """Helper function to calculate the size of an image in bytes."""
+        if not image_field:
+            return 0
+        # Using Pillow to calculate size
+        try:
+            image = Image.open(image_field)
+            with io.BytesIO() as img_byte_arr:
+                image.save(img_byte_arr, format=image.format)
+                size = img_byte_arr.tell()
+            return size
+        except Exception as e:
+            print(f"Error calculating image size: {e}")
+            return 0
+
+    def save(self, commit=True):
+        return super().save(commit=commit)
     
 
 class TipForm(forms.ModelForm):
