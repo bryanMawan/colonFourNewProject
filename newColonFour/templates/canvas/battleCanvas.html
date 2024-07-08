@@ -1,0 +1,35 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="battleoffcanvas" aria-labelledby="battleoffcanvasLabel">
+    <!-- Offcanvas Header -->
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasDetailsLabel">Battle Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <!-- Offcanvas Body -->
+    <div class="offcanvas-body">
+        <!-- Carousel for Images -->
+        <div id="carouselExample" class="carousel slide mt-2" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for image in battle.info_pics_carousel.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image.url }}" class="d-block w-100" alt="...">
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Carousel Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <!-- End of Carousel -->
+
+        <!-- Other battle details here -->
+    </div>
+    <!-- End of Offcanvas Body -->
+</div>
+<!-- End of Offcanvas -->

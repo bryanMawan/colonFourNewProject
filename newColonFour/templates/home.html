@@ -9,6 +9,8 @@
 {% include "detailsModal.html" %}
 {% include "filterCanvas.html" %}
 {% include "goingModal.html" %}
+{% include "canvas/battleCanvas.html" %}
+
 {% endblock %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/scroll.css' %}">
@@ -95,6 +97,9 @@
         {% endfor %}
       </div>
 
+      <button button id="view-event-btn" class="btn btn-outline-primary mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#defaultTarget" aria-controls="battleoffcanvas">
+        View Event Details
+      </button>
       <div class="row location-display-container my-1">
         <div class="col-12">
           <p id="eventLocationDisplay" class="h6">@ <span>Placeholder Location</span></p>
@@ -116,7 +121,7 @@
 <script src="{% static 'js/placeholderToggle.js' %}"></script>
 <script src="{% static 'js/autocomplete.js' %}"></script>
 <script src="{% static 'js/filterAndSort.js' %}"></script>
-<!-- <script src="{% static 'js/dropdown.js' %}"></script> -->
+<script src="{% static 'js/eventDetails.js' %}"></script>
 
 
 
