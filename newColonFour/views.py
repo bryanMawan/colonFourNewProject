@@ -359,3 +359,16 @@ class CreateTipView(CreateView):
         tip_name = form.instance.name  # Get the name of the created tip
         logger.info(f"A tip has been created: {tip_name}")
         return response
+    
+
+@require_GET
+def get_event_details(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    images = [{'url': image.image.url} for image in event.info_pics_carousel.all()]
+    data = {
+        'name': event.name,  # Add the event name here
+        'description': event.description,
+        'images': images,
+    }
+    logger.debug(f'Retrieved event details for event ID {event_id}: {data}')
+    return JsonResponse(data)

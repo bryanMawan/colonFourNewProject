@@ -72,3 +72,12 @@
   width: 50px;  /* Adjust size as needed */
   height: auto;
 }
+
+.placeholder-glow {
+  display: block;
+}
+
+.placeholder-glow.hidden {
+  display: none;
+}
+
