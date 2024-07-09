@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView, DetailView, CreateView, ListView
 from django.utils.timezone import now
 from django.contrib.auth import login
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm, BattleForm, TipForm
 from .models import OrganizerProfile, Dancer, Battle, Event, Tip, EventImage
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -24,6 +24,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import logging
 from datetime import datetime
+from django.utils import timezone
 
 
 
@@ -372,3 +373,13 @@ def get_event_details(request, event_id):
     }
     logger.debug(f'Retrieved event details for event ID {event_id}: {data}')
     return JsonResponse(data)
+
+def delete_past_events_view(request):
+    # Only allow GET requests
+    if request.method == 'GET':
+        # Logic to delete past events
+        deleted_count, _ = Event.objects.filter(date__lt=timezone.now()).delete()
+        logger.debug(f"{deleted_count} past events have been deleted.")
+        return HttpResponse(f'{deleted_count} past events have been successfully deleted.')
+    else:
+        return HttpResponse(status=405)  # Method Not Allowed

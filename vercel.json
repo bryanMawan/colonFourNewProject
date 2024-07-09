@@ -18,5 +18,11 @@
             "src": "/(.*)",
             "dest": "colonFourNewProject/wsgi.py"
         }
-    ]
+    ],
+    "crons": [
+    {
+      "path": "/delete-past-events",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }

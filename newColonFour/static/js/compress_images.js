@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('battleForm');
     const infoPicsInput = document.getElementById('id_info_pics_carousel');
     const posterInput = document.getElementById('id_poster');
-    const maxTotalSizeMB = 4; // Maximum total size in MB
 
     async function compressImage(file, quality) {
         return new Promise((resolve, reject) => {
@@ -26,23 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    async function handleImageCompression(event) {
-        event.preventDefault();
-
-        let compressedFiles = [];
-        const filesToCompress = [...infoPicsInput.files];
-        const posterFile = posterInput.files.length > 0 ? posterInput.files[0] : null;
-
-        if (posterFile) {
-            filesToCompress.push(posterFile);
-        }
-
+    async function compressFiles(inputField, maxTotalSizeMB) {
+        const compressedFiles = [];
+        const filesToCompress = [...inputField.files];
         let totalSizeMB = 0;
         let quality = 0.65;
 
         while (true) {
             totalSizeMB = 0;
-            compressedFiles = [];
+            compressedFiles.length = 0; // Reset compressed files array
 
             for (let file of filesToCompress) {
                 try {
@@ -59,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Reduce quality and retry
-            quality -= 0.05;
+            quality -= 0.1;
             if (quality <= 0.1) {
                 console.error('Cannot compress images below acceptable quality');
                 break;
@@ -70,15 +61,25 @@ document.addEventListener('DOMContentLoaded', function() {
         // Replace original files with compressed files
         const dataTransfer = new DataTransfer();
         compressedFiles.forEach(file => dataTransfer.items.add(file));
+        inputField.files = dataTransfer.files;
+    }
 
-        if (posterFile) {
-            infoPicsInput.files = dataTransfer.files;
-            const posterDataTransfer = new DataTransfer();
-            posterDataTransfer.items.add(compressedFiles.pop()); // Assuming last item is the poster
-            posterInput.files = posterDataTransfer.files;
-        } else {
-            infoPicsInput.files = dataTransfer.files;
+    async function handleImageCompression(event) {
+        event.preventDefault();
+
+        console.time('Image Compression Time'); // Start timing
+
+        // Compress info_pics_carousel files
+        if (infoPicsInput.files.length > 0) {
+            await compressFiles(infoPicsInput, 3); // 4MB max total size
         }
+
+        // Compress poster file separately
+        if (posterInput.files.length > 0) {
+            await compressFiles(posterInput, 1); // Adjust if needed for poster alone
+        }
+
+        console.timeEnd('Image Compression Time'); // End timing and print result
 
         // Debug print to check final form data
         console.debug('Final form data before submit:', new FormData(form));
