@@ -4,7 +4,7 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="container d-flex justify-content-center align-items-center svh-100">
     <div class="w-100"> <!-- Ensure the inner content has width control -->    <h2>Battle Registration</h2>
     <form id="battleForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}

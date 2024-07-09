@@ -75,6 +75,7 @@ class OrganizerProfile(models.Model):
     goings = models.IntegerField(default=0)
     number_of_events = models.IntegerField(default=0)
     organizer_events = models.ManyToManyField('Event', related_name='organizer_profiles')
+    instagram_account = models.URLField(max_length=200, blank=True, null=True)  # Added field
 
     def get_profile_picture_url(self):
         if self.profile_picture and hasattr(self.profile_picture, 'url'):

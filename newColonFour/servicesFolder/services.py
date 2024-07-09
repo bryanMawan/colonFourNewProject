@@ -55,12 +55,16 @@ def generate_unique_slug(model, value, slug_field="slug"):
 
     return slug
 
-def update_organizer_profile(user, gdpr_consented):
+# gpt: update this method to take the instagram account value as args and update in the organizer profiles instagram_account field as well
+def update_organizer_profile(user, gdpr_consented, instagram_account):
     OrganizerProfile = apps.get_model('newColonFour', 'OrganizerProfile')
 
     OrganizerProfile.objects.update_or_create(
         user=user, 
-        defaults={'gdpr_consented': gdpr_consented}
+        defaults={
+            'gdpr_consented': gdpr_consented,
+            'instagram_account': instagram_account
+        }
     )
 
 def get_all_styles():

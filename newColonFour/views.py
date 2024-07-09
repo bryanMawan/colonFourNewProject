@@ -136,17 +136,12 @@ def register(request):
         if form.is_valid():
             user = form.save()
             gdpr_consented = form.cleaned_data.get('gdpr_consented', False)
-            # Call the service function
-            update_organizer_profile(user, gdpr_consented)
-            # Log in the user
+            instagram_account = request.POST.get('instagram_account')
+            logger.debug(f"Instagram account: {instagram_account}")
+            update_organizer_profile(user, gdpr_consented, instagram_account)
             login(request, user)
-
-            # Add a success message
             messages.success(request, f'Welcome {user.get_full_name()}!')
-
-            # Redirect to the home page after successful registration and login
             return redirect('home')
-
     else:
         form = OrganizerRegistrationForm()
 
@@ -201,6 +196,7 @@ class OrganizerProfileDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         # Get the organizer from the context
         organizer = context['organizer']
+        print(organizer.instagram_account)
         # Fetch the organizer's events
         events = organizer.organized_events.all()
         # Log the events for debugging
@@ -370,6 +366,7 @@ def get_event_details(request, event_id):
         'name': event.name,  # Add the event name here
         'description': event.description,
         'images': images,
+        'organizer_instagram': event.organizer.instagram_account  # Add this line
     }
     logger.debug(f'Retrieved event details for event ID {event_id}: {data}')
     return JsonResponse(data)

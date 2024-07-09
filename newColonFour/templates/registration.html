@@ -46,6 +46,15 @@
             <div class="alert alert-danger">{{ form.password2.errors }}</div>
         {% endif %}
 
+        <!-- Contact Info Field -->
+        <div class="mb-3">
+            <label for="id_instagram_account" class="form-label">Contact Info</label>
+            <input type="text" name="instagram_account" id="id_instagram_account" class="form-control" required value="{{ form.instagram_account.value|default_if_none:'' }}">
+            {% if form.instagram_account.errors %}
+                <div class="alert alert-danger">{{ form.instagram_account.errors }}</div>
+            {% endif %}
+        </div>
+
         <!-- GDPR Consent Checkbox -->
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="id_gdpr_consented" name="gdpr_consented" required>

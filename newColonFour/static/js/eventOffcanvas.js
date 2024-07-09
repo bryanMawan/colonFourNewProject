@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetchEventDetails(eventId)
                 .then(data => {
                     console.debug('Event details:', data);
-                    updateOffcanvasTitle(data.name);
+                    updateOffcanvasTitle(data.name, data.organizer_instagram);
                     updateCarousel(data.images);
                     updateBattleDetails(data.description);
                 })
@@ -50,9 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
         togglePlaceholders(false);
     }
 
-    function updateOffcanvasTitle(eventName) {
-        offcanvasTitle.textContent = `${eventName} Details`;
+function updateOffcanvasTitle(eventName, organizerInstagram) {
+    offcanvasTitle.textContent = `${eventName} Details`;
+
+    // Update Instagram SVG href and show it if organizerInstagram exists
+    const instagramLink = document.getElementById('instagramLink');
+    if (organizerInstagram) {
+        instagramLink.classList.remove('d-none');
+        instagramLink.setAttribute('href', organizerInstagram);
+    } else {
+        instagramLink.classList.add('d-none');
+        instagramLink.removeAttribute('href');
     }
+}
+
+    
 
     function updateCarousel(images) {
         carouselInner.innerHTML = ''; // Clear existing items
