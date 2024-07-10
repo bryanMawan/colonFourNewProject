@@ -50,19 +50,16 @@ document.addEventListener('DOMContentLoaded', function() {
         togglePlaceholders(false);
     }
 
-function updateOffcanvasTitle(eventName, organizerInstagram) {
-    offcanvasTitle.textContent = `${eventName} Details`;
+    function updateOffcanvasTitle(eventName, organizerInstagram) {
+        offcanvasTitle.textContent = `${eventName} Details`;
 
-    // Update Instagram SVG href and show it if organizerInstagram exists
-    const instagramLink = document.getElementById('instagramLink');
-    if (organizerInstagram) {
-        instagramLink.classList.remove('d-none');
-        instagramLink.setAttribute('href', organizerInstagram);
-    } else {
-        instagramLink.classList.add('d-none');
-        instagramLink.removeAttribute('href');
+        // Update Instagram link href
+        if (organizerInstagram) {
+            instagramLink.setAttribute('href', organizerInstagram);
+        } else {
+            instagramLink.setAttribute('href', '#');
+        }
     }
-}
 
     
 
@@ -106,6 +103,7 @@ function updateOffcanvasTitle(eventName, organizerInstagram) {
 
     function resetOffcanvasContent() {
         offcanvasTitle.textContent = 'Battle Details';
+        instagramLink.setAttribute('href', '#');
         carouselInner.innerHTML = `
             <div class="placeholder-glow">
                 <div class="placeholder" style="height: 200px;"></div>
