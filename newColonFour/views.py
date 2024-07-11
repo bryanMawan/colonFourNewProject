@@ -27,9 +27,6 @@ from datetime import datetime
 from django.utils import timezone
 
 
-
-import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -297,6 +294,8 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         messages.success(self.request, f'Battle "{battle_name}" has been successfully created.')
 
         return response
+    
+    
 @csrf_exempt  # Note: Better to use csrf token in AJAX request for security
 @require_http_methods(["POST"])
 def send_code_view(request):

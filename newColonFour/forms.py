@@ -26,13 +26,22 @@ class OrganizerVerificationRequestForm(forms.ModelForm):
 
 
 class DancerForm(forms.ModelForm):
+    # gpt: print out the cleaned data gotten by this form, i wnat to see what it takes
     dancer_has_consented = forms.BooleanField(
         required=True,  # Set to True if you want the field to be required
+
     )
 
     class Meta:
         model = Dancer
         fields = ['name', 'country', 'picture', 'styles', 'dancer_has_consented']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        print("DancerForm cleaned data:")
+        for field, value in cleaned_data.items():
+            print(f"{field}: {value}")
+        return cleaned_data
 
 class BattleForm(forms.ModelForm):
 

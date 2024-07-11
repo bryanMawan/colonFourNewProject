@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const battleDetails = document.getElementById('battle-details');
     const offcanvasTitle = document.getElementById('battleoffcanvasLabel');
     const lastCentermostEventId = document.getElementById('lastCentermostEventId');
-    const scrollableRow = document.getElementById('scrollable-row'); // Updated to target scrollable-row
-    const instagramLink = document.getElementById('instagramLink'); // Ensure this is declared
+    const scrollableRow = document.getElementById('scrollable-row');
+    const instagramLink = document.getElementById('instagramLink');
 
     viewEventBtn.addEventListener('click', function() {
         const eventId = lastCentermostEventId.value;
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateOffcanvasTitle(data.name, data.organizer_instagram);
                     updateCarousel(data.images);
                     updateBattleDetails(data.description);
-                    populateDancerCards(data.dancers); // Populate dancer cards directly from data.dancers
+                    populateDancerCards(data.dancers);
                 })
                 .catch(error => console.error('Error fetching event details:', error))
                 .finally(hidePlaceholders);
@@ -34,31 +34,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function populateDancerCards(dancers) {
-        const scrollableRow = document.getElementById('scrollable-row'); // Ensure selector is correct
+        const scrollableRow = document.getElementById('scrollable-row');
 
         if (!scrollableRow) {
             console.error('Scrollable row not found.');
-            return; // Exit if the container is not found
+            return;
         }
 
-        scrollableRow.innerHTML = ''; // Clear existing dancer cards
+        scrollableRow.innerHTML = '';
 
         if (dancers.length > 0) {
             dancers.forEach(dancer => {
                 const cardHTML = `
                     <div class="dance-card">
                         <img src="${dancer.image_url}" alt="${dancer.name}">
-                        <h5 class="mt-3">${dancer.name} (${dancer.country})</h5>
+                        <h5 class="mt-3"><strong>${dancer.name}</strong> (${dancer.country})</h5>
+                        <p>${dancer.role}</p>
                     </div>
                 `;
                 scrollableRow.insertAdjacentHTML('beforeend', cardHTML);
             });
 
-            // Make the dancer card container visible
             scrollableRow.style.display = 'flex';
         } else {
             console.log('No dancers available for this event.');
-            // Optionally handle case where no dancers are available
         }
     }
 
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateOffcanvasTitle(eventName, organizerInstagram) {
         offcanvasTitle.textContent = `${eventName} Details`;
 
-        // Update Instagram link href
         if (organizerInstagram) {
             instagramLink.setAttribute('href', organizerInstagram);
         } else {
@@ -94,8 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCarousel(images) {
-        carouselInner.innerHTML = ''; // Clear existing items
-        carouselIndicators.innerHTML = ''; // Clear existing indicators
+        carouselInner.innerHTML = '';
+        carouselIndicators.innerHTML = '';
 
         if (images.length === 0) {
             noSlides.style.display = 'block';
@@ -149,8 +147,8 @@ document.addEventListener('DOMContentLoaded', function() {
             </p>
         `;
         noSlides.style.display = 'none';
-        scrollableRow.innerHTML = ''; // Clear dancer cards
-        scrollableRow.style.display = 'none'; // Hide dancer card container
+        scrollableRow.innerHTML = '';
+        scrollableRow.style.display = 'none';
     }
 
     document.getElementById('battleoffcanvas').addEventListener('hidden.bs.offcanvas', resetOffcanvasContent);
