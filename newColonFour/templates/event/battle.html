@@ -164,18 +164,23 @@
             {% if form.is_7tosmoke.errors %}
                 <div class="alert alert-danger">{{ form.is_7tosmoke.errors }}</div>
             {% endif %}
-                <!-- Dancers and Hosts Select Fields -->
-    <select name="dancers" id="id_dancers" class="form-select mb-3" multiple >
-        {% for dancer in all_dancers %}
-            <option value="{{ dancer.id }}">{{ dancer.name }}</option>
-        {% endfor %}
-    </select>
+        <!-- Multi-Select Judges Field -->
+        <div class="mb-3">
+            <label for="id_judges" class="form-label">Judges</label>
+            {{ form.judges }}
+            {% if form.judges.errors %}
+                <div class="alert alert-danger">{{ form.judges.errors }}</div>
+            {% endif %}
+        </div>
 
-    <select name="hosts" id="id_hosts" class="form-select mb-3" multiple>
-        {% for dancer in all_dancers %}
-            <option value="{{ dancer.id }}">{{ dancer.name }}</option>
-        {% endfor %}
-    </select>
+        <!-- Multi-Select Hosts Field -->
+        <div class="mb-3">
+            <label for="id_hosts" class="form-label">Hosts</label>
+            {{ form.hosts }}
+            {% if form.hosts.errors %}
+                <div class="alert alert-danger">{{ form.hosts.errors }}</div>
+            {% endif %}
+        </div>
 
     <!-- Display Video Field -->
     <div class="input-group mb-3">

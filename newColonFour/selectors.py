@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db.models import Q, Count
-from .models import Dancer, Event
+from .models import Dancer, Event, Battle
 from .servicesFolder.services import distance_between_cities
 import logging
 
@@ -227,3 +227,64 @@ def get_unique_levels():
     Get unique levels from Event model.
     """
     return list(Event.objects.values_list('level', flat=True).distinct())
+
+def get_dancers_info(event):
+    dancers_info = []
+
+    if event.event_type == Event.BATTLE:
+        print(f'Event {event} is a Battle. Retrieving host and judges.')
+
+        # Ensure the event is cast to Battle to access its specific fields
+        try:
+            battle_event = Battle.objects.get(id=event.id)
+            print(f'Battle event found: {battle_event}')
+        except Battle.DoesNotExist:
+            print(f'Battle event with id {event.id} does not exist.')
+            return []
+
+        # Add host information if available
+        if battle_event.host:
+            print(f'Host found: {battle_event.host}')
+            host_info = {
+                'name': battle_event.host.name,
+                'image_url': battle_event.host.picture.url if battle_event.host.picture else '',
+                'country': battle_event.host.country,
+                'role': 'Host'
+            }
+            dancers_info.append(host_info)
+        else:
+            print('No host found for this battle event.')
+
+        # Add judge information
+        judges = battle_event.judges.all()
+        if judges:
+            print(f'Judges found: {judges}')
+            for judge in judges:
+                judge_info = {
+                    'name': judge.name,
+                    'image_url': judge.picture.url if judge.picture else '',
+                    'country': judge.country,
+                    'role': 'Judge'
+                }
+                dancers_info.append(judge_info)
+        else:
+            print('No judges found for this battle event.')
+    else:
+        print(f'Event {event} is not a Battle (type: {event.event_type}). Returning empty dancers info.')
+        return []
+
+    # Add other dancers if there are any
+    for dancer in event.dancers.all():
+        dancer_info = {
+            'name': dancer.name,
+            'image_url': dancer.picture.url if dancer.picture else '',
+            'country': dancer.country,
+            'role': 'Dancer'
+        }
+        dancers_info.append(dancer_info)
+
+    # Debug prints for checking dancer_info
+    print('Dancers Info:', dancers_info)
+
+    return dancers_info
+

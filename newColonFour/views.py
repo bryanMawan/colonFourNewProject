@@ -13,7 +13,7 @@ from .servicesFolder.services import (
     update_event_location_point, geo_db, generate_totp_code, send_code, verify_totp_code, hash_telephone_number
 )
 from .selectors import (
-    get_all_dancers, get_sorted_events, get_unique_styles, get_unique_event_types, get_unique_levels
+    get_all_dancers, get_sorted_events, get_unique_styles, get_unique_event_types, get_unique_levels, get_dancers_info
 )
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET
@@ -258,12 +258,15 @@ class BattleCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         battle = form.save(commit=False)  # Save the form instance but don't commit to db yet
         battle = set_battle_organizer(battle, self.request.user)  # Update battle's organizer
+        
 
         # Debug print to check styles before saving
         print(f"Form styles before save: {battle.styles}")
 
         update_event_location_point(battle, geo_db)  # Update the location point
         battle.save()  # Now save the battle to the database
+        # Handle many-to-many relationships
+        form.save_m2m()
 
         # Debug print to check if the post dictionary
         print(f"POST dictionary: {self.request.POST}")
@@ -361,14 +364,20 @@ class CreateTipView(CreateView):
 @require_GET
 def get_event_details(request, event_id):
     event = get_object_or_404(Event, id=event_id)
+
     images = [{'url': image.image.url} for image in event.info_pics_carousel.all()]
+
+    # Retrieve dancer information related to the event
+    dancers_info = get_dancers_info(event)
+
     data = {
-        'name': event.name,  # Add the event name here
+        'name': event.name,
         'description': event.description,
         'images': images,
-        'organizer_instagram': event.organizer.instagram_account  # Add this line
+        'organizer_instagram': event.organizer.instagram_account,
+        'dancers': dancers_info  # Include the retrieved dancers info
     }
-    logger.debug(f'Retrieved event details for event ID {event_id}: {data}')
+
     return JsonResponse(data)
 
 def delete_past_events_view(request):
