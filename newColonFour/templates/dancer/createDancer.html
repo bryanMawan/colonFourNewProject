@@ -100,6 +100,15 @@
         <div class="alert alert-danger">{{ form.picture.errors }}</div>
       {% endif %}
 
+      <!-- Instagram URL Field -->
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Instagram URL</span>
+        <input type="url" name="instagram_url" id="id_instagram_url" class="form-control" value="{{ form.instagram_url.value|default_if_none:'' }}">
+    </div>
+    {% if form.instagram_url.errors %}
+        <div class="alert alert-danger">{{ form.instagram_url.errors }}</div>
+    {% endif %}
+
         <!-- Dancer Consent Checkbox -->
         <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" role="switch" id="id_gdpr_consented" name="dancer_has_consented" required>

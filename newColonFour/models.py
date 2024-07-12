@@ -269,6 +269,8 @@ class Dancer(models.Model):
     picture = models.ImageField(upload_to='dancer_pics/', null=True, blank=True)
     styles = ArrayField(models.CharField(max_length=100))
     dancer_has_consented = models.BooleanField(default=False)  # Add the new field
+    instagram_url = models.URLField(max_length=200, null=True, blank=True)  # Add this field
+
 
     def __str__(self):
         # Assuming the first style in the list is the primary style for simplicity

@@ -1,30 +1,52 @@
 # yourapp/views.py
-from django.views.generic import TemplateView, DetailView, CreateView, ListView
-from django.utils.timezone import now
-from django.contrib.auth import login
-from django.shortcuts import render, redirect, HttpResponse
-from .forms import OrganizerRegistrationForm, OrganizerVerificationRequestForm, DancerForm, BattleForm, TipForm
-from .models import OrganizerProfile, Dancer, Battle, Event, Tip, EventImage
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages 
-from django.contrib.auth.views import LoginView
-from .servicesFolder.services import (
-    update_organizer_profile, dancer_success_msg, get_all_styles, set_battle_organizer,
-    update_event_location_point, geo_db, generate_totp_code, send_code, verify_totp_code, hash_telephone_number
-)
-from .selectors import (
-    get_all_dancers, get_sorted_events, get_unique_styles, get_unique_event_types, get_unique_levels, get_dancers_info
-)
-from django.urls import reverse_lazy
-from django.views.decorators.http import require_GET
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 import logging
 from datetime import datetime
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
+from django.core.exceptions import ValidationError
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.timezone import now
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_http_methods
+from django.views.generic import TemplateView, DetailView, CreateView, ListView
+
+from .forms import (
+    OrganizerRegistrationForm,
+    OrganizerVerificationRequestForm,
+    DancerForm,
+    BattleForm,
+    TipForm,
+)
+from .models import OrganizerProfile, Dancer, Battle, Event, Tip, EventImage
+from .selectors import (
+    get_all_dancers,
+    get_sorted_events,
+    get_unique_styles,
+    get_unique_event_types,
+    get_unique_levels,
+    get_dancers_info,
+)
+from .servicesFolder.services import (
+    update_organizer_profile,
+    dancer_success_msg,
+    get_all_styles,
+    set_battle_organizer,
+    update_event_location_point,
+    geo_db,
+    generate_totp_code,
+    send_code,
+    verify_totp_code,
+    hash_telephone_number,
+)
+
+
 
 
 logger = logging.getLogger(__name__)
@@ -270,13 +292,16 @@ class BattleCreate(LoginRequiredMixin, CreateView):
 
         # Handle info_pics_carousel
         info_pics_files = self.request.FILES.getlist('info_pics_carousel')
-                # Debug print to check if the field name is found
-        if info_pics_files:
-            print(f"Files uploaded for field 'info_pics_files': {info_pics_files}")
-        else:
-            print("No files uploaded for field 'info_pics_files'")
 
         for image_file in info_pics_files:
+            # Check file type before saving
+            if not image_file.name.endswith(('.png', '.jpg', '.jpeg')):
+                # Log the error
+                logger.error(f"Invalid file type uploaded: {image_file.name}")
+                # Raise a validation error and send an error message to the template
+                form.add_error('info_pics_carousel', ValidationError("Invalid file type. Please upload only PNG, JPG, or JPEG files."))
+                return self.form_invalid(form)
+
             EventImage.objects.create(event=battle, image=image_file)
 
         # Debug print to check images after saving
@@ -295,7 +320,7 @@ class BattleCreate(LoginRequiredMixin, CreateView):
 
         return response
     
-    
+
 @csrf_exempt  # Note: Better to use csrf token in AJAX request for security
 @require_http_methods(["POST"])
 def send_code_view(request):

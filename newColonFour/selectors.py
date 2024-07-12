@@ -249,7 +249,9 @@ def get_dancers_info(event):
                 'name': battle_event.host.name,
                 'image_url': battle_event.host.picture.url if battle_event.host.picture else '',
                 'country': battle_event.host.country,
-                'role': 'Host'
+                'role': 'Host', 
+                'instagram_url': battle_event.host.instagram_url  # Include Instagram URL
+
             }
             dancers_info.append(host_info)
         else:
@@ -264,7 +266,9 @@ def get_dancers_info(event):
                     'name': judge.name,
                     'image_url': judge.picture.url if judge.picture else '',
                     'country': judge.country,
-                    'role': 'Judge'
+                    'role': 'Judge',
+                    'instagram_url': judge.instagram_url  # Include Instagram URL
+
                 }
                 dancers_info.append(judge_info)
         else:
@@ -279,7 +283,9 @@ def get_dancers_info(event):
             'name': dancer.name,
             'image_url': dancer.picture.url if dancer.picture else '',
             'country': dancer.country,
-            'role': 'Dancer'
+            'role': 'Dancer',
+            'instagram_url': dancer.instagram_url  # Include Instagram URL
+
         }
         dancers_info.append(dancer_info)
 
