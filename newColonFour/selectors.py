@@ -203,6 +203,7 @@ def sort_events(events_with_calculations, order_by):
 
 
 
+
 def get_unique_styles():
     """
     Get unique styles from Event model.
@@ -293,4 +294,18 @@ def get_dancers_info(event):
     print('Dancers Info:', dancers_info)
 
     return dancers_info
+
+
+def get_event_styles(event):
+    """
+    Fetch the styles associated with a given event.
+
+    :param event: The event instance to retrieve styles from.
+    :return: A list of styles associated with the event.
+    """
+    styles = event.styles.all()  # Assuming styles is a ManyToManyField
+    styles_list = [style.name for style in styles]  # Extract style names
+    logger.debug(f"Fetched styles for event {event.name}: {styles_list}")
+    return styles_list
+
 

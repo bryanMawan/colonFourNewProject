@@ -4,6 +4,10 @@
     color: #dcdcdc; /* Light text */
     border: 0.5px solid #dcdcdc; /* Light border */
   }
+
+  .stylesBadgesContainer {
+    border: 0.5px solid #dcdcdc; /* Light border */
+  }
   
   .offcanvas-header {
     background-color: #1e1e1e; /* Dark background */

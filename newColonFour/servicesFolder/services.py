@@ -11,7 +11,8 @@ from .GeolocationDatabase import GeolocationDatabase
 import pyotp
 import hashlib
 import base64
-import time  # Import the time module
+import re
+from django.utils.html import escape
 
 logger = logging.getLogger(__name__)
 geo_db = GeolocationDatabase()
@@ -54,6 +55,13 @@ def generate_unique_slug(model, value, slug_field="slug"):
         counter += 1
 
     return slug
+
+def sanitize_instagram_account(instagram_account):
+    if instagram_account:
+        instagram_account = escape(instagram_account)
+        if not re.match(r'^[\w\.\-]+$', instagram_account):
+            return None, 'Invalid Instagram account.'
+    return instagram_account, None
 
 # gpt: update this method to take the instagram account value as args and update in the organizer profiles instagram_account field as well
 def update_organizer_profile(user, gdpr_consented, instagram_account):

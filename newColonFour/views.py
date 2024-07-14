@@ -31,7 +31,7 @@ from .selectors import (
     get_unique_styles,
     get_unique_event_types,
     get_unique_levels,
-    get_dancers_info,
+    get_dancers_info
 )
 from .servicesFolder.services import (
     update_organizer_profile,
@@ -44,6 +44,7 @@ from .servicesFolder.services import (
     send_code,
     verify_totp_code,
     hash_telephone_number,
+    sanitize_instagram_account
 )
 
 
@@ -156,15 +157,20 @@ def register(request):
             user = form.save()
             gdpr_consented = form.cleaned_data.get('gdpr_consented', False)
             instagram_account = request.POST.get('instagram_account')
+
             logger.debug(f"Instagram account: {instagram_account}")
             update_organizer_profile(user, gdpr_consented, instagram_account)
             login(request, user)
             messages.success(request, f'Welcome {user.get_full_name()}!')
             return redirect('home')
+        else:
+            logger.warning(f"Invalid registration attempt: {form.errors}")
     else:
         form = OrganizerRegistrationForm()
-
+        logger.debug("Rendering registration form")
+        
     return render(request, 'registration.html', {'form': form})
+
 
 
 class CustomLoginView(LoginView):
@@ -394,13 +400,19 @@ def get_event_details(request, event_id):
     # Retrieve dancer information related to the event
     dancers_info = get_dancers_info(event)
 
+    # Fetch event styles
+    event_styles = event.get_styles()
+
     data = {
         'name': event.name,
         'description': event.description,
         'images': images,
         'organizer_instagram': event.organizer.instagram_account,
-        'dancers': dancers_info  # Include the retrieved dancers info
+        'dancers': dancers_info,  # Include the retrieved dancers info
+        'styles': event_styles  # Include the event styles
     }
+
+    logger.debug(f"Event details for {event.name}: {data}")
 
     return JsonResponse(data)
 

@@ -29,7 +29,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 try:
     SECRET_KEY = config("SECRET_KEY")
     DEBUG = config("DEBUG", cast=bool)
-    ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(',')])
+    ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=lambda v: [
+                           s.strip() for s in v.split(',')])
 except UndefinedValueError as e:
     raise RuntimeError(f"Missing required environment variable: {e}")
 
@@ -55,7 +56,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    #'newColonFour.middleware.VerificationCheckMiddleware',
+    # 'newColonFour.middleware.VerificationCheckMiddleware',
 
 ]
 
@@ -65,8 +66,8 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [os.path.join(BASE_DIR, 'templates'),
-                os.path.join(BASE_DIR, 'newColonFour', 'templates'),
-            ],
+                 os.path.join(BASE_DIR, 'newColonFour', 'templates'),
+                 ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -105,7 +106,13 @@ try:
                 'USER': config('POSTGRES_USER'),
                 'PASSWORD': config('POSTGRES_PASSWORD'),
                 'HOST': config('POSTGRES_HOST'),
-                'PORT': config('POSTGRES_PORT', cast=int),  # Default PostgreSQL port is 5432
+                # Default PostgreSQL port is 5432
+                'PORT': config('POSTGRES_PORT', cast=int),
+                'CONN_MAX_AGE': 150,  # Keep connections open for 10 minutes
+
+                'TEST': {
+                    'NAME': 'uihsdabdkadad',
+                },
             }
         }
 except UndefinedValueError as e:
@@ -121,9 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
 
 
@@ -156,19 +163,23 @@ if not DEBUG:
     GS_BUCKET_NAME = config('GS_BUCKET_NAME')
 
     # Retrieve the base64-encoded JSON from the environment variable
-    encoded_google_credentials_json = config('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+    encoded_google_credentials_json = config(
+        'GOOGLE_APPLICATION_CREDENTIALS_JSON')
 
     # Decode the base64-encoded string
-    decoded_google_credentials_json = base64.b64decode(encoded_google_credentials_json).decode('utf-8')
+    decoded_google_credentials_json = base64.b64decode(
+        encoded_google_credentials_json).decode('utf-8')
 
     # Load the decoded string as JSON
     google_credentials = json.loads(decoded_google_credentials_json)
 
     # Use the JSON to create Google service account credentials
     try:
-        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(google_credentials)
+        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+            google_credentials)
     except json.JSONDecodeError as e:
-        raise RuntimeError(f"Invalid JSON for GOOGLE_APPLICATION_CREDENTIALS_JSON: {e}")
+        raise RuntimeError(
+            f"Invalid JSON for GOOGLE_APPLICATION_CREDENTIALS_JSON: {e}")
 
     MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 else:
@@ -176,8 +187,7 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-GOOGLE_MAPS_API_KEY=config('GOOGLE_MAPS_API_KEY')
-
+GOOGLE_MAPS_API_KEY = config('GOOGLE_MAPS_API_KEY')
 
 
 # Default primary key field type
@@ -185,7 +195,8 @@ GOOGLE_MAPS_API_KEY=config('GOOGLE_MAPS_API_KEY')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
+SESSION_COOKIE_SECURE = config(
+    'SESSION_COOKIE_SECURE', default=False, cast=bool)
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=False, cast=bool)
@@ -228,7 +239,8 @@ CACHES = {
         'LOCATION': 'rediss://redis-13880.c300.eu-central-1-1.ec2.cloud.redislabs.com:13880/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'PASSWORD': config('REDIS_PASSWORD'),  # Fetch password from .env file
+            # Fetch password from .env file
+            'PASSWORD': config('REDIS_PASSWORD'),
             'SSL': True,
         },
     },
@@ -237,5 +249,3 @@ CACHES = {
         'LOCATION': 'django-backblaze-b2-cache',
     },
 }
-
-
