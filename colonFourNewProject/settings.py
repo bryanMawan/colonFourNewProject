@@ -101,17 +101,16 @@ try:
     else:
         DATABASES = {
             'default': {
-                'ENGINE': 'django.db.backends.postgresql_psycopg2',
-                'NAME': config('POSTGRES_DATABASE'),
-                'USER': config('POSTGRES_USER'),
-                'PASSWORD': config('POSTGRES_PASSWORD'),
-                'HOST': config('POSTGRES_HOST'),
-                # Default PostgreSQL port is 5432
-                'PORT': config('POSTGRES_PORT', cast=int),
+                'ENGINE': config('TEST_DB_ENGINE'),
+                'NAME': config('TEST_DB_NAME'),
+                'USER': config('TEST_DB_USER'),
+                'PASSWORD': config('TEST_DB_PASSWORD'),
+                'HOST': config('TEST_DB_HOST'),
+                'PORT': config('TEST_DB_PORT', cast=int),
                 'CONN_MAX_AGE': 150,  # Keep connections open for 10 minutes
 
                 'TEST': {
-                    'NAME': 'uihsdabdkadad',
+                    'NAME': 'dyagdjakdba',
                 },
             }
         }

@@ -7,4 +7,4 @@ media
 /colonfour-2e3334af074b.json
 tests
 management
-tests/test_BattleCreation.py
+staticfiles_build

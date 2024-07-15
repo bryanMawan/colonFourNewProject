@@ -14,7 +14,7 @@
     </div>
 
     <!-- Offcanvas Body -->
-    <div class="offcanvas-body">
+    <div class="offcanvas-body" id="battleOffcanvasBody" name="battleOffcanvasBody">
         <!-- Accordion for Battle Details -->
         <div class="accordion" id="battleDetailsAccordion">
             <div class="accordion-item">
@@ -27,7 +27,7 @@
                 <div id="battle-details-accordion" class="accordion-collapse collapse show"
                     data-bs-parent="#battleDetailsAccordion">
                     <div class="accordion-body">
-                        <div id="battle-details">
+                        <div id="battle-details" name="battleDetails">
                             <!-- Placeholder for description -->
                             <h5>Description</h5>
                             <p class="placeholder-glow">
@@ -50,7 +50,7 @@
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    <button class="accordion-button collapsed" id="infoImagesAccordionButton" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseImages" aria-expanded="false" aria-controls="collapseImages">
                         Info Images
                     </button>
@@ -62,7 +62,7 @@
                             <div class="carousel-indicators">
                                 <!-- Indicators will be dynamically inserted here -->
                             </div>
-                            <div class="carousel-inner" id="carousel-inner">
+                            <div class="carousel-inner" id="carousel-inner" name="carouselInner">
                                 <!-- Placeholder for images -->
                                 <div class="placeholder-glow">
                                     <div class="placeholder" style="height: 200px;"></div>
@@ -97,7 +97,7 @@
             <!-- Accordion for Dancer Card Container -->
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    <button class="accordion-button collapsed" id="dancerImagesAccordionButton" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseActors" aria-expanded="false" aria-controls="collapseActors">
                         Actors (Judges, DJs, Guest)
                     </button>
