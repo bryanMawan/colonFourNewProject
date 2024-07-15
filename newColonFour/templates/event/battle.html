@@ -5,198 +5,206 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 
 <div class="container d-flex justify-content-center align-items-center svh-100">
-    <div class="w-100"> <!-- Ensure the inner content has width control -->    <h2>Battle Registration</h2>
-    <form id="battleForm" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+    <div class="w-100">
+        <h2>Battle Registration</h2>
+        <form id="battleForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
+            <!-- Accordion for Form Fields -->
+            <div class="accordion accordion-flush" id="accordionFlushExample">
 
-        
-        <!-- Normal Fields Group -->
-        <div class="mb-3">
-            <div class="row">
-                <!-- Name and Location Fields -->
-                <div class="col-md-6">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Name</span>
-                        <input type="text" name="name" id="id_name" class="form-control" required value="{{ form.name.value|default_if_none:'' }}">
+                <!-- Compulsory Fields Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseCompulsory" aria-expanded="true" aria-controls="flush-collapseCompulsory">
+                            Compulsory Fields
+                        </button>
+                    </h2>
+                    <div id="flush-collapseCompulsory" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">Name</span>
+                                        <input type="text" name="name" id="id_name" class="form-control" required value="{{ form.name.value|default_if_none:'' }}">
+                                    </div>
+                                    {% if form.name.errors %}
+                                        <div class="alert alert-danger">{{ form.name.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">Location</span>
+                                        <input type="text" name="location" id="id_location" class="form-control" required value="{{ form.location.value|default_if_none:'' }}">
+                                    </div>
+                                    {% if form.location.errors %}
+                                        <div class="alert alert-danger">{{ form.location.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Date</span>
+                                        <input type="date" name="date" id="id_date" class="form-control" required value="{{ form.date.value|default_if_none:'' }}">
+                                    </div>
+                                    {% if form.date.errors %}
+                                        <div class="alert alert-danger">{{ form.date.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Start Time</span>
+                                        <input type="time" name="start_time" id="id_start_time" class="form-control" required value="{{ form.start_time.value|default_if_none:'' }}">
+                                    </div>
+                                    {% if form.start_time.errors %}
+                                        <div class="alert alert-danger">{{ form.start_time.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">End Time</span>
+                                        <input type="time" name="end_time" id="id_end_time" class="form-control" required value="{{ form.end_time.value|default_if_none:'' }}">
+                                    </div>
+                                    {% if form.end_time.errors %}
+                                        <div class="alert alert-danger">{{ form.end_time.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Description</span>
+                                <textarea name="description" id="id_description" class="form-control" required>{{ form.description.value|default_if_none:'' }}</textarea>
+                            </div>
+                            {% if form.description.errors %}
+                                <div class="alert alert-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Styles</span>
+                                        <input class="form-control" name="styles" list="stylesOptions" id="exampleDataList" placeholder="Type to search styles...">
+                                        <datalist id="stylesOptions">
+                                            {% for style in all_styles %}
+                                                <option value="{{ style }}">
+                                            {% endfor %}
+                                        </datalist>
+                                    </div>
+                                    {% if form.styles.errors %}
+                                        <div class="alert alert-danger">{{ form.styles.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Level</span>
+                                        <select name="level" id="id_level" class="form-select" required>
+                                            <option value="" selected disabled>Select Level</option>
+                                            {% for choice in form.fields.level.choices %}
+                                                <option value="{{ choice.0 }}" {% if choice.0 == form.level.value %}selected{% endif %}>
+                                                    {{ choice.1 }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    {% if form.level.errors %}
+                                        <div class="alert alert-danger">{{ form.level.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Type</span>
+                                        <select name="type" id="id_type" class="form-select" required>
+                                            <option value="" selected disabled>Select Type</option>
+                                            {% for choice in form.fields.type.choices %}
+                                                <option value="{{ choice.0 }}" {% if choice.0 == form.type.value %}selected{% endif %}>
+                                                    {{ choice.1 }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    {% if form.type.errors %}
+                                        <div class="alert alert-danger">{{ form.type.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Poster</span>
+                                <input type="file" name="poster" id="id_poster" class="form-control" accept="image/*">
+                            </div>
+                            {% if form.poster.errors %}
+                                <div class="alert alert-danger">{{ form.poster.errors }}</div>
+                            {% endif %}
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Carousel Pics</span>
+                                <input type="file" name="info_pics_carousel" id="id_info_pics_carousel" class="form-control" accept="image/*" multiple>
+                            </div>
+                            {% if form.info_pics_carousel.errors %}
+                                <div class="alert alert-danger">{{ form.info_pics_carousel.errors }}</div>
+                            {% endif %}
+                        </div>
                     </div>
-                    {% if form.name.errors %}
-                        <div class="alert alert-danger">{{ form.name.errors }}</div>
-                    {% endif %}
                 </div>
-                <div class="col-md-6">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Location</span>
-                        <input type="text" name="location" id="id_location" class="form-control" required value="{{ form.location.value|default_if_none:'' }}">
+
+                <!-- Optional Fields Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOptional" aria-expanded="false" aria-controls="flush-collapseOptional">
+                            Optional Fields
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOptional" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="id_is_7tosmoke" name="is_7tosmoke">
+                                <label class="form-check-label" for="id_is_7tosmoke">Is 7 to smoke?</label>
+                            </div>
+                            {% if form.is_7tosmoke.errors %}
+                                <div class="alert alert-danger">{{ form.is_7tosmoke.errors }}</div>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                <label for="id_judges" class="form-label">Judges</label>
+                                {{ form.judges }}
+                                {% if form.judges.errors %}
+                                    <div class="alert alert-danger">{{ form.judges.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_hosts" class="form-label">Hosts</label>
+                                {{ form.hosts }}
+                                {% if form.hosts.errors %}
+                                    <div class="alert alert-danger">{{ form.hosts.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="id_display_video">Display Video</label>
+                                <input type="file" name="display_video" id="id_display_video" class="form-control" accept="video/*">
+                            </div>
+                        </div>
                     </div>
-                    {% if form.location.errors %}
-                        <div class="alert alert-danger">{{ form.location.errors }}</div>
-                    {% endif %}
                 </div>
-            </div>
 
-            <div class="row">
-                <!-- Date, Start Time, and End Time Fields -->
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Date</span>
-                        <input type="date" name="date" id="id_date" class="form-control" required value="{{ form.date.value|default_if_none:'' }}">
-                    </div>
-                    {% if form.date.errors %}
-                        <div class="alert alert-danger">{{ form.date.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Start Time</span>
-                        <input type="time" name="start_time" id="id_start_time" class="form-control" required value="{{ form.start_time.value|default_if_none:'' }}">
-                    </div>
-                    {% if form.start_time.errors %}
-                        <div class="alert alert-danger">{{ form.start_time.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">End Time</span>
-                        <input type="time" name="end_time" id="id_end_time" class="form-control" required value="{{ form.end_time.value|default_if_none:'' }}">
-                    </div>
-                    {% if form.end_time.errors %}
-                        <div class="alert alert-danger">{{ form.end_time.errors }}</div>
-                    {% endif %}
-                </div>
-            </div>
+            </div> <!-- End of Accordion -->
 
-            <!-- Description Field -->
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Description</span>
-                <textarea name="description" id="id_description" class="form-control" required>{{ form.description.value|default_if_none:'' }}</textarea>
-            </div>
-            {% if form.description.errors %}
-                <div class="alert alert-danger">{{ form.description.errors }}</div>
-            {% endif %}
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-outline-primary mt-4">SUBMIT</button>
 
-            <div class="row">
-                <!-- Style and Level Fields -->
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Styles</span>
-                        <input class="form-control" name="styles" list="stylesOptions" id="exampleDataList" placeholder="Type to search styles...">
-                        <datalist id="stylesOptions">
-                            {% for style in all_styles %}
-                                <option value="{{ style }}">
-                            {% endfor %}
-                        </datalist>
-                    </div>
-                    {% if form.styles.errors %}
-                        <div class="alert alert-danger">{{ form.styles.errors }}</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Level</span>
-                        <select name="level" id="id_level" class="form-select" required>
-                            <option value="" selected disabled>Select Level</option>
-                            {% for choice in form.fields.level.choices %}
-                                <option value="{{ choice.0 }}" {% if choice.0 == form.level.value %}selected{% endif %}>
-                                    {{ choice.1 }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% if form.level.errors %}
-                        <div class="alert alert-danger">{{ form.level.errors }}</div>
-                    {% endif %}
-                </div>
-                    <!-- New Type Field -->
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Type</span>
-                        <select name="type" id="id_type" class="form-select" required>
-                            <option value="" selected disabled>Select Type</option>
-                            {% for choice in form.fields.type.choices %}
-                                <option value="{{ choice.0 }}" {% if choice.0 == form.type.value %}selected{% endif %}>
-                                    {{ choice.1 }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% if form.type.errors %}
-                        <div class="alert alert-danger">{{ form.type.errors }}</div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Poster Field -->
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Poster</span>
-                <input type="file" name="poster" id="id_poster" class="form-control" accept="image/*">
-            </div>
-            {% if form.poster.errors %}
-                <div class="alert alert-danger">{{ form.poster.errors }}</div>
-            {% endif %}
-        </div> 
-
-        <!-- Carousel Pics Field -->
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Carousel Pics</span>
-            <input type="file" name="info_pics_carousel" id="id_info_pics_carousel" class="form-control" accept="image/*" multiple>
-        </div>
-        {% if form.info_pics_carousel.errors %}
-            <div class="alert alert-danger">{{ form.info_pics_carousel.errors }}</div>
-        {% endif %}
-
-        <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample">
-            OPTIONAL FIELDS </button>
-        
-        <button type="submit" class="btn btn-outline-primary">SUBMIT</button>
-
-
-        <div class="collapse" id="collapseForm">
-
-        <!-- Optional Fields Group -->
-        <div class="mb-3">
-<br>
-                        <!-- Additional Optional Fields as required -->
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="id_is_7tosmoke" name="is_7tosmoke">
-                <label class="form-check-label" for="id_is_7tosmoke">Is 7 to smoke?</label>
-            </div>
-            {% if form.is_7tosmoke.errors %}
-                <div class="alert alert-danger">{{ form.is_7tosmoke.errors }}</div>
-            {% endif %}
-        <!-- Multi-Select Judges Field -->
-        <div class="mb-3">
-            <label for="id_judges" class="form-label">Judges</label>
-            {{ form.judges }}
-            {% if form.judges.errors %}
-                <div class="alert alert-danger">{{ form.judges.errors }}</div>
-            {% endif %}
-        </div>
-
-        <!-- Multi-Select Hosts Field -->
-        <div class="mb-3">
-            <label for="id_hosts" class="form-label">Hosts</label>
-            {{ form.hosts }}
-            {% if form.hosts.errors %}
-                <div class="alert alert-danger">{{ form.hosts.errors }}</div>
-            {% endif %}
-        </div>
-
-    <!-- Display Video Field -->
-    <div class="input-group mb-3">
-        <label class="input-group-text" for="id_display_video">Display Video</label>
-        <input type="file" name="display_video" id="id_display_video" class="form-control"  accept="video/*">
+        </form>
     </div>
-        </div>
-
-    </form>
 </div>
-</div>
-</div>
-
 
 <script src="{% static 'js/compress_images.js' %}"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js"></script>
 
 {% endblock %}
