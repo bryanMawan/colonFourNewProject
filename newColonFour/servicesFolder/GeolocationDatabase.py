@@ -13,12 +13,11 @@ logger = logging.getLogger(__name__)
 class GeolocationDatabase:
     def __init__(self):
         self.connection_params = {
-            "dbname": config('POSTGRES_DATABASE'),
-            "user": config('POSTGRES_USER'),
-            "password": config('POSTGRES_PASSWORD'),
-            "host": config('POSTGRES_HOST'),
-            # If you're using a non-default port, add it here
-            "port": "5432"  # Or use config('POSTGRES_PORT') if your port is in the .env
+            "dbname": config('TEST_DB_NAME'),
+            "user": config('TEST_DB_USER'),
+            "password": config('TEST_DB_PASSWORD'),
+            "host": config('TEST_DB_HOST'),
+            "port": config('TEST_DB_PORT', default="5432"),
         }
         self.init_db()
         self.geolocator = Nominatim(user_agent="your_user_agent_here")  # Adjust your user agent
