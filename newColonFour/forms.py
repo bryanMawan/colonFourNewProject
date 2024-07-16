@@ -52,8 +52,15 @@ class BattleForm(forms.ModelForm):
             'styles', 'level', 'poster', 'video', 'judges', 'type', 'host', 'is_7tosmoke',
         ]
 
+
+    # gpt: make sure the input ftom the styles field should be turned to all lowercase before before it is sent for saving
     def clean(self):
         cleaned_data = super().clean()
+
+        # Convert styles to lowercase
+        styles = cleaned_data.get('styles')
+        if styles:
+            cleaned_data['styles'] = styles.lower()
 
         # Calculate size of the poster image
         poster = self.files.get('poster')

@@ -177,7 +177,7 @@ def sort_events(events_with_calculations, order_by):
     elif order_by.startswith('goers'):
         key = lambda x: (x[4], x[1], x[2], x[3])
     else:
-        logger.warning(f"Unknown order_by value: {order_by}, defaulting to 'distance-a'")
+        logger.warning(f"Unknown order_by value: {order_by}, defaulting to 'distance-d'")
         key = lambda x: (x[2], x[1], x[3])
         ascending = True
 

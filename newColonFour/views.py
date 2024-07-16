@@ -121,7 +121,7 @@ class SearchHomePage(ListView):
             'Popular ↓': 'goers-d'
         }
 
-        order_by = order_mapping.get(user_friendly_order, 'soonest-a')  # Default to 'soonest-a'
+        order_by = order_mapping.get(user_friendly_order, 'distance-d')  # Default to 'soonest-a'
         logger.debug(f"Order by parameter: {order_by}")
         return order_by
 
