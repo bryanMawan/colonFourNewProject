@@ -33,9 +33,41 @@ def apply_filter(queryset, filters_dict):
             queryset = filter_by_styles(queryset, filter_value)
         elif filter_type == "weekend-events":
             queryset = filter_weekend_events(queryset)
+        elif filter_type == "dancers":
+            queryset = filter_by_dancers(queryset, filter_value)
         else:
             logger.warning(f"Ignoring unknown filter type: {filter_type}")
     return queryset
+
+
+def filter_by_dancers(queryset, dancer_names):
+    logger.debug(f'Filtering events for dancers: {dancer_names}')
+
+    if not dancer_names:
+        logger.warning('No dancer names provided for filtering.')
+        return queryset
+
+    # Retrieve dancer IDs based on names
+    dancer_ids = Dancer.objects.filter(name__in=dancer_names).values_list('id', flat=True)
+    if not dancer_ids:
+        logger.warning(f'No dancers found for names: {dancer_names}')
+        return queryset
+
+    logger.debug(f'Found dancer IDs: {dancer_ids}')
+
+    # Filter battles where the dancer is a judge or host
+    battle_judges_filter = Q(battle__judges__in=dancer_ids)
+    battle_host_filter = Q(battle__host__in=dancer_ids)
+
+    # Combine all filters for battles
+    battle_filter = battle_judges_filter | battle_host_filter
+
+    # Use the combined filter to query the database
+    queryset = queryset.filter(battle_filter).distinct()
+
+    logger.debug(f'Filtered events: {queryset}')
+    return queryset
+
 
 def filter_by_event_type(queryset, event_types):
     """
@@ -56,6 +88,8 @@ def filter_by_name(queryset, name_text):
             query |= Q(name__icontains=name_part)
         return queryset.filter(query)
     return queryset
+
+
 
 def filter_by_date_range(queryset, start_date, end_date):
     """
@@ -177,7 +211,7 @@ def sort_events(events_with_calculations, order_by):
     elif order_by.startswith('goers'):
         key = lambda x: (x[4], x[1], x[2], x[3])
     else:
-        logger.warning(f"Unknown order_by value: {order_by}, defaulting to 'distance-d'")
+        logger.warning(f"Unknown order_by value: {order_by}, defaulting to 'distance-a'")
         key = lambda x: (x[2], x[1], x[3])
         ascending = True
 
@@ -228,6 +262,9 @@ def get_unique_levels():
     Get unique levels from Event model.
     """
     return list(Event.objects.values_list('level', flat=True).distinct())
+
+
+# gpt: give me a method that returns all the dancers in my app. the method should be the fastest one performable by django best practices
 
 def get_dancers_info(event):
     dancers_info = []

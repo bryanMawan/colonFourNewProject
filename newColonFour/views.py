@@ -65,7 +65,9 @@ def fetch_suboptions(request):
         'styles': get_unique_styles(),
         'event-type': get_unique_event_types(),
         'format': ['Online', 'Offline'],
-        'level': get_unique_levels()
+        'level': get_unique_levels(),
+        'dancers': Dancer.get_all_dancer_names()  # Add dancer names here
+
     }
 
     data = suboptions.get(option, [])
@@ -121,7 +123,7 @@ class SearchHomePage(ListView):
             'Popular ↓': 'goers-d'
         }
 
-        order_by = order_mapping.get(user_friendly_order, 'distance-d')  # Default to 'soonest-a'
+        order_by = order_mapping.get(user_friendly_order, 'distance-a')  # Default to 'soonest-a'
         logger.debug(f"Order by parameter: {order_by}")
         return order_by
 

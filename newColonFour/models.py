@@ -271,6 +271,16 @@ class Dancer(models.Model):
     dancer_has_consented = models.BooleanField(default=False)  # Add the new field
     instagram_url = models.URLField(max_length=200, null=True, blank=True)  # Add this field
 
+    @classmethod
+    def get_all_dancer_names(cls):
+        """
+        Get a list of all dancer names from the Dancer model.
+        """
+        print("[DEBUG] Fetching all dancer names from the database.")  # Debug print
+        dancer_names = list(cls.objects.values_list('name', flat=True))
+        print(f"[DEBUG] Number of dancer names retrieved: {len(dancer_names)}")  # Debug print
+        return dancer_names
+
 
     def __str__(self):
         # Assuming the first style in the list is the primary style for simplicity

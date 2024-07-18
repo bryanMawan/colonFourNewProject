@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, OrganizerProfile, OrganizerVerificationRequest, Dancer, Battle, Event, Tip
+from .mixins import FutureDateValidationMixin
 from PIL import Image
 import io
 
@@ -43,7 +44,7 @@ class DancerForm(forms.ModelForm):
             print(f"{field}: {value}")
         return cleaned_data
 
-class BattleForm(forms.ModelForm):
+class BattleForm(FutureDateValidationMixin, forms.ModelForm):
 
     class Meta:
         model = Battle
@@ -59,8 +60,8 @@ class BattleForm(forms.ModelForm):
 
         # Convert styles to lowercase
         styles = cleaned_data.get('styles')
-        if styles:
-            cleaned_data['styles'] = styles.lower()
+        if styles and isinstance(styles, list):
+            cleaned_data['styles'] = [style.lower() for style in styles]
 
         # Calculate size of the poster image
         poster = self.files.get('poster')
