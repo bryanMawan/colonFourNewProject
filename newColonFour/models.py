@@ -251,7 +251,7 @@ class Event(models.Model):
     
 class Battle(Event):
     judges = models.ManyToManyField('Dancer', related_name='battle_judges', blank=True)
-    host = models.ForeignKey('Dancer', on_delete=models.SET_NULL, null=True, blank=True)
+    host = models.ManyToManyField('Dancer', related_name='battle_hosts', blank=True)
     type = models.CharField(max_length=10, choices=BATTLE_TYPE_CHOICES, default='1vs1')
     is_7tosmoke = models.BooleanField(default=False)
     # Additional fields specific to Battle can be added here

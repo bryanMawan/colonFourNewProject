@@ -1,0 +1,43 @@
+{% load static %}
+
+
+<!-- Offcanvas container (bottom) -->
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="eventChoiceOffcanvas" aria-labelledby="eventChoiceOffcanvasLabel">
+
+    <!-- Offcanvas header -->
+    <div class="offcanvas-header">
+        <!-- Title of the offcanvas -->
+        <h5 class="offcanvas-title" id="eventChoiceOffcanvasLabel">Event Choice Offcanvas</h5>
+        <!-- Button to close the offcanvas -->
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <!-- End of offcanvas header -->
+
+    <!-- Offcanvas body -->
+    <div class="offcanvas-body small">
+        <!-- Icons Section -->
+        <div class="d-flex justify-content-around flex-wrap" id="icon-section">
+            <!-- Workshop Button -->
+            <button type="button" class="icon-button" id="workshop-button" aria-label="Workshop">
+                <img src="{% static 'images/icons/wrench.png' %}" alt="Wrench Icon" id="workshop-icon">
+                <div class="icon-label" id="workshop-label">WORKSHOP</div>
+            </button>
+            <!-- Showcase Button -->
+            <button type="button" class="icon-button" id="showcase-button" aria-label="Showcase">
+                <img src="{% static 'images/icons/flamenco-dancer.png' %}" alt="Flamenco Dancer Icon"
+                    id="showcase-icon">
+                <div class="icon-label" id="showcase-label">SHOWCASE</div>
+            </button>
+            <!-- Battle Link -->
+            <a href="{% url 'create_battle' %}" class="icon-button" id="battle-button"
+                style="text-decoration: none; color: inherit;" aria-label="Battle">
+                <img src="{% static 'images/icons/swords.png' %}" alt="Swords Icon" id="battle-icon">
+                <div class="icon-label" id="battle-label">BATTLE</div>
+            </a>
+        </div>
+        <!-- End of Icons Section -->
+    </div>
+    <!-- End of offcanvas body -->
+
+</div>
+<!-- End of offcanvas container -->

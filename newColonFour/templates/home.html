@@ -10,6 +10,10 @@
 {% include "canvas/filterCanvas.html" %}
 {% include "goingModal.html" %}
 {% include "canvas/battleCanvas.html" %}
+{% include "canvas/eventChoiceCanvas.html" %}
+{% include "canvas/dancerCanvas.html" %}
+
+
 
 {% endblock %}
 
@@ -100,6 +104,11 @@
       <button button id="view-event-btn" class="btn btn-outline-primary mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#defaultTarget" aria-controls="battleoffcanvas">
         View Event Details
       </button>
+          <!-- Button to toggle the offcanvas -->
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#eventChoiceOffcanvas"
+aria-controls="eventChoiceOffcanvas">
+Toggle event choice offcanvas
+</button> <br><br>
       <div class="row location-display-container my-1">
         <div class="col-12">
           <p id="eventLocationDisplay" class="h6">@ <span>Placeholder Location</span></p>

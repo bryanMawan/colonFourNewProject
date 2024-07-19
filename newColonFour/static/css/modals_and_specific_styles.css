@@ -113,14 +113,14 @@
   /* Additional Modal Styles */
   .modal-body .icon-button {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     margin: 10px;
   }
   
   .modal-body .icon-button img {
-    width: 50px;  /* Adjust as needed */
+    width: 20px;  /* Adjust as needed */
     height: auto;
   }
   

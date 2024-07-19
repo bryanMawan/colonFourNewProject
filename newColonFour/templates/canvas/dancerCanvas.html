@@ -1,0 +1,89 @@
+<!-- Button to trigger offcanvas -->
+  
+  <!-- Offcanvas for Dancer Creation -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="dancerCreationOffcanvas" aria-labelledby="dancerCreationOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="dancerCreationOffcanvasLabel">Create New Dancer</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    
+    <!-- Offcanvas Body -->
+    <div class="offcanvas-body">
+      <!-- Dancer Creation Form -->
+      <form id="dancerForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+  
+        <!-- Name Field -->
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Name</span>
+          <input type="text" name="name" id="id_name" class="form-control" required value="{{ form.name.value|default_if_none:'' }}">
+        </div>
+        {% if dancer_form.name.errors %}
+          <div class="alert alert-danger">{{ dancer_form.name.errors }}</div>
+        {% endif %}
+  
+        <!-- Country Field -->
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Country</span>
+          <select name="country" id="id_country" class="form-select" required>
+            <option value="" selected disabled>Select Country</option>
+            {% for choice in dancer_form.fields.country.choices %}
+              <option value="{{ choice.0 }}" {% if choice.0 == dancer_form.country.value %}selected{% endif %}>
+                {{ choice.1 }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        {% if dancer_form.country.errors %}
+          <div class="alert alert-danger">{{ dancer_form.country.errors }}</div>
+        {% endif %}
+  
+        <!-- Styles Field -->
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Styles</span>
+          <input type="text" name="styles" id="id_styles" class="form-control" required value="{{ dancer_form.styles.value|default_if_none:'' }}">
+        </div>
+        {% if dancer_form.styles.errors %}
+          <div class="alert alert-danger">{{ dancer_form.styles.errors }}</div>
+        {% endif %}
+  
+        <!-- Picture Field -->
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Picture</span>
+          <input type="file" name="picture" id="id_picture" class="form-control" accept="image/*">
+        </div>
+        {% if dancer_form.picture.errors %}
+          <div class="alert alert-danger">{{ dancer_form.picture.errors }}</div>
+        {% endif %}
+  
+        <!-- Instagram URL Field -->
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Instagram URL</span>
+          <input type="url" name="instagram_url" id="id_instagram_url" class="form-control" value="{{ form.instagram_url.value|default_if_none:'' }}">
+        </div>
+        {% if dancer_form.instagram_url.errors %}
+          <div class="alert alert-danger">{{ dancer_form.instagram_url.errors }}</div>
+        {% endif %}
+  
+        <!-- Dancer Consent Checkbox -->
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="id_gdpr_consented" name="dancer_has_consented" required>
+          <label class="form-check-label" for="id_gdpr_consented">By checking this, the dancer has consented to their information (which is accurate) being posted on our site</label>
+        </div>
+  
+        <br></br>
+  
+        <!-- Submit Button -->
+        <button id="dancerFormSubmit" type="button" class="btn btn-outline-primary">CREATE</button>
+    </form>
+      <!-- End of Dancer Creation Form -->
+    </div>
+    <!-- End of Offcanvas Body -->
+  </div>
+
+  <script type="text/javascript">
+    // Pass the URL to JavaScript
+    const createDancerUrl = "{% url 'dancer_create' %}";
+</script>
+  <!-- End of Offcanvas for Dancer Creation -->
+  

@@ -10,10 +10,11 @@ from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.timezone import now
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.generic import TemplateView, DetailView, CreateView, ListView
 
@@ -173,8 +174,6 @@ def register(request):
         
     return render(request, 'registration.html', {'form': form})
 
-
-
 class CustomLoginView(LoginView):
     template_name = 'login.html'
 
@@ -208,7 +207,6 @@ def org_verification(request):
 
     return render(request, 'user_verification.html', {'form': form})
 
-
 class OrganizerProfileDetailView(LoginRequiredMixin, DetailView):
     model = OrganizerProfile
     template_name = 'organizer_profile_detail.html'
@@ -231,6 +229,19 @@ class OrganizerProfileDetailView(LoginRequiredMixin, DetailView):
         # Optionally, add the events to the context (if needed)
         context['events'] = events
         return context
+
+
+@csrf_exempt  # Use this if you can't use CSRF middleware. Otherwise, remove this decorator.
+def create_dancer(request):
+    if request.method == 'POST':
+        form = DancerForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+        else:
+            errors = [f"{field}: {error}" for field, error_list in form.errors.items() for error in error_list]
+            return JsonResponse({'success': False, 'errors': errors})
+    return JsonResponse({'success': False, 'errors': ['Invalid request method.']})
 
 
 # @method_decorator(ratelimit(key='user', rate='15/s', method='POST', block=True), name='dispatch')
@@ -272,6 +283,8 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         context = super(BattleCreate, self).get_context_data(**kwargs)
         context['all_dancers'] = get_all_dancers()  # Use the selector to add all dancers to the context
         context['all_styles'] = get_all_styles()  # Use the service to get all styles
+        context['dancer_form'] = DancerForm()  # Add dancer form to the context
+
         return context
 
     def get_success_url(self):

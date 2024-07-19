@@ -281,17 +281,20 @@ def get_dancers_info(event):
             return []
 
         # Add host information if available
-        if battle_event.host:
-            print(f'Host found: {battle_event.host}')
-            host_info = {
-                'name': battle_event.host.name,
-                'image_url': battle_event.host.picture.url if battle_event.host.picture else '',
-                'country': battle_event.host.country,
-                'role': 'Host', 
-                'instagram_url': battle_event.host.instagram_url  # Include Instagram URL
+        host = battle_event.host.all()
 
-            }
-            dancers_info.append(host_info)
+        if host:
+            print(f'Hosts found: {host}')
+            for each_host in host:
+                host_info = {
+                    'name': each_host.name,
+                    'image_url': each_host.picture.url if each_host.picture else '',
+                    'country': each_host.country,
+                    'role': 'Host', 
+                    'instagram_url': each_host.instagram_url  # Include Instagram URL
+
+                }
+                dancers_info.append(host_info)
         else:
             print('No host found for this battle event.')
 
