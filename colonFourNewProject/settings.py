@@ -204,13 +204,14 @@ SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=False, cast=bool)
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+LOG_LEVEL = config('DJANGO_LOG_LEVEL', default='WARNING').upper()
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': LOG_LEVEL,
             'class': 'logging.StreamHandler',
             'formatter': 'detailed',
         },
@@ -224,7 +225,7 @@ LOGGING = {
     'loggers': {
         'newColonFour': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': LOG_LEVEL,
             'propagate': True,
         },
     },
