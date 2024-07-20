@@ -53,6 +53,11 @@ class BattleForm(FutureDateValidationMixin, forms.ModelForm):
             'styles', 'level', 'poster', 'video', 'judges', 'type', 'host', 'is_7tosmoke',
         ]
 
+        widgets = {
+            'judges': forms.SelectMultiple(attrs={'class': 'custom-select'}),
+            'host': forms.SelectMultiple(attrs={'class': 'custom-select'}),
+        }
+
 
     # gpt: make sure the input ftom the styles field should be turned to all lowercase before before it is sent for saving
     def clean(self):

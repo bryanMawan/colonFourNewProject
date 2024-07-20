@@ -2,9 +2,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get references to the form and button
     const form = document.getElementById('dancerForm');
     const submitButton = document.getElementById('dancerFormSubmit');
+    const overlay = document.getElementById('loadingOverlay');
+
+    // Function to show the overlay
+    function showOverlay() {
+        overlay.style.display = 'block';
+    }
+
+    // Function to hide the overlay
+    function hideOverlay() {
+        overlay.style.display = 'none';
+    }
 
     // Add an event listener to the button
-    submitButton.addEventListener('click', function() {
+    submitButton.addEventListener('click', function(event) {
+        // Prevent the default form submission
+        event.preventDefault();
+        
+        // Show the loading overlay
+        showOverlay();
+
         // Create a FormData object
         const formData = new FormData(form);
 
@@ -36,16 +53,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 form.reset();
                 var offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('dancerCreationOffcanvas'));
                 offcanvas.hide();
-                // gpt: reload the current url(battle/create/) in the search bar 
+                // Reload the current URL
+                window.location.reload();
             } else {
                 // Handle validation errors returned from the server
                 alert('Error creating dancer: ' + data.errors.join(', '));
+                // Hide the loading overlay if there's an error
+                hideOverlay();
             }
         })
         .catch(error => {
             // Handle any errors that occur during the fetch
             console.error('Error:', error);
             alert('An error occurred: ' + error.message);
+            // Hide the loading overlay if there's an error
+            hideOverlay();
         });
     });
 });

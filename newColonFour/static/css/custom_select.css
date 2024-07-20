@@ -1,0 +1,40 @@
+/* Ensure custom styling for Select2 elements */
+.select2-container--default .select2-selection--multiple {
+    background-color: #1e1e1e;
+    color: #dcdcdc;
+    border: 2px solid #ced4da;
+    border-radius: 4px;
+    height: auto; /* Adjust to content height */
+    min-height: 60px; /* Minimum height for the container */
+}
+
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #1e1e1e;
+    border: 1px solid #dcdcdc;
+    border-radius: 0px;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 5px;
+    padding: 1;
+}
+
+.select2-results__options{
+    background-color: #1e1e1e;
+    color: #dcdcdc;
+
+
+}
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice:hover {
+    background-color: #dcdcdc;
+    color: #1e1e1e;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    padding: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
+}

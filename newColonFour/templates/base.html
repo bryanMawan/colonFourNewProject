@@ -19,6 +19,9 @@
     {% endblock %}
   </main>
 
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay"></div>
+
   {% block foo %}
   {% include "canvas/eventChoiceCanvas.html" %}
   {% endblock %}
@@ -34,11 +37,20 @@
     </a>
 
     <!-- Add Event button -->
-     <a href="{% if user.is_authenticated %}{% url 'create_dancer' %}{% else %}{% url 'create_tip' %}{% endif %}" class="nav-item icon-button" id="nav-add-event">
+    {% if user.is_authenticated %}
+    <a href="#" class="nav-item icon-button" id="nav-add-event" data-bs-toggle="offcanvas" data-bs-target="#eventChoiceOffcanvas" aria-controls="eventChoiceOffcanvas">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-plus-fill" viewBox="0 0 16 16">
         <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M8.5 8.5V10H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V11H6a.5.5 0 0 1 0-1h1.5V8.5a.5.5 0 0 1 1 0"/>
       </svg>
     </a>
+    {% else %}
+    <a href="{% url 'create_tip' %}" class="nav-item icon-button" id="nav-add-event">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-plus-fill" viewBox="0 0 16 16">
+        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M8.5 8.5V10H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V11H6a.5.5 0 0 1 0-1h1.5V8.5a.5.5 0 0 1 1 0"/>
+      </svg>
+    </a>
+    {% endif %}
+
 
     <!-- Profile or Login button -->
     <a href="{% if user.is_authenticated %}{% url 'organizer-profile-detail' user.organizerprofile.slug %}{% else %}{% url 'login' %}{% endif %}"
@@ -62,6 +74,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 </body>
 
 </html>
