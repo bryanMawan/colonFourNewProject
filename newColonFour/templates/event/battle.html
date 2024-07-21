@@ -11,6 +11,8 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/custom_select.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/filterAndSort.css' %}">
+
 
 
 
@@ -181,6 +183,10 @@
                                 <div class="alert alert-danger">{{ form.is_7tosmoke.errors }}</div>
                             {% endif %}
 
+                            <button class="btn btn-outline-primary mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#dancerCreationOffcanvas" aria-controls="dancerCreationOffcanvas">
+                                DON'T SEE A DANCER? ADD HERE
+                              </button>
+
                             <div class="mb-3">
                                 <label for="id_judges" class="form-label">Judges</label>
                                 {{ form.judges }}
@@ -209,9 +215,7 @@
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-outline-primary mt-4">SUBMIT</button>
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#dancerCreationOffcanvas" aria-controls="dancerCreationOffcanvas">
-                Toggle Dancer Creation Offcanvas
-              </button>
+
 
         </form>
     </div>
