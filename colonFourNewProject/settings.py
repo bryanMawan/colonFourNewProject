@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'storages',  # Add django-storages here
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [

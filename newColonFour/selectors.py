@@ -3,14 +3,22 @@ from django.db.models import Q, Count
 from .models import Dancer, Event, Battle
 from .servicesFolder.services import distance_between_cities
 import logging
+from django.utils import timezone  # Import timezone from django.utils
+
 
 logger = logging.getLogger(__name__)
 
 def get_all_dancers():
     """
     Retrieve all dancers from the database.
+    This is the fastest method using Django's QuerySet methods.
     """
-    return Dancer.objects.all()
+    try:
+        dancers = Dancer.objects.all().only('name')  # Retrieve only the necessary fields
+        return dancers
+    except Exception as e:
+        logger.error(f"Error retrieving dancers: {e}")
+        return Dancer.objects.none()
 
 def apply_filter(queryset, filters_dict):
     """
@@ -142,7 +150,7 @@ def filter_weekend_events(queryset):
         Q(date__week_day=1)    # Sunday
     )
 
-def get_sorted_events(search_query, utc_date_str, filters, order_by='distance-a'):
+def get_sorted_events(search_query, filters, order_by='distance-a'):
     """
     Get sorted events based on various filters and sorting criteria.
 
@@ -152,7 +160,7 @@ def get_sorted_events(search_query, utc_date_str, filters, order_by='distance-a'
     :param order_by: Sorting criteria. Can be 'distance-a', 'distance-d', 'soonest-a', 'soonest-d', 'goers-a', 'goers-d'.
     :return: Sorted list of events.
     """
-    utc_date = datetime.strptime(utc_date_str, "%Y-%m-%dT%H:%M:%S.%f%z") if utc_date_str else None
+    utc_date = timezone.now()  # Use the current UTC time instead of parsing from a string
     
     logger.debug(f"UTC date: {utc_date}")
     logger.debug(f"Search query: {search_query}")
@@ -201,39 +209,27 @@ def sort_events(events_with_calculations, order_by):
     :param order_by: Sorting criteria. Can be 'distance-a', 'distance-d', 'soonest-a', 'soonest-d', 'goers-a', 'goers-d'.
     :return: Sorted list of events.
     """
+
     ascending = order_by.endswith('-a')
-    key = None
+    key_map = {
+        'distance': lambda x: (x[2], x[1], x[3]),
+        'soonest': lambda x: (x[1], x[2], x[3]),
+        'goers': lambda x: (x[4], x[1], x[2], x[3])
+    }
+    sort_key = next((key_map[k] for k in key_map if order_by.startswith(k)), key_map['distance'])
 
-    if order_by.startswith('distance'):
-        key = lambda x: (x[2], x[1], x[3])
-    elif order_by.startswith('soonest'):
-        key = lambda x: (x[1], x[2], x[3])
-    elif order_by.startswith('goers'):
-        key = lambda x: (x[4], x[1], x[2], x[3])
-    else:
-        logger.warning(f"Unknown order_by value: {order_by}, defaulting to 'distance-a'")
-        key = lambda x: (x[2], x[1], x[3])
-        ascending = True
+    sorted_events_with_calculations = sorted(events_with_calculations, key=sort_key, reverse=not ascending)
 
-    sorted_events_with_calculations = sorted(events_with_calculations, key=key, reverse=not ascending)
-
-    # Debug prints to visualize the order
-    if order_by.startswith('distance'):
-        logger.debug("Sorting events by distance:")
-        for event in sorted_events_with_calculations:
-            logger.debug(f"Event: {event[0].name}, Distance: {event[2]}, Days Until: {event[1]}, Start Time: {event[3]}")
-    elif order_by.startswith('soonest'):
-        logger.debug("Sorting events by soonest:")
-        for event in sorted_events_with_calculations:
-            logger.debug(f"Event: {event[0].name}, Days Until: {event[1]}, Distance: {event[2]}, Start Time: {event[3]}")
-    elif order_by.startswith('goers'):
-        logger.debug("Sorting events by popularity (number of goers):")
-        for event in sorted_events_with_calculations:
-            logger.debug(f"Event: {event[0].name}, Goers Count: {event[4]}, Days Until: {event[1]}, Distance: {event[2]}, Start Time: {event[3]}")
+    # Debug prints to visualize the sorted events
+    logger.debug(f"Sorting events by {order_by.split('-')[0]} in {'ascending' if ascending else 'descending'} order:")
+    for event in sorted_events_with_calculations:
+        logger.debug(f"Event: {event[0].name}, "
+                     f"Distance: {event[2]}, Days Until: {event[1]}, Start Time: {event[3]}, Goers Count: {event[4]}")
 
     sorted_events = [item[0] for item in sorted_events_with_calculations]
     logger.debug(f"Sorted events count: {len(sorted_events)}")
     return sorted_events
+
 
 
 

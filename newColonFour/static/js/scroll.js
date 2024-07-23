@@ -73,13 +73,18 @@ function updateScale() {
     const eventLocationDisplay = document.querySelector('#eventLocationDisplay span');
     const cards = document.querySelectorAll('.card');
 
-    cards.forEach(card => {
-        if (card === centerMostCard) {
-            updateCardScale(card, eventDateDisplay, eventLocationDisplay, viewEventBtn);
-        } else {
-            card.classList.remove('scale-up');
-        }
-    });
+    if (cards.length === 1) {
+        // Handle case where there's only one card
+        updateCardScale(cards[0], eventDateDisplay, eventLocationDisplay, viewEventBtn);
+    } else {
+        cards.forEach(card => {
+            if (card === centerMostCard) {
+                updateCardScale(card, eventDateDisplay, eventLocationDisplay, viewEventBtn);
+            } else {
+                card.classList.remove('scale-up');
+            }
+        });
+    }
 }
 
 /**

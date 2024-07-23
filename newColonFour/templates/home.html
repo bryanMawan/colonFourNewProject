@@ -22,6 +22,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/modals_and_specific_styles.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/fonts_and_general_styles.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/filterAndSort.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/glow.css' %}">
 
 
 <!-- Single container starts here -->
@@ -78,37 +79,20 @@
             <input type="hidden" id="lastCentermostEventId" name="lastCentermostEventId" value="">
 
       <div class="scroll-container md-3">
-        {% for event in events %}
-        <div class="card position-relative" data-event-id="{{ event.id }}" data-event-date="{{ event.get_formatted_date }}" data-event-location="{{ event.location }}">
-          {% if event.poster %}
-            <img src="{{ event.poster.url }}" alt="{{ event.name }}" class="event-poster">
-          {% endif %}
-          <p class="event-name">{{ event.name }}</p>
-          <!-- Badges for event details YES -->
-          <span class="badge badge-goers rounded-pill">
-            {{ event.get_number_of_goers }}
-            <span class="visually-hidden">goings</span>
-          </span>
-          <span class="badge badge-type rounded-pill">
-            {{ event.get_event_type_display }}
-            <span class="visually-hidden">type</span>
-          </span>
-          <span class="badge badge-level rounded-pill">
-            {{ event.level }}
-            <span class="visually-hidden">level</span>
-          </span>
+
+        <!-- start loading card -->
+        <div class="card card-spinner">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </div>
-        {% endfor %}
+        <!-- end loading card -->
       </div>
 
       <button button id="view-event-btn" class="btn btn-outline-primary mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#defaultTarget" aria-controls="battleoffcanvas">
         View Event Details
       </button>
-          <!-- Button to toggle the offcanvas -->
-<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#eventChoiceOffcanvas"
-aria-controls="eventChoiceOffcanvas">
-Toggle event choice offcanvas
-</button> <br><br>
+ <br><br>
       <div class="row location-display-container my-1">
         <div class="col-12">
           <p id="eventLocationDisplay" class="h6">@ <span>Placeholder Location</span></p>
@@ -131,6 +115,12 @@ Toggle event choice offcanvas
 <script src="{% static 'js/autocomplete.js' %}"></script>
 <script src="{% static 'js/filterAndSort.js' %}"></script>
 <script src="{% static 'js/eventOffcanvas.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  var eventAjaxUrl = "{% url 'event_ajax_view' %}";
+</script>
+<script src="{% static 'js/loadEvents.js' %}"></script>
+
 
 
 
