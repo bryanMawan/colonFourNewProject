@@ -13,6 +13,9 @@ import hashlib
 import base64
 import re
 from django.utils.html import escape
+import redis
+from django.conf import settings
+
 
 logger = logging.getLogger(__name__)
 geo_db = GeolocationDatabase()
@@ -20,6 +23,8 @@ default_query = "3 Rue de l'Est, 75020 Paris, France"
 
 default_image = '/static/images/photoDefault.jpg'
 dancer_success_msg = " has been added as a dancer. Create more dancers or proceed by clicking the 'Next' button or "
+
+EVENT_AJAX_CACHE_KEY = ""
 
 COUNTRY_CHOICES = [
     ('USA', 'United States'),
@@ -43,6 +48,19 @@ LEVEL_CHOICES = [
         ('Advanced', 'Advanced'),
         # Add more battle types if needed
     ]
+
+
+def generate_cache_key(self, key_string):
+        """
+        Generate an MD5 hash for the provided key string to be used as a cache key.
+        
+        Args:
+            key_string (str): The input string to be hashed.
+        
+        Returns:
+            str: The resulting MD5 hash as a hexadecimal string.
+        """
+        return hashlib.md5(key_string.encode()).hexdigest()
 
 
 def generate_unique_slug(model, value, slug_field="slug"):
@@ -244,3 +262,56 @@ def hash_telephone_number(telephone_number):
     hash_object.update(encoded_number)
     # Return the hexadecimal representation of the digest
     return hash_object.hexdigest()
+
+
+
+
+def get_redis_client():
+    """Get a Redis client using Django settings and print the LOCATION."""
+    location = settings.CACHES['default']['LOCATION']
+    
+    # Print the LOCATION to understand its format
+    print(f"Redis LOCATION: {location}")
+    
+    # Extract the host and port from the LOCATION string
+    if location.startswith('redis://'):
+        # Remove the 'redis://' part and split the rest
+        parts = location[7:].split(':')
+        
+        try:
+            host = parts[0]
+            port_and_db = parts[1].split('/')
+            port = int(port_and_db[0])
+            db = int(port_and_db[1]) if len(port_and_db) > 1 else 0  # Default to db 0 if not specified
+        except (IndexError, ValueError) as e:
+            raise ValueError(f"Failed to parse Redis location: {location}") from e
+    else:
+        raise ValueError(f"Unexpected Redis LOCATION format: {location}")
+
+    return redis.Redis(
+        host=host,
+        port=port,
+        db=db
+    )
+    
+def delete_keys_with_prefix(prefix):
+    # Get the Redis client
+    redis_conn = get_redis_client()
+    
+    # Initialize cursor and pattern
+    cursor = 0
+    pattern = f"{prefix}*"
+    
+    while True:
+        # Use the SCAN command to iterate over keys
+        cursor, keys = redis_conn.scan(cursor, match=pattern)
+        
+        if keys:
+            # Delete each key
+            for key in keys:
+                redis_conn.delete(key)
+                print(f"Deleted key: {key.decode('utf-8')}")
+        
+        # Break the loop if the cursor is zero (no more keys to scan)
+        if cursor == 0:
+            break

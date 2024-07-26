@@ -26,6 +26,7 @@ googleapis-common-protos==1.63.0
 grpcio==1.62.1
 grpcio-status==1.62.1
 h11==0.14.0
+hiredis==3.0.0
 idna==3.6
 iniconfig==2.0.0
 logfury==1.0.1
@@ -45,7 +46,7 @@ PySocks==1.7.1
 pytest==8.2.2
 pytest-django==4.8.0
 python-decouple==3.8
-redis==5.0.1
+redis==5.0.7
 requests==2.31.0
 rsa==4.9
 selenium==4.22.0

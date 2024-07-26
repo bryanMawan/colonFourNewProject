@@ -18,11 +18,13 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.generic import TemplateView, DetailView, CreateView, ListView
 from django.views import View
+from django.core.cache import cache
 
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import EventSerializer
-
+from django.core.paginator import Paginator
 
 from .forms import (
     OrganizerRegistrationForm,
@@ -51,9 +53,15 @@ from .servicesFolder.services import (
     send_code,
     verify_totp_code,
     hash_telephone_number,
-    sanitize_instagram_account
+    delete_keys_with_prefix
+)
+from .cache_utils import (
+    set_cache_with_prefix,
+    get_cache_with_prefix,
+    generate_cache_key
 )
 
+import hashlib
 
 logger = logging.getLogger(__name__)
 
@@ -88,27 +96,25 @@ class SearchHomePage(TemplateView):
         return context
 
 
+class EventPagination(PageNumberPagination):
+    page_size = 4  # Set the number of events per page
+
+
 class EventAjaxView(APIView):
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('search-box', 'Paris, France')
         print(f"Debug - search_query: {search_query}")
 
         if search_query == "":
-            # Provide a default value if search_query is None
             search_query = 'Paris, France'
-
-        print(f"Debug after - search_query: {search_query}")
 
         raw_filters = request.GET.dict()
         logger.debug(f"Raw filters received: {raw_filters}")
 
         order_by = raw_filters.get('order-by', 'Closest ↑')
+        filters = {k: v.split(", ") if ',' in v else [v] for k, v in raw_filters.items()
+                   if k not in ['search-box', 'order-by', 'offset', 'limit'  ]}
 
-        # Filter out special keys
-        filters = {k: v.split(", ") if ',' in v else [v] for k, v in raw_filters.items(
-        ) if k not in ['search-box', 'order-by']}
-
-        # Mapping order-by parameter
         order_mapping = {
             'Soonest ↑': 'soonest-a',
             'Soonest ↓': 'soonest-d',
@@ -119,22 +125,58 @@ class EventAjaxView(APIView):
         }
         order_by = order_mapping.get(order_by, 'soonest-a')
 
+        # Extract pagination parameters
         try:
-            events = get_sorted_events(
-                search_query=search_query,
-                filters=filters,
-                order_by=order_by
-            )
-            serializer = EventSerializer(events, many=True)
+            offset = int(request.GET.get('offset', 0))
+            limit = int(request.GET.get('limit', 4))
+        except ValueError:
+            return Response({'error': 'Invalid offset or limit parameters'}, status=400)
 
-                        # Print serialized data for debugging
-            print("[DEBUG] Serialized events data:")
-            print(serializer.data)
+        # Generate a unique cache key based on search query, filters, and order_by
+        
+        cache_key = generate_cache_key(search_query, order_by, filters)
+        events = get_cache_with_prefix("event_load", cache_key)
 
-            return Response({'events': serializer.data})
-        except Exception as e:
-            logger.error(f"Error fetching events: {e}")
-            return Response({'error': 'Unable to fetch events'}, status=500)
+
+        if not events:
+            try:
+                # Fetch and sort events based on the search query, filters, and order_by
+                events = get_sorted_events(
+                    search_query=search_query,
+                    filters=filters,
+                    order_by=order_by
+                )
+                set_cache_with_prefix("event_load", cache_key, events, timeout=60*1)
+                
+            except Exception as e:
+                logger.error(f"Error fetching events: {e}")
+                return Response({'error': 'Unable to fetch events'}, status=500)
+
+        # Apply Django's built-in pagination
+        paginator = Paginator(events, limit)  # limit is the number of events per page
+        page_number = (offset // limit) + 1  # Page number is offset divided by limit plus 1
+
+        if page_number > paginator.num_pages:
+            # If the page number exceeds the number of available pages, return an empty response
+            return Response({'results': [], 'count': paginator.count, 'next': None, 'previous': None})
+
+        page = paginator.get_page(page_number)
+
+        # Serialize only the events on the current page
+        serializer = EventSerializer(page.object_list, many=True)
+
+        print("[DEBUG] Serialized events data:")
+        print(serializer.data)
+
+        # Return paginated response
+        response_data = {
+            'results': serializer.data,
+            'count': paginator.count,  # Total count of events
+            'next': page.next_page_number() if page.has_next() else None,
+            'previous': page.previous_page_number() if page.has_previous() else None,
+        }
+        return Response(response_data)
+
 
 
 def register(request):
@@ -291,6 +333,12 @@ class BattleCreate(LoginRequiredMixin, CreateView):
             OrganizerProfile, user=self.request.user)
         # Then, construct the URL using the 'organizer-profile-detail' view and the organizer's slug.
         return reverse_lazy('organizer-profile-detail', kwargs={'slug': organizer_profile.slug})
+    
+    def clear_event_cache(self):
+        client_location = "Paris, France"
+        default_load_key_string = f"event_ajax_view_{client_location}_" + "{'utc-date': [''], 'offset': ['0'], 'limit': ['4']}_distance-a"
+        hashlib.md5(default_load_key_string.encode()).hexdigest()
+        logger.info(f"Cache cleared for keys with prefix '{default_load_key_string}'")
 
     def form_valid(self, form):
         # Save the form instance but don't commit to db yet
@@ -340,6 +388,9 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         # Show success message
         messages.success(
             self.request, f'Battle "{battle_name}" has been successfully created.')
+        
+        # Clear cache related to event listings
+        self.clear_event_cache()
 
         return response
 

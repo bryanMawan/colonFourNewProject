@@ -4,6 +4,8 @@ from .models import Dancer, Event, Battle
 from .servicesFolder.services import distance_between_cities
 import logging
 from django.utils import timezone  # Import timezone from django.utils
+from django.core.cache import cache
+
 
 
 logger = logging.getLogger(__name__)
@@ -19,7 +21,7 @@ def get_all_dancers():
     except Exception as e:
         logger.error(f"Error retrieving dancers: {e}")
         return Dancer.objects.none()
-
+    
 def apply_filter(queryset, filters_dict):
     """
     Apply filters based on the filters_dict dictionary.
@@ -233,105 +235,134 @@ def sort_events(events_with_calculations, order_by):
 
 
 
-
 def get_unique_styles():
     """
-    Get unique styles from Event model.
+    Get unique styles from Event model with caching.
     """
-    styles_lists = list(Event.objects.values_list('styles', flat=True).distinct())   
-    print(f"Retrieved styles lists: {styles_lists}")
+    cache_key = 'unique_styles'
+    unique_styles = cache.get(cache_key)
+    
+    if unique_styles is None:
+        styles_lists = list(Event.objects.values_list('styles', flat=True).distinct())
+        unique_styles_set = {item for sublist in styles_lists for item in sublist if item}
+        unique_styles = list(unique_styles_set)
+        cache.set(cache_key, unique_styles, timeout=3600)  # Cache for 1 hour
+        print(f"Cache miss for unique styles. Retrieved and cached: {unique_styles}")
+    else:
+        print(f"Cache hit for unique styles: {unique_styles}")
+    
+    return unique_styles
 
-    # Flatten the list and remove empty lists
-    unique_styles_set = {item for sublist in styles_lists for item in sublist if item}
-    print(f"Unique styles set: {unique_styles_set}")
 
-    return list(unique_styles_set)
-
+ # gpt: CACHE THISSSS
 def get_unique_event_types():
     """
-    Get unique event types from Event model.
+    Get unique event types from Event model with caching.
     """
-    return list(Event.objects.values_list('event_type', flat=True).distinct())
+    cache_key = 'unique_event_types'
+    unique_event_types = cache.get(cache_key)
+    
+    if unique_event_types is None:
+        unique_event_types = list(Event.objects.values_list('event_type', flat=True).distinct())
+        cache.set(cache_key, unique_event_types, timeout=3600)  # Cache for 1 hour
+        print(f"Cache miss for unique event types. Retrieved and cached: {unique_event_types}")
+    else:
+        print(f"Cache hit for unique event types: {unique_event_types}")
+    
+    return unique_event_types
+
 
 def get_unique_levels():
     """
-    Get unique levels from Event model.
+    Get unique levels from Event model with caching.
     """
-    return list(Event.objects.values_list('level', flat=True).distinct())
+    cache_key = 'unique_levels'
+    unique_levels = cache.get(cache_key)
+    
+    if unique_levels is None:
+        unique_levels = list(Event.objects.values_list('level', flat=True).distinct())
+        cache.set(cache_key, unique_levels, timeout=3600)  # Cache for 1 hour
+        print(f"Cache miss for unique levels. Retrieved and cached: {unique_levels}")
+    else:
+        print(f"Cache hit for unique levels: {unique_levels}")
+    
+    return unique_levels
 
-
-# gpt: give me a method that returns all the dancers in my app. the method should be the fastest one performable by django best practices
 
 def get_dancers_info(event):
-    dancers_info = []
+    """
+    Get dancers information for a specific event with caching.
+    """
+    cache_key = f'dancers_info_{event.id}'
+    dancers_info = cache.get(cache_key)
+    
+    if dancers_info is None:
+        dancers_info = []
 
-    if event.event_type == Event.BATTLE:
-        print(f'Event {event} is a Battle. Retrieving host and judges.')
+        if event.event_type == Event.BATTLE:
+            print(f'Event {event} is a Battle. Retrieving host and judges.')
 
-        # Ensure the event is cast to Battle to access its specific fields
-        try:
-            battle_event = Battle.objects.get(id=event.id)
-            print(f'Battle event found: {battle_event}')
-        except Battle.DoesNotExist:
-            print(f'Battle event with id {event.id} does not exist.')
+            try:
+                battle_event = Battle.objects.get(id=event.id)
+                print(f'Battle event found: {battle_event}')
+            except Battle.DoesNotExist:
+                print(f'Battle event with id {event.id} does not exist.')
+                return []
+
+            host = battle_event.host.all()
+
+            if host:
+                print(f'Hosts found: {host}')
+                for each_host in host:
+                    host_info = {
+                        'name': each_host.name,
+                        'image_url': each_host.picture.url if each_host.picture else '',
+                        'country': each_host.country,
+                        'role': 'Host', 
+                        'instagram_url': each_host.instagram_url
+                    }
+                    dancers_info.append(host_info)
+            else:
+                print('No host found for this battle event.')
+
+            judges = battle_event.judges.all()
+            if judges:
+                print(f'Judges found: {judges}')
+                for judge in judges:
+                    judge_info = {
+                        'name': judge.name,
+                        'image_url': judge.picture.url if judge.picture else '',
+                        'country': judge.country,
+                        'role': 'Judge',
+                        'instagram_url': judge.instagram_url
+                    }
+                    dancers_info.append(judge_info)
+            else:
+                print('No judges found for this battle event.')
+        else:
+            print(f'Event {event} is not a Battle (type: {event.event_type}). Returning empty dancers info.')
             return []
 
-        # Add host information if available
-        host = battle_event.host.all()
+        for dancer in event.dancers.all():
+            dancer_info = {
+                'name': dancer.name,
+                'image_url': dancer.picture.url if dancer.picture else '',
+                'country': dancer.country,
+                'role': 'Dancer',
+                'instagram_url': dancer.instagram_url
+            }
+            dancers_info.append(dancer_info)
 
-        if host:
-            print(f'Hosts found: {host}')
-            for each_host in host:
-                host_info = {
-                    'name': each_host.name,
-                    'image_url': each_host.picture.url if each_host.picture else '',
-                    'country': each_host.country,
-                    'role': 'Host', 
-                    'instagram_url': each_host.instagram_url  # Include Instagram URL
-
-                }
-                dancers_info.append(host_info)
-        else:
-            print('No host found for this battle event.')
-
-        # Add judge information
-        judges = battle_event.judges.all()
-        if judges:
-            print(f'Judges found: {judges}')
-            for judge in judges:
-                judge_info = {
-                    'name': judge.name,
-                    'image_url': judge.picture.url if judge.picture else '',
-                    'country': judge.country,
-                    'role': 'Judge',
-                    'instagram_url': judge.instagram_url  # Include Instagram URL
-
-                }
-                dancers_info.append(judge_info)
-        else:
-            print('No judges found for this battle event.')
+        print('Dancers Info:', dancers_info)
+        cache.set(cache_key, dancers_info, timeout=3600)  # Cache for 1 hour
+        print(f"Cache miss for dancers info. Retrieved and cached: {dancers_info}")
     else:
-        print(f'Event {event} is not a Battle (type: {event.event_type}). Returning empty dancers info.')
-        return []
-
-    # Add other dancers if there are any
-    for dancer in event.dancers.all():
-        dancer_info = {
-            'name': dancer.name,
-            'image_url': dancer.picture.url if dancer.picture else '',
-            'country': dancer.country,
-            'role': 'Dancer',
-            'instagram_url': dancer.instagram_url  # Include Instagram URL
-
-        }
-        dancers_info.append(dancer_info)
-
-    # Debug prints for checking dancer_info
-    print('Dancers Info:', dancers_info)
-
+        print(f"Cache hit for dancers info: {dancers_info}")
+    
     return dancers_info
 
 
+ # gpt: CACHE THISSSS
 def get_event_styles(event):
     """
     Fetch the styles associated with a given event.

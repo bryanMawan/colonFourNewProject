@@ -6,6 +6,10 @@ from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
 from geopy.exc import GeopyError
 import logging
+from django.core.cache import cache
+import hashlib
+
+
 
 # Configure logging to only log errors
 logger = logging.getLogger(__name__)
@@ -43,8 +47,26 @@ class GeolocationDatabase:
         except psycopg2.DatabaseError as e:
             logger.error(f"Database error during initialization: {e}")
 
+    def generate_cache_key(self, key_string):
+        """
+        Generate an MD5 hash for the provided key string to be used as a cache key.
+        
+        Args:
+            key_string (str): The input string to be hashed.
+        
+        Returns:
+            str: The resulting MD5 hash as a hexadecimal string.
+        """
+        return hashlib.md5(key_string.encode()).hexdigest()
+
     def getDefaultCoordinates(self):
         city = "Paris, France"
+        cache_key = self.generate_cache_key(city)
+        cached_coords = cache.get(cache_key)
+        
+        if cached_coords:
+            return cached_coords
+        
         default_lat, default_lon = None, None
         try:
             with psycopg2.connect(**self.connection_params) as conn:
@@ -58,9 +80,12 @@ class GeolocationDatabase:
                         if location:
                             default_lat, default_lon = location.latitude, location.longitude
                             self.add_location(city, default_lat, default_lon)
+            cache.set(cache_key, (default_lat, default_lon), timeout=60*60*2)  # Cache for 2 hours
         except (psycopg2.DatabaseError, GeopyError) as e:
             logger.error(f"Error ensuring default coordinates: {e}")
+        
         return default_lat, default_lon
+
 
     def add_location(self, city, lat, lon):
         try:
@@ -76,23 +101,34 @@ class GeolocationDatabase:
             logger.error(f"Database error during insert: {e}")
 
     def get_location(self, city_country):
+        cache_key = self.generate_cache_key(city_country)
+        cached_coords = cache.get(cache_key)
+        
+        if cached_coords:
+            return cached_coords + (True,)
+        
         try:
             city = city_country
             with psycopg2.connect(**self.connection_params) as conn:
                 with conn.cursor(cursor_factory=DictCursor) as cursor:
-                    # Fetch location from database
                     cursor.execute(sql.SQL('SELECT latitude, longitude FROM locations WHERE LOWER(city) = LOWER(%s)'), (city,))
                     result = cursor.fetchone()
                     if result:
-                        return result['latitude'], result['longitude'], True
+                        lat, lon = result['latitude'], result['longitude']
+                        cache.set(cache_key, (lat, lon), timeout=60*60*2)  # Cache for 2 hours
+                        return lat, lon, True
                     else:
                         location = self.geocode(city_country)
                         if location:
                             lat, lon = location.latitude, location.longitude
                             self.add_location(city, lat, lon)
+                            cache.set(cache_key, (lat, lon), timeout=60*60*2)  # Cache for 2 hours
                             return lat, lon, True
                         else:
-                            return self.default_lat, self.default_lon, False
+                            default_lat, default_lon = self.getDefaultCoordinates()
+                            return default_lat, default_lon, False
         except (psycopg2.DatabaseError, GeopyError) as e:
             logger.error(f"Geocoding error: {e}")
-            return self.default_lat, self.default_lon, False
+            default_lat, default_lon = self.getDefaultCoordinates()
+            return default_lat, default_lon, False
+

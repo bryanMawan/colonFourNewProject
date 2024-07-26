@@ -38,7 +38,7 @@ except UndefinedValueError as e:
 # Application definition
 
 INSTALLED_APPS = [
-    "newColonFour",
+    "newColonFour.apps.NewcolonfourConfig",  # Use the refactored app config
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'storages',  # Add django-storages here
     'rest_framework',
+
 
 ]
 
@@ -235,19 +236,19 @@ LOGGING = {
 
 
 # Add this to your CACHES setting
+# Cache configuration
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'rediss://redis-13880.c300.eu-central-1-1.ec2.cloud.redislabs.com:13880/1',
+        'LOCATION': config('REDIS_URL'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            # Fetch password from .env file
-            'PASSWORD': config('REDIS_PASSWORD'),
-            'SSL': True,
         },
-    },
-    'django-backblaze-b2': {  # Add this new cache configuration
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'django-backblaze-b2-cache',
-    },
+        'KEY_PREFIX': 'events',
+        'TIMEOUT': 60 * 15,  # in seconds: 60 * 15 (15 minutes)
+    }
 }
+
+# Session configuration (if using Redis for sessions)
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
