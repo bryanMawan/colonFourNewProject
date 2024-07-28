@@ -3,7 +3,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
-from .views import HomePageView, fetch_suboptions, register, org_verification, create_dancer, OrganizerProfileDetailView, CustomLoginView, DancerCreateView, BattleCreate, SearchHomePage, CreateTipView, send_code_view, verify_code_view, get_event_details, delete_past_events_view, EventAjaxView
+from .views import HomePageView, fetch_suboptions, register, org_verification, create_dancer, OrganizerProfileDetailView, CustomLoginView, DancerCreateView, BattleCreate, SearchHomePage, CreateTipView, send_code_view, verify_code_view, get_event_details, delete_past_events_view, EventAjaxView, get_partial_content
 
 urlpatterns = [
     path('oldhome/', HomePageView.as_view(), name='oldhome'),
@@ -24,6 +24,8 @@ urlpatterns = [
     path('delete-past-events/', delete_past_events_view, name='delete-past-events'),
     path('create-dancer/', create_dancer, name='dancer_create'),
     path('events/', EventAjaxView.as_view(), name='event_ajax_view'),
+    path('get_partial_content/', get_partial_content, name='get_partial_content'),
+
 
 
     # Add other URL patterns as needed

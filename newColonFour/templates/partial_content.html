@@ -1,0 +1,17 @@
+<div class="to-refresh">
+    <div class="mb-3">
+        <label for="id_judges" class="form-label">Judges</label>
+        {{ form.judges }}
+        {% if form.judges.errors %}
+            <div class="alert alert-danger">{{ form.judges.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_host" class="form-label">Hosts</label>
+        {{ form.host }}
+        {% if form.host.errors %}
+            <div class="alert alert-danger">{{ form.host.errors }}</div>
+        {% endif %}
+    </div>
+</div>

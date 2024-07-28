@@ -1,6 +1,8 @@
 # yourapp/views.py
 import logging
 from datetime import datetime
+from django.template.loader import render_to_string
+
 
 from django.conf import settings
 from django.contrib import messages
@@ -86,6 +88,25 @@ def fetch_suboptions(request):
     data = suboptions.get(option, [])
     return JsonResponse({'suboptions': data})
 
+def fetch_updated_options(request):
+    # Query for the latest judges and hosts
+    judges = Dancer.objects.filter(battle_judges__isnull=False).distinct().values('id', 'name')
+    hosts = Dancer.objects.filter(battle_hosts__isnull=False).distinct().values('id', 'name')
+
+    # Prepare the data in a dictionary format
+    data = {
+        'judges': list(judges),
+        'hosts': list(hosts)
+    }
+
+    # Return the data as JSON response
+    return JsonResponse(data)
+
+def get_partial_content(request):
+    form = BattleForm()
+    context = {'form': form}
+    html = render_to_string('partial_content.html', context, request=request)
+    return JsonResponse({'html': html})
 
 class SearchHomePage(TemplateView):
     template_name = 'home.html'
