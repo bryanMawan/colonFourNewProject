@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const cardHTML = `
                     <div class="dance-card">
                         <img src="${dancer.image_url}" alt="${dancer.name}">
-                        <h5 class="mt-1"><strong>${dancer.name}</strong> (${dancer.country})</h5>
+                        <h5 class="mt-1"><strong>${dancer.name}</strong> ${dancer.country}</h5>
                         <p>${dancer.role}</p>
                     ${dancer.instagram_url ? `<a href="${dancer.instagram_url}" target="_blank">${instagramSvg}</a>` : ''}
                     </div>

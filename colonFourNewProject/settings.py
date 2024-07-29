@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'storages',  # Add django-storages here
     'rest_framework',
+    'debug_toolbar',
+
 
 
 ]
@@ -60,7 +62,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # 'newColonFour.middleware.VerificationCheckMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 
+
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]
 
 ROOT_URLCONF = "colonFourNewProject.urls"

@@ -63,26 +63,26 @@ class BattleForm(FutureDateValidationMixin, forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        # Convert styles to lowercase
-        styles = cleaned_data.get('styles')
-        if styles and isinstance(styles, list):
-            cleaned_data['styles'] = [style.lower() for style in styles]
+        # # Convert styles to lowercase
+        # styles = cleaned_data.get('styles')
+        # if styles and isinstance(styles, list):
+        #     cleaned_data['styles'] = [style.lower() for style in styles]
 
-        # Calculate size of the poster image
-        poster = self.files.get('poster')
-        if poster:
-            size_of_poster = self.calculate_image_size(poster)
-            print(f"Size of poster image: {size_of_poster} bytes")
+        # # Calculate size of the poster image
+        # poster = self.files.get('poster')
+        # if poster:
+        #     size_of_poster = self.calculate_image_size(poster)
+        #     print(f"Size of poster image: {size_of_poster} bytes")
 
-        # Calculate size of each carousel image
-        carousel_images = self.files.getlist('info_pics_carousel')
-        total_carousel_size = 0
-        for image in carousel_images:
-            size = self.calculate_image_size(image)
-            total_carousel_size += size
-            print(f"Size of carousel image: {size} bytes")
+        # # Calculate size of each carousel image
+        # carousel_images = self.files.getlist('info_pics_carousel')
+        # total_carousel_size = 0
+        # for image in carousel_images:
+        #     size = self.calculate_image_size(image)
+        #     total_carousel_size += size
+        #     print(f"Size of carousel image: {size} bytes")
 
-        print(f"Total size of carousel images: {total_carousel_size} bytes")
+        # print(f"Total size of carousel images: {total_carousel_size} bytes")
 
         return cleaned_data
 

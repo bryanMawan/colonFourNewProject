@@ -15,7 +15,7 @@ import re
 from django.utils.html import escape
 import redis
 from django.conf import settings
-
+from .country_choices import COUNTRY_CHOICES
 
 logger = logging.getLogger(__name__)
 geo_db = GeolocationDatabase()
@@ -26,11 +26,8 @@ dancer_success_msg = " has been added as a dancer. Create more dancers or procee
 
 EVENT_AJAX_CACHE_KEY = ""
 
-COUNTRY_CHOICES = [
-    ('USA', 'United States'),
-    ('CAN', 'Canada'),
-    # Add more countries as needed
-]
+
+
 
 
 

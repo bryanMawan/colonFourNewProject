@@ -21,6 +21,8 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.views.generic import TemplateView, DetailView, CreateView, ListView
 from django.views import View
 from django.core.cache import cache
+import time
+
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -362,58 +364,49 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         logger.info(f"Cache cleared for keys with prefix '{default_load_key_string}'")
 
     def form_valid(self, form):
-        # Save the form instance but don't commit to db yet
+        start_time = time.time()
+
+        # Create a new Battle instance without saving to the database
         battle = form.save(commit=False)
-        # Update battle's organizer
+        
+        # Modify the battle instance as needed
         battle = set_battle_organizer(battle, self.request.user)
-
+        
         # Debug print to check styles before saving
-        print(f"Form styles before save: {battle.styles}")
-
+        logger.debug(f"Form styles before save: {battle.styles}")
+        
         # Update the location point
         update_event_location_point(battle, geo_db)
-        battle.save()  # Now save the battle to the database
-        # Handle many-to-many relationships
-        form.save_m2m()
 
-        # Debug print to check if the post dictionary
-        print(f"POST dictionary: {self.request.POST}")
+        self.handle_info_pics_carousel(battle)
+        logger.debug(f"Battle info_pics_carousel count: {battle.info_pics_carousel.count()}")
+        
+        # Assign the modified battle instance to self.object
+        self.object = battle
+        logger.debug(f"Battle object before saving: {battle.__dict__}")
 
-        # Handle info_pics_carousel
-        info_pics_files = self.request.FILES.getlist('info_pics_carousel')
-
-        for image_file in info_pics_files:
-            # Check file type before saving
-            if not image_file.name.endswith(('.png', '.jpg', '.jpeg')):
-                # Log the error
-                logger.error(f"Invalid file type uploaded: {image_file.name}")
-                # Raise a validation error and send an error message to the template
-                form.add_error('info_pics_carousel', ValidationError(
-                    "Invalid file type. Please upload only PNG, JPG, or JPEG files."))
-                return self.form_invalid(form)
-
-            EventImage.objects.create(event=battle, image=image_file)
-
-        # Debug print to check images after saving
-        print(
-            f"Battle info_pics_carousel count: {battle.info_pics_carousel.count()}")
-
-        # Set the current user as the host of the battle
+        # Call super().form_valid(form) to save the instance and handle redirection
         response = super().form_valid(form)
-
-        # Log the creation of the battle. Move the detailed logging logic to services if needed.
+        
         user_name = self.request.user.get_full_name()
         battle_name = form.cleaned_data['name']
         logger.info(f'User "{user_name}" created a battle: "{battle_name}"')
-
-        # Show success message
-        messages.success(
-            self.request, f'Battle "{battle_name}" has been successfully created.')
+        messages.success(self.request, f'Battle "{battle_name}" has been successfully created.')
         
-        # Clear cache related to event listings
         self.clear_event_cache()
+        end_time = time.time()
+        execution_time = end_time - start_time
+        logger.warning(f'Execution time for BattleCreate: {execution_time} seconds')
 
         return response
+    
+    def handle_info_pics_carousel(self, battle):
+        info_pics_files = self.request.FILES.getlist('info_pics_carousel')
+        for image_file in info_pics_files:
+            if not image_file.name.lower().endswith(('.png', '.jpg', '.jpeg')):
+                logger.error(f"Invalid file type uploaded: {image_file.name}")
+                raise ValidationError("Invalid file type. Please upload only PNG, JPG, or JPEG files.")
+            EventImage.objects.create(event=battle, image=image_file)
 
 
 @csrf_exempt  # Note: Better to use csrf token in AJAX request for security
