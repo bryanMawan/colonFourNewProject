@@ -107,11 +107,11 @@ def filter_by_date_range(queryset, start_date, end_date):
     """
     logger.debug(f"Filtering by date range: {start_date} - {end_date}")
     if start_date and end_date:
-        return queryset.filter(date__range=[start_date, end_date])
+        return queryset.filter(end_date__range=[start_date, end_date])
     elif start_date:
-        return queryset.filter(date__gte=start_date)
+        return queryset.filter(end_date__gte=start_date)
     elif end_date:
-        return queryset.filter(date__lte=end_date)
+        return queryset.filter(end_date__lte=end_date)
     return queryset
 
 def filter_by_level(queryset, levels):
@@ -147,9 +147,9 @@ def filter_weekend_events(queryset):
     Filter queryset to include only weekend events.
     """
     return queryset.filter(
-        Q(date__week_day=6) |  # Friday
-        Q(date__week_day=7) |  # Saturday
-        Q(date__week_day=1)    # Sunday
+        Q(end_date__week_day=6) |  # Friday
+        Q(end_date__week_day=7) |  # Saturday
+        Q(end_date__week_day=1)    # Sunday
     )
 
 def get_sorted_events(search_query, filters, order_by='distance-a'):
@@ -168,8 +168,8 @@ def get_sorted_events(search_query, filters, order_by='distance-a'):
     logger.debug(f"Search query: {search_query}")
 
     queryset = Event.objects.filter(
-        Q(date__gt=utc_date.date()) |
-        Q(date=utc_date.date(), start_time__gte=utc_date.time())
+        Q(end_date__gt=utc_date.date()) |
+        Q(end_date=utc_date.date(), start_time__gte=utc_date.time())
     )
 
     logger.debug(f"Initial queryset count: {queryset.count()}")

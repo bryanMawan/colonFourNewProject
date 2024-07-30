@@ -10,6 +10,8 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+
 <link rel="stylesheet" type="text/css" href="{% static 'css/custom_select.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/filterAndSort.css' %}">
 
@@ -57,13 +59,30 @@
                             </div>
 
                             <div class="row">
+                                <!-- New Date Range Picker Field -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="date_range">Select Date Range:</label>
+                                    <input type="text" id="date_range" name="date_range" placeholder="Select Date Range" required readonly class="form-control">
+                                </div>
+
                                 <div class="col-md-4 mb-3">
                                     <div class="input-group">
-                                        <span class="input-group-text">Date</span>
+                                        <span class="input-group-text">Start Date</span>
                                         <input type="date" name="date" id="id_date" class="form-control" required value="{{ form.date.value|default_if_none:'' }}">
                                     </div>
                                     {% if form.date.errors %}
                                         <div class="alert alert-danger">{{ form.date.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                 <!-- New End Date Field -->
+                                 <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">End Date</span>
+                                        <input type="date" name="end_date" id="id_end_date" class="form-control" required value="{{ form.end_date.value|default_if_none:'' }}">
+                                    </div>
+                                    {% if form.end_date.errors %}
+                                        <div class="alert alert-danger">{{ form.end_date.errors }}</div>
                                     {% endif %}
                                 </div>
 
@@ -76,16 +95,8 @@
                                         <div class="alert alert-danger">{{ form.start_time.errors }}</div>
                                     {% endif %}
                                 </div>
-
-                                <div class="col-md-4 mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text">End Time</span>
-                                        <input type="time" name="end_time" id="id_end_time" class="form-control" required value="{{ form.end_time.value|default_if_none:'' }}">
-                                    </div>
-                                    {% if form.end_time.errors %}
-                                        <div class="alert alert-danger">{{ form.end_time.errors }}</div>
-                                    {% endif %}
-                                </div>
+  
+                            
                             </div>
 
                             <div class="input-group mb-3">
@@ -227,12 +238,14 @@
 </script>
 <!-- Include Google Maps Places Autocomplete -->
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <script src="{% static 'js/compress_images.js' %}"></script>
 <script src="{% static 'js/createDancer.js' %}"></script>
 <script src="{% static 'js/customSelect.js' %}"></script>
 <script src="{% static 'js/autocomplete.js' %}"></script>
 <script src="{% static 'js/autocomplete_battle.js' %}"></script>
+<script src="{% static 'js/flatpickr.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js"></script>

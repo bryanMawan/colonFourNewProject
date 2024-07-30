@@ -130,6 +130,7 @@ class Event(models.Model):
     event_type = models.CharField(max_length=10, choices=EVENT_TYPE_CHOICES, default=WORKSHOP)
     name = models.CharField(max_length=255)
     date = models.DateTimeField()
+    end_date = models.DateTimeField(null=True, blank=True)  # New field for end date
     location = models.CharField(max_length=255)
     location_point = models.CharField(max_length=30, blank=True, null=True)
     goers = ArrayField(models.CharField(max_length=64), null=True, blank=True, default=list)
@@ -138,7 +139,6 @@ class Event(models.Model):
     goings = models.IntegerField(default=0)
     number_of_goings = models.IntegerField(default=0)
     start_time = models.TimeField(null=True, blank=True) #temporal
-    end_time = models.TimeField(null=True, blank=True) #temporal
     level = models.CharField(max_length=13, choices=LEVEL_CHOICES, default='1vs1')
     styles = ArrayField(models.CharField(max_length=100),null=True, blank=True)
     viewed = models.IntegerField(default=0)
@@ -154,16 +154,28 @@ class Event(models.Model):
 
     def get_formatted_date(self):
         """
-        Returns the event's date in the format 'day, month day, year, start time'.
+        Returns the event's date in the format 'FRI 30/09/24 - SUN 02/10/24 from 15:00 (IN 40 days)'.
         """
-        # Format the day, date, and start time
-        event_day = self.date.strftime('%A')  # Full weekday name
-        event_date = self.date.strftime('%B %d, %Y')  # Full month name, day, and year
-        event_start_time = self.start_time.strftime('%H:%M') if self.start_time else 'N/A'  # 24-hour clock
+        # Format the start date
+        start_day = self.date.strftime('%a')  # Abbreviated weekday name
+        start_date = self.date.strftime('%d/%m/%y')  # Day, month, year
+        start_time = self.start_time.strftime('%H:%M') if self.start_time else 'N/A'  # 24-hour clock
+        
+        # Format the end date
+        if self.end_date:
+            end_day = self.end_date.strftime('%a')  # Abbreviated weekday name
+            end_date = self.end_date.strftime('%d/%m/%y')  # Day, month, year
+            date_range = f"{start_day} {start_date} - {end_day} {end_date}"
+        else:
+            date_range = f"{start_day} {start_date}"
+        
+        # Calculate the number of days until the event
+        now = datetime.now(self.date.tzinfo)
+        days_until = (self.date - now).days
 
         # Create the formatted string
-        formatted_date = f"{event_day}, {event_date}, {event_start_time}"
-
+        formatted_date = f"{date_range} from {start_time} (IN {days_until} day(s))"
+        
         # Debug: Print the formatted date
         logger.debug(f"Event: {self.name} | Formatted Date: {formatted_date}")
 

@@ -49,7 +49,7 @@ class BattleForm(FutureDateValidationMixin, forms.ModelForm):
     class Meta:
         model = Battle
         fields = [
-            'name', 'date', 'location', 'description', 'start_time', 'end_time',
+            'name', 'date', 'end_date', 'location', 'description', 'start_time',
             'styles', 'level', 'poster', 'video', 'judges', 'type', 'host', 'is_7tosmoke',
         ]
 

@@ -103,9 +103,7 @@ def get_all_styles():
         for event in Event.objects.all():
             all_styles.update(event.get_styles())
     else:
-        # If no Event instances, get styles from Dancers
-        for dancer in Dancer.objects.all():
-            all_styles.update(dancer.special_get_styles())
+        pass
 
     return list(all_styles)
 
