@@ -154,27 +154,29 @@ class Event(models.Model):
 
     def get_formatted_date(self):
         """
-        Returns the event's date in the format 'FRI 30/09/24 - SUN 02/10/24 from 15:00 (IN 40 days)'.
+        Returns the event's date in the format 'fri, sep 30, 2024 - sun, oct 02, 2024 from 15:00 (in x day(s))'.
         """
-        # Format the start date
-        start_day = self.date.strftime('%a')  # Abbreviated weekday name
-        start_date = self.date.strftime('%d/%m/%y')  # Day, month, year
-        start_time = self.start_time.strftime('%H:%M') if self.start_time else 'N/A'  # 24-hour clock
+        # Helper function to format a date
+        def format_date(date):
+            return date.strftime('%a, %b %d, %Y').lower()
         
-        # Format the end date
+        # Format start date
+        start_date_str = format_date(self.date)
+        start_time_str = self.start_time.strftime('%H:%M') if self.start_time else 'N/A'
+        
+        # Format end date, if available
         if self.end_date:
-            end_day = self.end_date.strftime('%a')  # Abbreviated weekday name
-            end_date = self.end_date.strftime('%d/%m/%y')  # Day, month, year
-            date_range = f"{start_day} {start_date} - {end_day} {end_date}"
+            end_date_str = format_date(self.end_date)
+            date_range = f"{start_date_str} - {end_date_str}"
         else:
-            date_range = f"{start_day} {start_date}"
+            date_range = start_date_str
         
         # Calculate the number of days until the event
-        now = datetime.now(self.date.tzinfo)
-        days_until = (self.date - now).days
-
-        # Create the formatted string
-        formatted_date = f"{date_range} from {start_time} (IN {days_until} day(s))"
+        days_until = (self.date - datetime.now(self.date.tzinfo)).days
+        days_until_str = "tomorrow" if days_until == 1 else f"in {days_until} days"
+        
+        # Construct the formatted date string
+        formatted_date = f"{date_range} from {start_time_str} ({days_until_str})"
         
         # Debug: Print the formatted date
         logger.debug(f"Event: {self.name} | Formatted Date: {formatted_date}")
@@ -211,10 +213,10 @@ class Event(models.Model):
     
     def get_styles(self):
         # Start with the event's own styles, ensuring they're titled
-        unique_styles = set(style.title() for style in self.styles) if self.styles else set()
-        
+        unique_styles = set(style.title() for style in self.styles) if self.styles else set()    
             
         return list(unique_styles)
+    
     def days_until(self, aware_date):
         """
         Calculate the difference in days between the event date and the provided aware date string.
