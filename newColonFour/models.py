@@ -201,9 +201,6 @@ class Event(models.Model):
         # Start with the event's own styles, ensuring they're titled
         unique_styles = set(style.title() for style in self.styles) if self.styles else set()
         
-        # Add titled styles from all associated dancers
-        for dancer in self.dancers.all():
-            unique_styles.update([style.title() for style in dancer.special_get_styles()])
             
         return list(unique_styles)
     def days_until(self, aware_date):
@@ -267,7 +264,6 @@ class Dancer(models.Model):
     name = models.CharField(max_length=255)
     country = models.CharField(max_length=3, choices=COUNTRY_CHOICES)  # Use a CharField with choices
     picture = models.ImageField(upload_to='dancer_pics/', null=True, blank=True)
-    styles = ArrayField(models.CharField(max_length=100))
     dancer_has_consented = models.BooleanField(default=False)  # Add the new field
     instagram_url = models.URLField(max_length=200, null=True, blank=True)  # Add this field
 
@@ -282,15 +278,6 @@ class Dancer(models.Model):
         return dancer_names
 
 
-    def __str__(self):
-        # Assuming the first style in the list is the primary style for simplicity
-        primary_style = self.styles[0] if self.styles else "No Style"
-        return f"{self.name}({self.country}) - {primary_style}"
-
-    def special_get_styles(self):
-        # Return a list of unique styles
-        styles = [style.title() for style in set(self.styles)]
-        return styles
 
 
 
@@ -307,8 +294,7 @@ class Dancer(models.Model):
     def __str__(self):
         return self.name 
     
-    def get_styles(self):
-        return list(self.styles)
+
 
 class Workshop(Event):
     # Additional fields specific to Workshop can be added here
