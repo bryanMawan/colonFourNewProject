@@ -35,7 +35,7 @@ class DancerForm(forms.ModelForm):
 
     class Meta:
         model = Dancer
-        fields = ['name', 'country', 'picture', 'styles', 'dancer_has_consented', 'instagram_url']
+        fields = ['name', 'country', 'picture', 'dancer_has_consented', 'instagram_url']
 
     def clean(self):
         cleaned_data = super().clean()

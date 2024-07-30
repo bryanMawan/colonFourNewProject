@@ -225,9 +225,14 @@
 <script>
     const getPartialContentUrl = "{% url 'get_partial_content' %}";
 </script>
+<!-- Include Google Maps Places Autocomplete -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places"></script>
+
 <script src="{% static 'js/compress_images.js' %}"></script>
 <script src="{% static 'js/createDancer.js' %}"></script>
 <script src="{% static 'js/customSelect.js' %}"></script>
+<script src="{% static 'js/autocomplete.js' %}"></script>
+<script src="{% static 'js/autocomplete_battle.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js"></script>

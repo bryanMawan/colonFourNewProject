@@ -38,14 +38,6 @@
           <div class="alert alert-danger">{{ dancer_form.country.errors }}</div>
         {% endif %}
   
-        <!-- Styles Field -->
-        <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon1">Styles</span>
-          <input type="text" name="styles" id="id_styles" class="form-control" required value="{{ dancer_form.styles.value|default_if_none:'' }}">
-        </div>
-        {% if dancer_form.styles.errors %}
-          <div class="alert alert-danger">{{ dancer_form.styles.errors }}</div>
-        {% endif %}
   
         <!-- Picture Field -->
         <div class="input-group mb-3">

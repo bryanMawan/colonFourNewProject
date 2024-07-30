@@ -345,6 +345,7 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         # Use the service to get all styles
         context['all_styles'] = get_all_styles()
         context['dancer_form'] = DancerForm()  # Add dancer form to the context
+        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
 
         return context
 
@@ -371,6 +372,10 @@ class BattleCreate(LoginRequiredMixin, CreateView):
         
         # Modify the battle instance as needed
         battle = set_battle_organizer(battle, self.request.user)
+
+        # Debug print to check selected styles
+        styles = form.cleaned_data.get('styles', [])
+        logger.debug(f"Selected styles: {styles}")
         
         # Debug print to check styles before saving
         logger.debug(f"Form styles before save: {battle.styles}")
@@ -407,6 +412,7 @@ class BattleCreate(LoginRequiredMixin, CreateView):
                 logger.error(f"Invalid file type uploaded: {image_file.name}")
                 raise ValidationError("Invalid file type. Please upload only PNG, JPG, or JPEG files.")
             EventImage.objects.create(event=battle, image=image_file)
+            
 
 
 @csrf_exempt  # Note: Better to use csrf token in AJAX request for security

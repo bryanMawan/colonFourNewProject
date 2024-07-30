@@ -8,6 +8,10 @@
     min-height: 60px; /* Minimum height for the container */
 }
 
+.select2-search__field {
+    color: #dcdcdc;
+}
+
 
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
@@ -27,6 +31,10 @@
 
 }
 
+.select2-selection.select2-selection--multiple {
+    border-radius: 0px;
+    border: 1px solid #dcdcdc;
+}
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice:hover {
     background-color: #dcdcdc;
