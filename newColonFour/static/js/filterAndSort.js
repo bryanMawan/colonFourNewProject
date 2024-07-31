@@ -9,11 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const orderSoonestBtn = document.getElementById('orderSoonestBtn');
     const orderClosestBtn = document.getElementById('orderClosestBtn');
     const orderPopularBtn = document.getElementById('orderPopularBtn');
-
-
-
-
-
+    const addThisWeekFilterBtn = document.getElementById('addThisWeekFilterBtn');
+    const addNextWeekFilterBtn = document.getElementById('addNextWeekFilterBtn');
+    const addTodayFilterBtn = document.getElementById('addTodayFilterBtn');
 
     // Event listeners
     filterDropdown.addEventListener('change', handleDropdownChange);
@@ -25,8 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     orderSoonestBtn.addEventListener('click', () => handleOrderBy('Soonest'));
     orderClosestBtn.addEventListener('click', () => handleOrderBy('Closest'));
     orderPopularBtn.addEventListener('click', () => handleOrderBy('Popular'));
-
-
+    addThisWeekFilterBtn.addEventListener('click', handleAddThisWeekFilter);
+    addNextWeekFilterBtn.addEventListener('click', handleAddNextWeekFilter);
+    addTodayFilterBtn.addEventListener('click', handleAddTodayFilter);
     // Initialize filters from URL
     initializeFiltersFromURL();
 
@@ -34,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 });
-
 
 /**
  * Parses the URL parameters and initializes the filters.
@@ -49,7 +47,6 @@ function initializeFiltersFromURL() {
     }
     console.log('Filters initialized from URL'); // Debug statement
 }
-
 
 
 /**
@@ -212,9 +209,6 @@ function handleCreateFilterButton() {
     }
 }
 
-
-
-
 /**
  * Creates a filter button with the given text and appends it to the chosen filters section.
  * If a filter button with the same text already exists, it won't be added again.
@@ -247,7 +241,6 @@ function createAndAppendFilterButton(badgeText, dropdownText) {
     const button = createFilterButton(combinedText);
     chosenFiltersBody.appendChild(button); // Append button to chosen filters body
 }
-
 
 /**
  * Creates a filter button element with the given text.
@@ -413,6 +406,67 @@ function addOrderBadge(orderType, isAscending) {
     document.getElementById('chosenFiltersBody').appendChild(button);
     console.log(`Added ${badgeText} order badge`); // Debug statement
 }
+/**
+ * Calculates the date range for a given period.
+ * @param {string} periodType - The type of period ("today", "this-week", or "next-week").
+ * @returns {string} - The date range in the format "YYYY-MM-DD - YYYY-MM-DD".
+ */
+function calculateDateRange(periodType) {
+    const today = new Date();
+    let startDate, endDate;
+
+    if (periodType === "today") {
+        // Today
+        startDate = new Date(today);
+        endDate = new Date(today);
+    } else if (periodType === "this-week") {
+        // This Week (Sunday to Saturday)
+        const startOfWeek = today.getDate() - today.getDay();
+        startDate = new Date(today.setDate(startOfWeek));
+        endDate = new Date(today.setDate(startOfWeek + 6));
+    } else if (periodType === "next-week") {
+        // Next Week (Sunday to Saturday)
+        const startOfNextWeek = today.getDate() - today.getDay() + 7;
+        startDate = new Date(today.setDate(startOfNextWeek));
+        endDate = new Date(today.setDate(startOfNextWeek + 6));
+    }
+
+    // Format dates to "YYYY-MM-DD"
+    const formatDate = date => date.toISOString().split('T')[0];
+    return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+}
+
+/**
+ * Handles adding a filter badge with a date range to the active filters section.
+ * @param {string} weekType - The type of week ("this-week" or "next-week").
+ * @param {string} filterText - The text for the filter badge (e.g., "This Week").
+ */
+function handleAddFilterWithDateRange(weekType, filterText) {
+    const dateRange = calculateDateRange(weekType);
+    createAndAppendFilterButton(`${dateRange}`, `date-range`);
+    console.log(`Added ${filterText} filter with date range: ${dateRange}`); // Debug statement
+}
+
+/**
+ * Handles adding a "This Week" filter badge with a date range to the active filters section.
+ */
+function handleAddThisWeekFilter() {
+    handleAddFilterWithDateRange("this-week", "This Week");
+}
+
+/**
+ * Handles adding a "Next Week" filter badge with a date range to the active filters section.
+ */
+function handleAddNextWeekFilter() {
+    handleAddFilterWithDateRange("next-week", "Next Week");
+}
+
+function handleAddTodayFilter() {
+    handleAddFilterWithDateRange("today", "Today");
+}
+
+
+
 
 function removeExistingOrderBadge() {
     const chosenFiltersBody = document.getElementById('chosenFiltersBody');

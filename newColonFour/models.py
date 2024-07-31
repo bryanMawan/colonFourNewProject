@@ -1,12 +1,27 @@
+# Standard Library Imports
+import logging
+
+# Third-Party Library Imports
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
+
+# Django Imports
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
-from django.utils.timezone import make_aware, datetime
-from django.utils.translation import gettext_lazy as _
-from django.conf import settings
 from django.contrib.postgres.fields import ArrayField  # Only if using PostgreSQL
-from .servicesFolder.services import generate_unique_slug, default_image, COUNTRY_CHOICES, BATTLE_TYPE_CHOICES, LEVEL_CHOICES, distance_between_cities
-import logging
+
+# Local Application Imports
+from .servicesFolder.services import (  # Grouped and sorted
+    generate_unique_slug,
+    default_image,
+    COUNTRY_CHOICES,
+    BATTLE_TYPE_CHOICES,
+    LEVEL_CHOICES,
+    distance_between_cities,
+    format_days_until,
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -171,9 +186,18 @@ class Event(models.Model):
         else:
             date_range = start_date_str
         
+        # Get the current date and time
+        now = timezone.now()
+        
+        # Extract the date-only values for comparison
+        now_date_only = now.date()
+        self_date_only = self.date.date()
+
         # Calculate the number of days until the event
-        days_until = (self.date - datetime.now(self.date.tzinfo)).days
-        days_until_str = "tomorrow" if days_until == 1 else f"in {days_until} days"
+        days_until = (self_date_only - now_date_only).days
+        
+        # Determine the days_until_str using the helper function
+        days_until_str = format_days_until(days_until)
         
         # Construct the formatted date string
         formatted_date = f"{date_range} from {start_time_str} ({days_until_str})"
@@ -182,6 +206,8 @@ class Event(models.Model):
         logger.debug(f"Event: {self.name} | Formatted Date: {formatted_date}")
 
         return formatted_date
+
+
 
     def get_trimmed_location(self):
         # Assuming the format is always "street, city, country"

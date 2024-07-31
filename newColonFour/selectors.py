@@ -104,14 +104,32 @@ def filter_by_name(queryset, name_text):
 def filter_by_date_range(queryset, start_date, end_date):
     """
     Filter queryset by date range.
+
+    An event is considered within the date range if:
+    - Its start date is within the range
+    - Its end date is within the range
     """
     logger.debug(f"Filtering by date range: {start_date} - {end_date}")
+
     if start_date and end_date:
-        return queryset.filter(end_date__range=[start_date, end_date])
+        logger.debug("Both start_date and end_date are provided.")
+        return queryset.filter(
+            Q(date__range=(start_date, end_date)) |
+            Q(end_date__range=(start_date, end_date))
+        )
     elif start_date:
-        return queryset.filter(end_date__gte=start_date)
+        logger.debug("Only start_date is provided.")
+        return queryset.filter(
+            Q(date__gte=start_date) |
+            Q(end_date__gte=start_date)
+        )
     elif end_date:
-        return queryset.filter(end_date__lte=end_date)
+        logger.debug("Only end_date is provided.")
+        return queryset.filter(
+            Q(date__lte=end_date) |
+            Q(end_date__lte=end_date)
+        )
+    logger.debug("No start_date or end_date provided. Returning original queryset.")
     return queryset
 
 def filter_by_level(queryset, levels):

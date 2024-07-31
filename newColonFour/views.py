@@ -57,7 +57,6 @@ from .servicesFolder.services import (
     send_code,
     verify_totp_code,
     hash_telephone_number,
-    delete_keys_with_prefix
 )
 from .cache_utils import (
     set_cache_with_prefix,
