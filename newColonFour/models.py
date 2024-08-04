@@ -317,11 +317,6 @@ class Dancer(models.Model):
         print(f"[DEBUG] Number of dancer names retrieved: {len(dancer_names)}")  # Debug print
         return dancer_names
 
-
-
-
-
-
     # Many-to-many relationship with Event
     events = models.ManyToManyField('Event', related_name='dancers')
 

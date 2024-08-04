@@ -263,19 +263,36 @@ def format_days_until(days_until):
     """
     Formats the number of days until an event into a readable string.
     """
-    if days_until == 0:
-        return "today"
-    elif days_until == 1:
-        return "tomorrow"
-    elif days_until > 6:
-        # More than a week away
-        weeks_until = days_until // 7
-        remaining_days = days_until % 7
-        if remaining_days > 0:
-            return f"in {weeks_until} week(s) and {remaining_days} day(s)"
+    if days_until > 0:
+        if days_until == 1:
+            return "tomorrow"
+        elif days_until > 6:
+            # More than a week away
+            weeks_until = days_until // 7
+            remaining_days = days_until % 7
+            if remaining_days > 0:
+                return f"in {weeks_until} week(s) and {remaining_days} day(s)"
+            else:
+                return f"in {weeks_until} week(s)"
         else:
-            return f"in {weeks_until} week(s)"
+            # Less than a week away
+            return f"in {days_until} days"
+    elif days_until == 0:
+        return "today"
+    elif days_until == -1:
+        return "started yesterday"
     else:
-        # Less than a week away
-        return f"in {days_until} days"
+        # More than a day ago
+        days_ago = abs(days_until)
+        if days_ago > 6:
+            weeks_ago = days_ago // 7
+            remaining_days = days_ago % 7
+            if remaining_days > 0:
+                return f"started {weeks_ago} week(s) and {remaining_days} day(s) ago"
+            else:
+                return f"started {weeks_ago} week(s) ago"
+        else:
+            # Less than a week ago
+            return f"started {days_ago} days ago"
+
 

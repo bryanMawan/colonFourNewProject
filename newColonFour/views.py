@@ -85,7 +85,6 @@ def fetch_suboptions(request):
         'dancers': Dancer.get_all_dancer_names()  # Add dancer names here
 
     }
-
     data = suboptions.get(option, [])
     return JsonResponse({'suboptions': data})
 
@@ -501,7 +500,7 @@ def get_event_details(request, event_id):
         'styles': event_styles  # Include the event styles
     }
 
-    logger.debug(f"Event details for {event.name}: {data}")
+    logger.debug(f"\nEvent details print out format for {event.name}: {data}\n")
 
     return JsonResponse(data)
 

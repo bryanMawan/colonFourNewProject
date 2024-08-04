@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/buttons_and_forms.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/modals_and_specific_styles.css' %}">
@@ -13,8 +12,8 @@
         
         <!-- Email Field -->
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Email</span>
-            <input type="email" name="email" id="id_email" class="form-control" required value="{{ form.email.value|default_if_none:'' }}">
+            <span class="input-group-text" id="email-addon">Email</span>
+            <input type="email" name="email" id="id_email" class="form-control" aria-describedby="email-addon" required value="{{ form.email.value|default_if_none:'' }}">
         </div>
         {% if form.email.errors %}
             <div class="alert alert-danger">{{ form.email.errors }}</div>
@@ -22,8 +21,8 @@
 
         <!-- Name Field -->
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Name</span>
-            <input type="text" name="name" id="id_name" class="form-control" required value="{{ form.email.value|default_if_none:'' }}">
+            <span class="input-group-text" id="name-addon">Name</span>
+            <input type="text" name="name" id="id_name" class="form-control" aria-describedby="name-addon" required value="{{ form.name.value|default_if_none:'' }}">
         </div>
         {% if form.name.errors %}
             <div class="alert alert-danger">{{ form.name.errors }}</div>
@@ -31,16 +30,16 @@
 
         <!-- Password Fields -->
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Password</span>
-            <input type="password" name="password1" id="id_password1" class="form-control" required>
+            <span class="input-group-text" id="password1-addon">Password</span>
+            <input type="password" name="password1" id="id_password1" class="form-control" aria-describedby="password1-addon" required>
         </div>
         {% if form.password1.errors %}
             <div class="alert alert-danger">{{ form.password1.errors }}</div>
         {% endif %}
         
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Confirm Password</span>
-            <input type="password" name="password2" id="id_password2" class="form-control" required>
+            <span class="input-group-text" id="password2-addon">Confirm Password</span>
+            <input type="password" name="password2" id="id_password2" class="form-control" aria-describedby="password2-addon" required>
         </div>
         {% if form.password2.errors %}
             <div class="alert alert-danger">{{ form.password2.errors }}</div>
@@ -64,7 +63,8 @@
             <div class="alert alert-danger">{{ form.gdpr_consented.errors }}</div>
         {% endif %}
 
-        <button type="submit" class="btn btn-outline-primary">Register</button>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-outline-primary" id="submit_button" name="submit_button">Register</button>
     </form>
 </div>
 {% endblock %}
