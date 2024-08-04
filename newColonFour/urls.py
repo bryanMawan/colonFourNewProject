@@ -1,10 +1,30 @@
 # yourapp/urls.py
-from django.urls import path
+# Standard Library Imports
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
 from django.contrib.auth.views import LogoutView
-from .views import HomePageView, fetch_suboptions, register, org_verification, create_dancer, OrganizerProfileDetailView, CustomLoginView, DancerCreateView, BattleCreate, SearchHomePage, CreateTipView, send_code_view, verify_code_view, get_event_details, delete_past_events_view, EventAjaxView, get_partial_content
 
+# Local Application Imports
+from .views import (
+    HomePageView,
+    fetch_suboptions,
+    register,
+    org_verification,
+    create_dancer,
+    OrganizerProfileDetailView,
+    CustomLoginView,
+    DancerCreateView,
+    BattleCreate,
+    SearchHomePage,
+    CreateTipView,
+    send_code_view,
+    verify_code_view,
+    get_event_details,
+    cleanup_view,
+    EventAjaxView, 
+    get_partial_content
+)
 urlpatterns = [
     path('oldhome/', HomePageView.as_view(), name='oldhome'),
     path('login/', CustomLoginView.as_view(template_name='login.html'), name='login'),
@@ -21,7 +41,7 @@ urlpatterns = [
     path('search/', SearchHomePage.as_view(), name='search_home_page'),
     path('fetch_suboptions/', fetch_suboptions, name='fetch_suboptions'),
     path('get_event_details/<int:event_id>/', get_event_details, name='get_event_details'),
-    path('delete-past-events/', delete_past_events_view, name='delete-past-events'),
+    path('cleanup/', cleanup_view, name='cleanup_view'),
     path('create-dancer/', create_dancer, name='dancer_create'),
     path('events/', EventAjaxView.as_view(), name='event_ajax_view'),
     path('get_partial_content/', get_partial_content, name='get_partial_content'),

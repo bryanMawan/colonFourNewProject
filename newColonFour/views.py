@@ -44,7 +44,9 @@ from .selectors import (
     get_unique_styles,
     get_unique_event_types,
     get_unique_levels,
-    get_dancers_info
+    get_dancers_info,
+    get_orphaned_dancers,
+    get_past_events
 )
 from .servicesFolder.services import (
     update_organizer_profile,
@@ -505,13 +507,26 @@ def get_event_details(request, event_id):
     return JsonResponse(data)
 
 
-def delete_past_events_view(request):
-    # Only allow GET requests
+def cleanup_view(request):
     if request.method == 'GET':
-        # Logic to delete past events
-        deleted_count, _ = Event.objects.filter(
-            date__lt=timezone.now()).delete()
-        logger.debug(f"{deleted_count} past events have been deleted.")
-        return HttpResponse(f'{deleted_count} past events have been successfully deleted.')
+        # Delete past events
+        past_events = get_past_events()
+        deleted_past_events_count = past_events.count()
+        if deleted_past_events_count > 0:
+            past_events.delete()
+            logger.debug(f"{deleted_past_events_count} past events have been deleted.")
+        else:
+            logger.debug("No past events to delete.")
+        
+        # Delete orphaned dancers
+        orphaned_dancers = get_orphaned_dancers()
+        orphaned_count = orphaned_dancers.count()
+        if orphaned_count > 0:
+            deleted_orphaned_dancers_count, _ = orphaned_dancers.delete()
+            logger.debug(f"{deleted_orphaned_dancers_count} orphaned dancers have been deleted.")
+        else:
+            logger.debug("No orphaned dancers to delete.")
+        
+        return HttpResponse(f'{deleted_past_events_count} past events and {orphaned_count} orphaned dancers have been successfully deleted.')
     else:
         return HttpResponse(status=405)  # Method Not Allowed

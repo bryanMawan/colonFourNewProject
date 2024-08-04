@@ -21,7 +21,7 @@
     ],
     "crons": [
     {
-      "path": "/delete-past-events",
+      "path": "/cleanup",
       "schedule": "0 0 * * *"
     }
   ]

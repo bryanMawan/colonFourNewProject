@@ -22,6 +22,24 @@ def get_all_dancers():
     except Exception as e:
         logger.error(f"Error retrieving dancers: {e}")
         return Dancer.objects.none()
+    
+def get_orphaned_dancers():
+    """
+    Returns a queryset of dancers who are neither judges nor hosts in any battles.
+    """
+    return Dancer.objects.filter(
+        ~Q(battle_judges__isnull=False) & ~Q(battle_hosts__isnull=False)
+    ).distinct()
+
+def get_past_events():
+    """
+    Returns a queryset of events that have ended.
+    """
+    # Get the current time
+    now = timezone.now()
+    
+    # Filter events that have ended
+    return Event.objects.filter(end_date__lt=now)
 
 
 def get_sorted_events(search_query, filters, order_by='distance-a'):

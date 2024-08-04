@@ -16,6 +16,8 @@ import os
 import json
 from decouple import config, UndefinedValueError
 from google.oauth2 import service_account
+import sys
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -99,6 +101,11 @@ WSGI_APPLICATION = "colonFourNewProject.wsgi.application"
 
 try:
     if not DEBUG:
+        # Print thick yellow text
+        thick_yellow = '\033[33;1m'  # 33 for yellow, 1 for bold
+        reset = '\033[0m'  # Reset to default
+        sys.stdout.write(f"{thick_yellow}You are in production env{reset}\n")       
+        
         DATABASES = {
             'default': {
                 'ENGINE': config('DB_ENGINE'),
