@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, OrganizerProfile, OrganizerVerificationRequest, Dancer, Battle, Event, Tip
+from .models import CustomUser,  OrganizerVerificationRequest, Dancer, Battle, Tip
 from .mixins import FutureDateValidationMixin
 from PIL import Image
 import io
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Checkbox
 
 
 class OrganizerRegistrationForm(UserCreationForm):
@@ -59,14 +61,13 @@ class BattleForm(FutureDateValidationMixin, forms.ModelForm):
         }
 
 
-    # gpt: make sure the input ftom the styles field should be turned to all lowercase before before it is sent for saving
     def clean(self):
         cleaned_data = super().clean()
 
-        # # Convert styles to lowercase
-        # styles = cleaned_data.get('styles')
-        # if styles and isinstance(styles, list):
-        #     cleaned_data['styles'] = [style.lower() for style in styles]
+        # Convert styles to lowercase
+        styles = cleaned_data.get('styles')
+        if styles and isinstance(styles, list):
+            cleaned_data['styles'] = [style.lower() for style in styles]
 
         # # Calculate size of the poster image
         # poster = self.files.get('poster')
@@ -105,7 +106,13 @@ class BattleForm(FutureDateValidationMixin, forms.ModelForm):
         return super().save(commit=commit)
     
 
+# gpt: update the tip form here too, it should include a recaptcha forrm using django-recaptcha
 class TipForm(forms.ModelForm):
+    # Add the reCAPTCHA field
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
+
     class Meta:
         model = Tip
-        exclude = ['video']  # Exclude the video field from the for
+        fields = ['url', 'event_start_date', 'captcha']
+
+

@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'storages',  # Add django-storages here
     'rest_framework',
     'debug_toolbar',
+    'django_recaptcha',  # Add this line
+
 
 
 
@@ -105,7 +107,7 @@ try:
         thick_yellow = '\033[33;1m'  # 33 for yellow, 1 for bold
         reset = '\033[0m'  # Reset to default
         sys.stdout.write(f"{thick_yellow}You are in production env{reset}\n")       
-        
+
         DATABASES = {
             'default': {
                 'ENGINE': config('DB_ENGINE'),
@@ -267,3 +269,13 @@ CACHES = {
 # Session configuration (if using Redis for sessions)
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
+
+
+# captcha
+RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY")
+
+
+# silenced
+SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+

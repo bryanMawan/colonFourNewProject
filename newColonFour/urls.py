@@ -23,7 +23,8 @@ from .views import (
     get_event_details,
     cleanup_view,
     EventAjaxView, 
-    get_partial_content
+    get_partial_content,
+    TipsListView
 )
 urlpatterns = [
     path('oldhome/', HomePageView.as_view(), name='oldhome'),
@@ -45,6 +46,8 @@ urlpatterns = [
     path('create-dancer/', create_dancer, name='dancer_create'),
     path('events/', EventAjaxView.as_view(), name='event_ajax_view'),
     path('get_partial_content/', get_partial_content, name='get_partial_content'),
+    path('tips/all', TipsListView.as_view(), name='tips-list'),
+
 
 
 

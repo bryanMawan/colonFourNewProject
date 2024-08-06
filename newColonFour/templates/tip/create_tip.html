@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/buttons_and_forms.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/modals_and_specific_styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/fonts_and_general_styles.css' %}">
+<div class="container">
+    <h2 class="text-center">Tip Registration</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- URL Field -->
+        <div class="mb-3">
+            <label for="id_url" class="form-label">URL</label>
+            <input type="text" name="url" id="id_url" class="form-control" required value="{{ form.url.value|default_if_none:'' }}">
+            {% if form.url.errors %}
+                <div class="alert alert-danger">{{ form.url.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Event Start Date Field -->
+        <div class="mb-3">
+            <label for="id_event_start_date" class="form-label">Event Start Date</label>
+            <input type="date" name="event_start_date" id="id_event_start_date" class="form-control" required value="{{ form.event_start_date.value|default_if_none:'' }}">
+            {% if form.event_start_date.errors %}
+                <div class="alert alert-danger">{{ form.event_start_date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- reCAPTCHA Field -->
+        <div class="mb-3">
+            {{ form.captcha }}
+            {% if form.captcha.errors %}
+                <div class="alert alert-danger">{{ form.captcha.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

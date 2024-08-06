@@ -16,11 +16,13 @@ from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.timezone import now
+from django.utils.html import escape
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.generic import TemplateView, DetailView, CreateView, ListView
 from django.views import View
 from django.core.cache import cache
+
 import time
 
 
@@ -470,14 +472,25 @@ def verify_code_view(request):
 class CreateTipView(CreateView):
     model = Tip
     form_class = TipForm
-    template_name = 'create_tip.html'
+    template_name = 'tip/create_tip.html'
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        tip_name = form.instance.name  # Get the name of the created tip
+        tip_name = form.instance.url  # Get the name of the created tip
         logger.info(f"A tip has been created: {tip_name}")
         return response
+    
+class TipsListView(LoginRequiredMixin, ListView):
+    model = Tip
+    template_name = 'tip/tips_list.html'
+    context_object_name = 'tips'
+    login_url = '/login/'  
+
+    def get_queryset(self):
+        tips = super().get_queryset().values_list('url', 'event_start_date')
+        logger.debug(f"Tips list data: {tips}")
+        return [{'url': url, 'event_start_date': event_start_date} for url, event_start_date in tips]
 
 
 @require_GET

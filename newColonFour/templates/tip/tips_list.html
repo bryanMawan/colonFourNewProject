@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tips List</title>
+</head>
+<body>
+    <h1>Tips List</h1>
+    {% if tips %}
+        <ul>
+            {% for tip in object_list %}
+                <li><a href="{{ tip.url }}" target="_blank">{{ tip.url }}</a> - {{ tip.event_start_date }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tips available.</p>
+    {% endif %}
+</body>
+</html>
