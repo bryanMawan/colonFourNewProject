@@ -539,7 +539,11 @@ def cleanup_view(request):
             logger.debug(f"{deleted_orphaned_dancers_count} orphaned dancers have been deleted.")
         else:
             logger.debug("No orphaned dancers to delete.")
-        
-        return HttpResponse(f'{deleted_past_events_count} past events and {orphaned_count} orphaned dancers have been successfully deleted.')
+
+        deleted_past_tips_count = Tip.delete_past_tips()
+
+        return HttpResponse(f'{deleted_past_events_count} past events, {orphaned_count} orphaned dancers and {deleted_past_tips_count} past tips have been successfully deleted.')
     else:
         return HttpResponse(status=405)  # Method Not Allowed
+
+

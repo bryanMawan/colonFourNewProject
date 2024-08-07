@@ -27,9 +27,13 @@ def get_orphaned_dancers():
     """
     Returns a queryset of dancers who are neither judges nor hosts in any battles.
     """
-    return Dancer.objects.filter(
-        ~Q(battle_judges__isnull=False) & ~Q(battle_hosts__isnull=False)
-    ).distinct()
+    # Get unique dancer IDs without using distinct()
+    orphaned_dancer_ids = Dancer.objects.filter(
+        Q(battle_judges__isnull=True) & Q(battle_hosts__isnull=True)
+    ).values_list('id', flat=True).distinct()
+    
+    # Return the queryset based on the unique IDs
+    return Dancer.objects.filter(id__in=orphaned_dancer_ids)
 
 def get_past_events():
     """

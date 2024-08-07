@@ -354,3 +354,18 @@ class Tip(models.Model):
 
     def __str__(self):
         return self.url
+    
+    @classmethod
+    def delete_past_tips(cls):
+        """
+        Deletes tips with event_start_date before today.
+        
+        Returns:
+            int: The number of deleted tips.
+        """
+        # Define a cutoff date to identify past tips
+        cutoff_date = timezone.now().date()
+
+        # Use the ORM to delete tips efficiently
+        deleted_count, _ = cls.objects.filter(event_start_date__lt=cutoff_date).delete()
+        return deleted_count
